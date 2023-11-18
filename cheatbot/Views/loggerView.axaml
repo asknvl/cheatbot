@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cust="using:cheatbot.Views.custom"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="cheatbot.Views.loggerView">
+    <Grid>
+        <cust:AutoScrollListBox
+            Items="{Binding Messages}">                        
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid
+                        ColumnDefinitions="100, 150, *">
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{Binding TAG}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="{Binding Date}"/>
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{Binding Text}"/>
+                        <Grid.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="FontFamily" Value="Consolas"/>
+                            </Style>
+                        </Grid.Styles>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+                <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Style>
+            </ListBox.Styles>
+        </cust:AutoScrollListBox>
+    </Grid>
+</UserControl>

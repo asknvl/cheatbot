@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:cust="using:cheatbot.Views.custom"
+             x:Class="cheatbot.Views.channelListView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </UserControl.Styles>
+
+    <Grid
+        MinWidth="200"
+        ColumnDefinitions="*, Auto">
+        <cust:AutoScrollListBox
+            Items="{Binding ChannelList}"
+            SelectedItem="{Binding SelectedChannel}"
+            Grid.Column="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel
+                        Orientation="Vertical">
+                        <TextBlock Text="{Binding geotag}"
+                                   FontWeight="DemiBold"/>
+                        <TextBlock Text="{Binding name}"
+                                   Foreground="LightGray"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </cust:AutoScrollListBox>
+        <StackPanel
+            Grid.Column="1">
+            <Button
+                Command="{Binding addCmd}">
+                +
+            </Button>
+            <Button
+                Command="{Binding deleteCmd}">
+                -
+            </Button>
+            <Button
+               Command="{Binding subscribeCmd}">
+                П
+            </Button>
+            <Button
+              Command="{Binding unsubscribeCmd}">
+                О
+            </Button>
+            <StackPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="MinWidth" Value="30"/>
+                    <Setter Property="MinHeight" Value="30"/>
+                </Style>
+            </StackPanel.Styles>
+        </StackPanel>
+    </Grid>
+    
+</UserControl>

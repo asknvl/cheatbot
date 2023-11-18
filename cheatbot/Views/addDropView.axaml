@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="cheatbot.Views.addDropView">
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </UserControl.Styles>
+
+    <Grid>
+        <StackPanel>
+            <Grid
+                ColumnDefinitions="100, 200">
+                <TextBlock
+                    Grid.Column="0">
+                    Номер:
+                </TextBlock>
+                <TextBox
+                    Grid.Column="1"                    
+                    Text="{Binding phone_number}"/>
+            </Grid>
+            <Grid
+                ColumnDefinitions="100, 100">
+                <Button
+                    Grid.Column="0"
+                    Command="{Binding okCmd}">
+                    ОК
+                </Button>
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding cancelCmd}">
+                    Отмена
+                </Button>
+            </Grid>
+        </StackPanel>
+        <Grid.Styles>
+            <Style Selector="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </Grid.Styles>
+    </Grid>
+</UserControl>

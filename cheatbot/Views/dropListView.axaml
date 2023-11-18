@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cust="using:cheatbot.Views.custom"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
+             x:Class="cheatbot.Views.dropListView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </UserControl.Styles>
+
+    <Grid
+        MinWidth="200"
+        ColumnDefinitions="*, Auto">
+        <cust:AutoScrollListBox
+            Items="{Binding DropList}"
+            SelectedItem="{Binding SelectedDrop}"
+            Grid.Column="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding phone_number}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </cust:AutoScrollListBox>
+        <StackPanel
+            Grid.Column="1">
+            <Button
+                Command="{Binding addCmd}">
+                +
+            </Button>
+            <Button
+                Command="{Binding deleteCmd}">
+                -
+            </Button>
+            <StackPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="MinWidth" Value="30"/>
+                    <Setter Property="MinHeight" Value="30"/>
+                </Style>
+            </StackPanel.Styles>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

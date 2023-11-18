@@ -1,0 +1,87 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:cheatbot.ViewModels"
+        xmlns:vs="using:cheatbot.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="cheatbot.Views.mainWnd"
+        xmlns:vv="using:cheatbot.Views"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="cheatbot">
+
+    <Design.DataContext>
+        <vm:mainVM/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </Window.Styles>
+
+    <TabControl>
+        <TabItem
+            Header="Дропы">
+            <Grid
+                ColumnDefinitions="Auto, Auto, *">
+                <vv:dropListView
+                    DataContext="{Binding DropList}"
+                    Grid.Column="0"/>
+                <Border
+                    Grid.Column="1"
+                    MinWidth="400">
+                    <ContentControl
+                        DataContext="{Binding DropList}"
+                        Content="{Binding SubContent}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="vm:dropVM">
+                                <vs:dropView/>
+                            </DataTemplate>
+                            <DataTemplate DataType="vm:addDropVM">
+                                <vs:addDropView/>
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
+                </Border>
+                <vv:loggerView
+                    DataContext="{Binding Logger}"
+                    Grid.Column="2"/>                
+            </Grid>            
+        </TabItem>
+        <TabItem
+            Header="Каналы">
+            <Grid
+                ColumnDefinitions="Auto, Auto">
+                <vv:channelListView
+                    DataContext="{Binding ChannelList}"
+                    Grid.Column="0"/>
+                <Border
+                    Grid.Column="1"
+                    MinWidth="400">
+                    <ContentControl
+                        DataContext="{Binding ChannelList}"
+                        Content="{Binding SubContent}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="vm:addChannelVM">
+                                <vs:addChannelView/>
+                            </DataTemplate>
+                            <DataTemplate DataType="vm:channelVM">
+                                <vs:addChannelView/>
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
+                </Border>
+            </Grid>
+        </TabItem>
+        <TabItem
+            Header="Подписки">            
+        </TabItem>
+        <TabControl.Styles>
+            <Style Selector="Border">
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Margin" Value="2"/>
+            </Style>            
+        </TabControl.Styles>
+    </TabControl>
+</Window>
