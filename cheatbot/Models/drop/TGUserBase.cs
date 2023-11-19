@@ -40,7 +40,9 @@ namespace asknvl
         protected string Config(string what)
         {
 
-            string dir = Path.Combine(Directory.GetCurrentDirectory(), "userpool");
+            //string dir = Path.Combine(Directory.GetCurrentDirectory(), "userpool");
+            string dir = Path.Combine("C:", "userpool");
+
 
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
