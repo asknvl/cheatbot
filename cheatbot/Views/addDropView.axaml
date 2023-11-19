@@ -11,7 +11,7 @@
     <Grid>
         <StackPanel>
             <Grid
-                ColumnDefinitions="100, 200">
+                ColumnDefinitions="100, 105">
                 <TextBlock
                     Grid.Column="0">
                     Номер:
@@ -19,6 +19,16 @@
                 <TextBox
                     Grid.Column="1"                    
                     Text="{Binding phone_number}"/>
+            </Grid>
+            <Grid
+                ColumnDefinitions="100, 105">
+                <TextBlock
+                    Grid.Column="0">
+                    2FA:
+                </TextBlock>
+                <TextBox
+                    Grid.Column="1"                    
+                    Text="{Binding _2fa_password}"/>
             </Grid>
             <Grid
                 ColumnDefinitions="100, 100">

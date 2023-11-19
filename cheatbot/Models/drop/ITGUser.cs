@@ -7,7 +7,8 @@ namespace asknvl
     {        
         public string api_id { get; set; }     
         public string api_hash { get; set; }                     
-        string phone_number { get; set; } 
+        string phone_number { get; set; }
+        public string _2fa_password { get; }
         long tg_id { get; set; }
 
         Task Start();

@@ -54,7 +54,7 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _old2FA, value);
         }
 
-        string _new2FA = "5555";        
+        string _new2FA;        
         public string New2FA
         {
             get => _new2FA;
@@ -83,9 +83,11 @@ namespace cheatbot.ViewModels
                 addDropVM addVM = new addDropVM();
                 SubContent = addVM;
 
-                addVM.AddDropRequestEvent += (phone) =>
+                addVM.AddDropRequestEvent += (phone, _2fa_password) =>
                 {
                     phone = phone.Replace(" ", "");
+                    if (!phone.Contains("+"))
+                        phone = "+" + phone;
 
                     using (var db = new DataBaseContext())
                     {
@@ -94,7 +96,8 @@ namespace cheatbot.ViewModels
                         {
                             var dropModel = new DropModel()
                             {
-                                phone_number = phone
+                                phone_number = phone,
+                                _2fa_password = _2fa_password
                             };
 
                             db.Add(dropModel);
@@ -170,7 +173,7 @@ namespace cheatbot.ViewModels
         #region helpers
         void addDrop(DropModel model)
         {
-            var dvm = new dropVM(model.phone_number, logger);
+            var dvm = new dropVM(model.phone_number, model._2fa_password, logger);
             dvm.ChannelAddedEvent += (link, id, name) =>
             {
                 ChannelAddedEvent?.Invoke(link, id, name);

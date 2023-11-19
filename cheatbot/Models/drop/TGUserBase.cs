@@ -17,7 +17,7 @@ namespace asknvl
         readonly ManualResetEventSlim verifyCodeReady = new();
         string verifyCode;
         protected ILogger logger;
-        Messages_Chats chats;
+        Messages_Chats chats;        
         #endregion
 
         #region properties        
@@ -26,14 +26,17 @@ namespace asknvl
         public string phone_number { get; set; }    
         public long tg_id { get; set; }         
         public string? username { get; set; }
+        public string _2fa_password { get; }
         #endregion
 
-        public TGUserBase(string api_id, string api_hash, string phone_number, ILogger logger)
+        public TGUserBase(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger)
         {            
             this.api_id = api_id;
             this.api_hash = api_hash;
             this.phone_number = phone_number;            
             this.logger = logger;
+
+            this._2fa_password = _2fa_password;
         }
 
         #region protected
@@ -60,7 +63,7 @@ namespace asknvl
                     return verifyCode;
                 case "first_name": return "Stevie";  
                 case "last_name": return "Voughan";  
-                case "password": return "5555";  
+                case "password": return _2fa_password;  
                 default: return null;
             }
         }

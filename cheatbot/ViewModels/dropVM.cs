@@ -20,6 +20,7 @@ namespace cheatbot.ViewModels
         #region vars
         IDropFactory dropFactory;
         ITGUser drop;
+        ILogger logger;
         #endregion
 
         #region properties
@@ -37,6 +38,13 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _phone_number, value);
         }
 
+        string __2fa_password;
+        public string _2fa_password
+        {
+            get => __2fa_password;
+            set => this.RaiseAndSetIfChanged(ref __2fa_password, value);
+        }
+        
         string _code;
         public string code
         {
@@ -72,13 +80,14 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> verifyCmd { get; }
         #endregion
 
-        public dropVM(string phone_number, ILogger logger)
+        public dropVM(string phone_number, string _2fa_password, ILogger logger)
         {
             this.phone_number = phone_number;
+            this._2fa_password = _2fa_password;
 
             dropFactory = new DropFactory(logger);
 
-            drop = dropFactory.Get(DropType.v0, phone_number);
+            drop = dropFactory.Get(DropType.v0, phone_number, _2fa_password);
             drop.ChannelAddedEvent += Drop_ChannelAddedEvent;
             drop.ChannelMessageViewedEvent += Drop_ChannelMessageViewedEvent;
 
@@ -162,13 +171,17 @@ namespace cheatbot.ViewModels
                     break;
 
                 case Change2FAPasswordAllEventMessage change2FAPasswordMessage:
-                    drop.Change2FAPassword(change2FAPasswordMessage.old_password, change2FAPasswordMessage.new_password);
+                    if (drop._2fa_password.Equals(change2FAPasswordMessage.old_password))
+                        drop.Change2FAPassword(change2FAPasswordMessage.old_password, change2FAPasswordMessage.new_password);
                     break;
 
                 case Change2FAPasswordOneEventMessage change2FAPasswordOneEventMessage:
                     if (drop.phone_number.Equals(change2FAPasswordOneEventMessage.phone_number))
                     {
-                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
+                        if (drop._2fa_password.Equals(change2FAPasswordOneEventMessage.old_password))
+                            drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
+                        else
+                            logger.err(phone_number, $"Old 2FA doesn't match current ({drop._2fa_password})");
                     }
                     break;
             }

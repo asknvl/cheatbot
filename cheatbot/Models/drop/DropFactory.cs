@@ -28,12 +28,12 @@ namespace cheatbot.Models.drop
             }
         }
 
-        public ITGUser Get(DropType type, string phone_number)
+        public ITGUser Get(DropType type, string phone_number, string old_2fa_password)
         {            
             switch (type)
             {
                 case DropType.v0:
-                    return new Drop_v0(api_id, api_hash, phone_number, logger);
+                    return new Drop_v0(api_id, api_hash, phone_number, old_2fa_password, logger);
                 default:
                     throw new NotImplementedException();
             }

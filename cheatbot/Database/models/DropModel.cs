@@ -14,5 +14,6 @@ namespace cheatbot.Database.models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public string phone_number { get; set; }
+        public string _2fa_password { get; set; }
     }
 }

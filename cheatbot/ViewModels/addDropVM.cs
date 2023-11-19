@@ -17,6 +17,13 @@ namespace cheatbot.ViewModels
             get => _phone_number;
             set => this.RaiseAndSetIfChanged(ref _phone_number, value);
         }
+
+        string __2fa_password = string.Empty;
+        public string _2fa_password
+        {
+            get => __2fa_password;
+            set => this.RaiseAndSetIfChanged(ref __2fa_password, value);
+        }
         #endregion
 
         #region commands
@@ -27,7 +34,7 @@ namespace cheatbot.ViewModels
         public addDropVM()
         {
             okCmd = ReactiveCommand.Create(() => {
-                AddDropRequestEvent?.Invoke(phone_number);
+                AddDropRequestEvent?.Invoke(phone_number, _2fa_password);
             });
 
             cancelCmd = ReactiveCommand.Create(() => {
@@ -35,6 +42,6 @@ namespace cheatbot.ViewModels
             });
         }
 
-        public event Action<string> AddDropRequestEvent;        
+        public event Action<string, string> AddDropRequestEvent;        
     }
 }

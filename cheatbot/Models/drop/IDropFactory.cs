@@ -9,7 +9,7 @@ namespace cheatbot.Models.drop
 {
     public interface IDropFactory
     {
-        ITGUser Get(DropType type, string phone_number);
+        ITGUser Get(DropType type, string phone_number, string? old_2fa_password = null);
     }
 
     public enum DropType 

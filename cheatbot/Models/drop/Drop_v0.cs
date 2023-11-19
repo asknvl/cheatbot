@@ -18,7 +18,7 @@ namespace cheatbot.Models.drop
         System.Timers.Timer readHistoryTimer;
         #endregion
 
-        public Drop_v0(string api_id, string api_hash, string phone_number, ILogger logger) : base(api_id, api_hash, phone_number, logger)
+        public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
         {
             readHistoryTimer = new System.Timers.Timer();
             readHistoryTimer.Interval = 10000;
