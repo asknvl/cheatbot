@@ -33,9 +33,32 @@
                 Command="{Binding deleteCmd}">
                 -
             </Button>
+            
+            <Separator
+                Height="2"
+                Background="LightGray"
+                Margin="5"/>
+            
+            <Grid
+                RowDefinitions="Auto, Auto, Auto">
+                <TextBox
+                    Grid.Row="0"
+                    Text="{Binding Old2FA}"
+                    Watermark="Old"/>
+                <TextBox
+                    Grid.Row="1"
+                    Text="{Binding New2FA}"
+                    Watermark="New"/>
+                <Button
+                   Grid.Row="2" 
+                   Command="{Binding set2FACmd}">
+                    2FA
+                </Button>
+            </Grid>
+
             <StackPanel.Styles>
                 <Style Selector="Button">
-                    <Setter Property="MinWidth" Value="30"/>
+                    <Setter Property="MinWidth" Value="70"/>
                     <Setter Property="MinHeight" Value="30"/>
                 </Style>
             </StackPanel.Styles>

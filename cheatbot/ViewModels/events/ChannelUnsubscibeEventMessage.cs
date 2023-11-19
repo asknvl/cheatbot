@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels.events
 {
-    public class ChannelUnsubscibeEvent
+    public class ChannelUnsubscibeEventMessage : BaseEventMessage
     {
         public long tg_id { get; }
-        public ChannelUnsubscibeEvent(long tg_id)
+        public ChannelUnsubscibeEventMessage(long tg_id)
         {
             this.tg_id = tg_id;
         }

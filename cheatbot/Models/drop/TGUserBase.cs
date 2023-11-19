@@ -33,7 +33,6 @@ namespace asknvl
             this.api_id = api_id;
             this.api_hash = api_hash;
             this.phone_number = phone_number;            
-
             this.logger = logger;
         }
 
@@ -155,12 +154,36 @@ namespace asknvl
                 var chats = await user.Messages_GetAllChats();
                 var chat = chats.chats[id];
                 await user.LeaveChat(chat);
+                logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
+
             } catch (Exception ex)
             {
                 logger.err(phone_number, $"LeaveChannel: {ex.Message}");
             }
         }
         
+        public async Task Change2FAPassword(string old_password, string new_password)
+        {
+            try
+            {
+                var accountPwd = await user.Account_GetPassword();
+                var password = accountPwd.current_algo == null ? null : await WTelegram.Client.InputCheckPassword(accountPwd, old_password);
+                accountPwd.current_algo = null; // makes InputCheckPassword generate a new password
+                var new_password_hash = new_password == null ? null : await WTelegram.Client.InputCheckPassword(accountPwd, new_password);
+                await user.Account_UpdatePasswordSettings(password, new Account_PasswordInputSettings
+                {
+                    flags = Account_PasswordInputSettings.Flags.has_new_algo,
+                    new_password_hash = new_password_hash?.A,
+                    new_algo = accountPwd.new_algo
+                    //hint = "new password hint",
+                });
+
+            } catch (Exception ex)
+            {
+                logger.err(phone_number, $"Change2FAPassword: {ex.Message}");
+            }
+        }
+
         public virtual void Stop()
         {            
             user?.Dispose();
@@ -169,12 +192,19 @@ namespace asknvl
         }
         #endregion
 
+        #region protected
+        protected void SendChannelMessageViewedEvent(long channel_id)
+        {
+            ChannelMessageViewedEvent?.Invoke(channel_id);
+        }
+        #endregion
+
         #region events
         public event Action<ITGUser> VerificationCodeRequestEvent;
         public event Action<ITGUser, bool> StartedEvent;
         public event Action<ITGUser> StoppedEvent;
-
         public event Action<string, long, string> ChannelAddedEvent;
+        public event Action<long> ChannelMessageViewedEvent;
         #endregion
     }
 }

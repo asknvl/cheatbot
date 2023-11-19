@@ -46,11 +46,26 @@ namespace cheatbot.ViewModels
             get => subcontent;
             set => this.RaiseAndSetIfChanged(ref subcontent, value);
         }
+
+        string _old2FA;
+        public string Old2FA
+        {
+            get => _old2FA;
+            set => this.RaiseAndSetIfChanged(ref _old2FA, value);
+        }
+
+        string _new2FA = "5555";        
+        public string New2FA
+        {
+            get => _new2FA;
+            set => this.RaiseAndSetIfChanged(ref _new2FA, value);   
+        }
         #endregion
 
         #region commands
         public ReactiveCommand<Unit, Unit> addCmd { get; }
-        public ReactiveCommand<Unit, Unit> deleteCmd { get; }        
+        public ReactiveCommand<Unit, Unit> deleteCmd { get; }
+        public ReactiveCommand<Unit, Unit> set2FACmd { get; }
         #endregion
         public dropListVM(ILogger logger)
         {
@@ -112,6 +127,13 @@ namespace cheatbot.ViewModels
                 var found_list = DropList.FirstOrDefault(d => d.phone_number.Equals(SelectedDrop.phone_number));
                 DropList.Remove(found_list);
 
+            });
+
+            set2FACmd = ReactiveCommand.Create(() => {
+                if (SelectedDrop != null)
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordOneEventMessage(SelectedDrop.phone_number, Old2FA, New2FA));
+                else
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordAllEventMessage(Old2FA, New2FA));
             });
 
 

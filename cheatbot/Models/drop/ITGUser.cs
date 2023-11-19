@@ -13,6 +13,7 @@ namespace asknvl
         Task Start();
         Task Subscribe(string input);
         Task LeaveChannel(long id);
+        Task Change2FAPassword(string old_password, string new_password);
         void Stop();
         void SetVerifyCode(string code);
 
@@ -20,5 +21,6 @@ namespace asknvl
         event Action<ITGUser, bool> StartedEvent;
         event Action<ITGUser> StoppedEvent;
         event Action<string, long, string> ChannelAddedEvent;
+        event Action<long> ChannelMessageViewedEvent;
     }
 }

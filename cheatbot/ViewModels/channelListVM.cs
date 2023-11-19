@@ -119,7 +119,7 @@ namespace cheatbot.ViewModels
                 if (SelectedChannel != null)
                 {
                     //UnsubscribeAllRequestEvent?.Invoke((long)SelectedChannel.tg_id);
-                    EventAggregator.getInstance().Publish(new ChannelUnsubscibeEvent(SelectedChannel.tg_id));
+                    EventAggregator.getInstance().Publish((BaseEventMessage)(new ChannelUnsubscibeEventMessage(SelectedChannel.tg_id)));
                 }
             });
         }

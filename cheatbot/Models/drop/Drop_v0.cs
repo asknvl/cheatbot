@@ -39,7 +39,7 @@ namespace cheatbot.Models.drop
                     //var h = await user.Messages_ReadHistory(channel);
                     var v = await user.Messages_GetMessagesViews(channel, new int[] { m.Item2 }, true);
                     newMessagesQueue.RemoveAt(0);
-
+                    SendChannelMessageViewedEvent(m.Item1);
                     logger.err(phone_number, $"Viewed {m.Item2}");
                 }
 
@@ -50,6 +50,9 @@ namespace cheatbot.Models.drop
 
             } catch (Exception ex)
             {
+                if (newMessagesQueue.Count > 0)
+                    newMessagesQueue.RemoveAt(0);
+
                 logger.err("API", ex.Message);
             }
         }
@@ -60,7 +63,7 @@ namespace cheatbot.Models.drop
 
         protected override void processUpdate(Update update)
         {
-            logger.err(phone_number, update.ToString());
+            logger.inf(phone_number, update.ToString());
             switch (update)
             {
                 case UpdateNewMessage unm:

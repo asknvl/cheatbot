@@ -1,5 +1,6 @@
 ﻿using cheatbot.Database;
 using cheatbot.Database.models;
+using cheatbot.ViewModels.events;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels
 {
-    public class channelVM : ViewModelBase
+    public class channelVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region properties
         string? _geotag;
@@ -40,6 +41,13 @@ namespace cheatbot.ViewModels
             get => _tg_id;
             set => this.RaiseAndSetIfChanged(ref _tg_id, value);    
         }
+
+        uint _wievedMessagesCounter = 0;
+        public uint viewedMessagesCounter
+        {
+            get => _wievedMessagesCounter;
+            set => this.RaiseAndSetIfChanged(ref _wievedMessagesCounter, value);
+        }
         #endregion
 
         public channelVM(ChannelModel model) 
@@ -48,6 +56,20 @@ namespace cheatbot.ViewModels
             link = model.link;    
             tg_id = model.tg_id;
             name = model.name;
+
+            EventAggregator.getInstance().Subscribe(this);
+        }
+
+        public void OnEvent(BaseEventMessage message)
+        {
+
+            switch (message)
+            {
+                case ChannelMessageViewedEventMessage messageWieved:
+                    if (messageWieved.channel_id == tg_id)
+                        viewedMessagesCounter++;
+                    break;
+            }            
         }
     }
 }

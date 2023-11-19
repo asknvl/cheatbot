@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels
 {
-    public class dropVM : ViewModelBase, IEventSubscriber<ChannelUnsubscibeEvent>
+    public class dropVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
         IDropFactory dropFactory;
-        ITGUser drop;        
+        ITGUser drop;
         #endregion
 
         #region properties
@@ -48,14 +48,14 @@ namespace cheatbot.ViewModels
         public bool AllowStart
         {
             get => allowStart;
-            set => this.RaiseAndSetIfChanged(ref allowStart, value);    
+            set => this.RaiseAndSetIfChanged(ref allowStart, value);
         }
 
         bool isRunning;
         public bool IsRunning
         {
             get => isRunning;
-            set => this.RaiseAndSetIfChanged(ref isRunning, value); 
+            set => this.RaiseAndSetIfChanged(ref isRunning, value);
         }
 
         bool needVerification;
@@ -69,7 +69,7 @@ namespace cheatbot.ViewModels
         #region commands
         public ReactiveCommand<Unit, Unit> startCmd { get; }
         public ReactiveCommand<Unit, Unit> stopCmd { get; }
-        public ReactiveCommand<Unit, Unit> verifyCmd { get; }        
+        public ReactiveCommand<Unit, Unit> verifyCmd { get; }
         #endregion
 
         public dropVM(string phone_number, ILogger logger)
@@ -80,24 +80,33 @@ namespace cheatbot.ViewModels
 
             drop = dropFactory.Get(DropType.v0, phone_number);
             drop.ChannelAddedEvent += Drop_ChannelAddedEvent;
+            drop.ChannelMessageViewedEvent += Drop_ChannelMessageViewedEvent;
 
 
             drop.VerificationCodeRequestEvent += Drop_VerificationCodeRequestEvent;
             drop.StartedEvent += Drop_StartedEvent;
             drop.StoppedEvent += Drop_StoppedEvent;
 
-            startCmd = ReactiveCommand.CreateFromTask(async () => {
+            startCmd = ReactiveCommand.CreateFromTask(async () =>
+            {
                 await drop.Start();
             });
-            stopCmd = ReactiveCommand.Create(() => {
-                drop.Stop();                
+            stopCmd = ReactiveCommand.Create(() =>
+            {
+                drop.Stop();
             });
-            verifyCmd = ReactiveCommand.Create(() => {
-                drop.SetVerifyCode(code);            
-            });            
+            verifyCmd = ReactiveCommand.Create(() =>
+            {
+                drop.SetVerifyCode(code);
+            });
 
 
             EventAggregator.getInstance().Subscribe(this);
+        }
+
+        private void Drop_ChannelMessageViewedEvent(long channel_id)
+        {
+            EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelMessageViewedEventMessage(channel_id));
         }
 
         private void Drop_ChannelAddedEvent(string link, long id, string name)
@@ -117,7 +126,7 @@ namespace cheatbot.ViewModels
 
         #region private
         private void Drop_StartedEvent(ITGUser drop, bool result)
-        { 
+        {
             IsRunning = result;
             NeedVerification = false;
         }
@@ -135,13 +144,34 @@ namespace cheatbot.ViewModels
                 await drop.Subscribe(link);
         }
 
-        public void OnEvent(ChannelUnsubscibeEvent message)
-        {
-            Task.Run(async () => {
+        //public void OnEvent(ChannelUnsubscibeEvent message)
+        //{
+        //    Task.Run(async () => {
 
-                await drop.LeaveChannel(message.tg_id);
-            
-            });
+        //        await drop.LeaveChannel(message.tg_id);
+
+        //    });
+        //}
+
+        public void OnEvent(BaseEventMessage message)
+        {
+            switch (message)
+            {
+                case ChannelUnsubscibeEventMessage unsubscribeMesage:
+                    drop.LeaveChannel(unsubscribeMesage.tg_id);
+                    break;
+
+                case Change2FAPasswordAllEventMessage change2FAPasswordMessage:
+                    drop.Change2FAPassword(change2FAPasswordMessage.old_password, change2FAPasswordMessage.new_password);
+                    break;
+
+                case Change2FAPasswordOneEventMessage change2FAPasswordOneEventMessage:
+                    if (drop.phone_number.Equals(change2FAPasswordOneEventMessage.phone_number))
+                    {
+                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
+                    }
+                    break;
+            }
         }
         #endregion
 
