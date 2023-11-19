@@ -16,7 +16,8 @@
         <cust:AutoScrollListBox
             Items="{Binding ChannelList}"
             SelectedItem="{Binding SelectedChannel}"
-            Grid.Column="0">
+            Grid.Column="0"
+            MinWidth="200">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel
@@ -58,7 +59,7 @@
             </Button>
             <StackPanel.Styles>
                 <Style Selector="Button">
-                    <Setter Property="MinWidth" Value="30"/>
+                    <Setter Property="MinWidth" Value="70"/>
                     <Setter Property="MinHeight" Value="30"/>
                 </Style>
                 <Style Selector="TextBlock">
