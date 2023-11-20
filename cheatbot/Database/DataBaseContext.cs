@@ -16,7 +16,11 @@ namespace cheatbot.Database
         public DbSet<ChannelModel> Channels { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string db = Directory.GetCurrentDirectory();
+            //string db = Directory.GetCurrentDirectory();
+            string db = Path.Combine("C:", "drop_database");
+            if (!Directory.Exists(db))
+                Directory.CreateDirectory(db);
+
             string path = Path.Combine(db, "database.db");
             optionsBuilder.UseSqlite($"Data Source={path}");
         }
