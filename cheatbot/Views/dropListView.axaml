@@ -73,6 +73,17 @@
                 </Button>
             </Grid>
 
+            <Separator
+                Height="2"
+                Background="LightGray"
+                Margin="5"/>
+
+            <Button
+                Command="{Binding startAllCmd}">
+                Start
+            </Button>
+                
+
             <StackPanel.Styles>
                 <Style Selector="Button">
                     <Setter Property="MinWidth" Value="70"/>
