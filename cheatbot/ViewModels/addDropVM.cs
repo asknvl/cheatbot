@@ -18,7 +18,7 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _phone_number, value);
         }
 
-        string __2fa_password = string.Empty;
+        string __2fa_password = "Wf52";
         public string _2fa_password
         {
             get => __2fa_password;
