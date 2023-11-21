@@ -183,6 +183,8 @@ namespace asknvl
                     //hint = "new password hint",
                 });
 
+                _2FAPasswordChanged.Invoke(new_password);
+
             } catch (Exception ex)
             {
                 logger.err(phone_number, $"Change2FAPassword: {ex.Message}");
@@ -210,6 +212,7 @@ namespace asknvl
         public event Action<ITGUser> StoppedEvent;
         public event Action<string, long, string> ChannelAddedEvent;
         public event Action<long> ChannelMessageViewedEvent;
+        public event Action<string> _2FAPasswordChanged;  
         #endregion
     }
 }

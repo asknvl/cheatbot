@@ -23,5 +23,6 @@ namespace asknvl
         event Action<ITGUser> StoppedEvent;
         event Action<string, long, string> ChannelAddedEvent;
         event Action<long> ChannelMessageViewedEvent;
+        public event Action<string> _2FAPasswordChanged;
     }
 }
