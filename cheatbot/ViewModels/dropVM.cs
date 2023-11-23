@@ -198,10 +198,7 @@ namespace cheatbot.ViewModels
                     if (drop.phone_number.Equals(change2FAPasswordOneEventMessage.phone_number))
                     {
                         drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
-                        //if (drop._2fa_password.Equals(change2FAPasswordOneEventMessage.old_password))
-                        //    drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
-                        //else
-                        //    logger.err(phone_number, $"Old 2FA doesn't match current ({drop._2fa_password})");
+ 
                     }
                     break;
             }

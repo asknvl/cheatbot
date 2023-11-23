@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels
 {
-    public class dropListVM : ViewModelBase
+    public class dropListVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
         ILogger logger;
@@ -104,41 +104,43 @@ namespace cheatbot.ViewModels
             addCmd = ReactiveCommand.Create(() =>
             {
 
-                addDropVM addVM = new addDropVM();
+                addDropVM addVM = new addDropVM(SelectedGroup.id);
                 SubContent = addVM;
 
-                addVM.AddDropRequestEvent += (phone, _2fa_password) =>
-                {
-                    phone = phone.Replace(" ", "");
-                    if (!phone.Contains("+"))
-                        phone = "+" + phone;
+                //addVM.AddDropRequestEvent += (phone, _2fa_password) =>
+                //{
+                //    phone = phone.Replace(" ", "");
+                //    if (!phone.Contains("+"))
+                //        phone = "+" + phone;
 
-                    using (var db = new DataBaseContext())
-                    {
-                        var found = db.Drops.Any(d => d.phone_number.Equals(phone));
-                        if (!found)
-                        {
-                            var dropModel = new DropModel()
-                            {
-                                phone_number = phone,
-                                _2fa_password = _2fa_password
-                            };
+                //    using (var db = new DataBaseContext())
+                //    {
+                //        var found = db.Drops.Any(d => d.phone_number.Equals(phone));
+                //        if (!found)
+                //        {
+                //            var dropModel = new DropModel()
+                //            {
+                //                phone_number = phone,
+                //                _2fa_password = _2fa_password
+                //            };
 
-                            db.Add(dropModel);
-                            db.SaveChanges();
+                //            db.Add(dropModel);
+                //            db.SaveChanges();
 
-                            //var dvm = new dropVM(phone, logger);
-                            //dvm.ChannelAddedEvent += (link, id, name) => {
-                            //    ChannelAddedEvent?.Invoke(link, id, name);
-                            //};
+                //            //var dvm = new dropVM(phone, logger);
+                //            //dvm.ChannelAddedEvent += (link, id, name) => {
+                //            //    ChannelAddedEvent?.Invoke(link, id, name);
+                //            //};
 
-                            //DropList.Add(dvm);
+                //            //DropList.Add(dvm);
 
-                            addDrop(dropModel);
-                        }
-                    }
-                    SubContent = null;
-                };
+                //            addDrop(dropModel);
+                //        }
+                //    }
+                //    SubContent = null;
+                //};
+
+
             });
 
             deleteCmd = ReactiveCommand.Create(() =>
@@ -245,6 +247,44 @@ namespace cheatbot.ViewModels
                 }
 
             });
+        }
+
+        public void OnEvent(BaseEventMessage message)
+        {
+            switch (message)
+            {
+                case AddDropEventMessage addDropMessage:
+
+                    var phone = addDropMessage.phone_number;
+
+                    phone = phone.Replace(" ", "");
+                    if (!phone.Contains("+"))
+                        phone = "+" + phone;
+
+                    using (var db = new DataBaseContext())
+                    {
+                        var found = db.Drops.Any(d => d.phone_number.Equals(phone));
+                        if (!found)
+                        {
+                            var dropModel = new DropModel()
+                            {
+                                phone_number = phone,
+                                _2fa_password = addDropMessage._2fa_password,
+                                group_id = addDropMessage.group_id
+                            };
+
+                            db.Add(dropModel);
+                            db.SaveChanges();
+
+                            addDrop(dropModel);
+                        }
+                    }
+                    SubContent = null;
+                    break;
+
+                default:
+                    break;
+            }
         }
         #endregion
 

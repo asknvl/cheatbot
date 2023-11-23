@@ -33,6 +33,17 @@
                     Text="{Binding _2fa_password}"/>
             </Grid>
             <Grid
+               ColumnDefinitions="100, 105">
+                <TextBlock
+                    Grid.Column="0">
+                    Группа:
+                </TextBlock>
+                <TextBox
+                    Grid.Column="1"
+                    IsReadOnly="True"
+                    Text="{Binding _2fa_password}"/>
+            </Grid>
+            <Grid
                 ColumnDefinitions="100, 100, 100">
                 <Button
                     Grid.Column="0"

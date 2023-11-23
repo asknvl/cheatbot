@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using cheatbot.ViewModels.events;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,13 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _phone_number, value);
         }
 
+        int _group_id;
+        public int group_id
+        {
+            get => _group_id;
+            set => this.RaiseAndSetIfChanged(ref this._group_id, value);
+        }
+
         string __2fa_password = "Wf52";
         public string _2fa_password
         {
@@ -31,10 +39,13 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> cancelCmd { get; set; }  
         #endregion
 
-        public addDropVM()
+        public addDropVM(int group_id)
         {
+            this.group_id = group_id;
+
             okCmd = ReactiveCommand.Create(() => {
-                AddDropRequestEvent?.Invoke(phone_number, _2fa_password);
+                //AddDropRequestEvent?.Invoke(phone_number, _2fa_password);
+                EventAggregator.getInstance().Publish((BaseEventMessage)new AddDropEventMessage(phone_number, _2fa_password, group_id));
             });
 
             cancelCmd = ReactiveCommand.Create(() => {
