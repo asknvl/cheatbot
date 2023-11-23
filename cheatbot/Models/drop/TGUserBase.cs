@@ -153,7 +153,10 @@ namespace asknvl
         }
 
         public async Task LeaveChannel(long id)
-        {
+        {   
+            if (user == null)
+                return;
+
             try
             {
                 var chats = await user.Messages_GetAllChats();

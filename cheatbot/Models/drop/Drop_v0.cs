@@ -35,12 +35,12 @@ namespace cheatbot.Models.drop
                 if (newMessagesQueue.Count > 0)
                 {
                     var m = newMessagesQueue[0];
-                    InputPeer channel = chats.chats[m.Item1];
+                    InputPeer channel = chats.chats[m.peer_id];
                     //var h = await user.Messages_ReadHistory(channel);
-                    var v = await user.Messages_GetMessagesViews(channel, new int[] { m.Item2 }, true);
+                    var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
                     newMessagesQueue.RemoveAt(0);
-                    SendChannelMessageViewedEvent(m.Item1);
-                    logger.err(phone_number, $"Viewed {m.Item2}");
+                    SendChannelMessageViewedEvent(m.peer_id);
+                    logger.err(phone_number, $"Viewed {m.message_id}");
                 }
 
                 //foreach (var chat in chats.chats) {                    
@@ -59,7 +59,7 @@ namespace cheatbot.Models.drop
 
         //Queue<(long, int)> newMessagesQueue = new Queue<(long, int)>();
 
-        List<(long, int)> newMessagesQueue = new List<(long, int)>();
+        List<messageInfo> newMessagesQueue = new();
 
         protected override void processUpdate(Update update)
         {
@@ -67,7 +67,13 @@ namespace cheatbot.Models.drop
             switch (update)
             {
                 case UpdateNewMessage unm:
-                    newMessagesQueue.Add((unm.message.Peer.ID, unm.message.ID));
+
+                    var m = (Message)unm.message;
+                    if (!newMessagesQueue.Any(m => m.grouped_id == m.grouped_id))
+                    {
+                        var msgInfo = new messageInfo(unm);
+                        newMessagesQueue.Add(msgInfo);
+                    }
                     break;
             }
         }
@@ -83,6 +89,20 @@ namespace cheatbot.Models.drop
         {
             base.Stop();
             readHistoryTimer.Stop();
+        }
+    }
+
+    public class messageInfo
+    {
+        public long peer_id { get; set; }
+        public int message_id { get; set; }
+        public long grouped_id { get; set; }
+
+        public messageInfo(UpdateNewMessage unm)
+        {
+            peer_id = unm.message.Peer.ID;
+            message_id = unm.message.ID;
+            grouped_id = ((Message)unm.message).grouped_id;
         }
     }
 }
