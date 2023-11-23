@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace cheatbot.Database.models
 {
-    public class DropModel 
+    public class GroupModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
-        public string phone_number { get; set; }
-        public string _2fa_password { get; set; }
-        public int group_id {  get; set; }
+        public string name { get; set; }
     }
 }

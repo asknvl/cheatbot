@@ -27,6 +27,28 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region properties
+        List<GroupModel> groups;
+        public List<GroupModel> Groups
+        {
+            get => groups;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref groups, value);
+                if (groups != null && groups.Count > 0)
+                    SelectedGroup = groups[0];                    
+            }
+        }
+
+        GroupModel selectedGroup;
+        public GroupModel SelectedGroup
+        {
+            get => selectedGroup;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref selectedGroup, value);
+                updateList(logger, selectedGroup);
+            }
+        }
         public ObservableCollection<dropVM> DropList { get; } = new();
 
         dropVM selectedDrop;
@@ -75,7 +97,8 @@ namespace cheatbot.ViewModels
             //d0.phone_number = "+78889993322";
 
             //DropList.Add(d0);            
-            updateList(logger);
+            updateGroups();
+            //updateList(logger, SelectedGroup);
 
             #region commands
             addCmd = ReactiveCommand.Create(() =>
@@ -153,7 +176,7 @@ namespace cheatbot.ViewModels
         }
 
         #region private
-        async Task updateList(ILogger logger)
+        async Task updateList(ILogger logger, GroupModel model)
         {
             await Task.Run(() =>
             {
@@ -163,7 +186,10 @@ namespace cheatbot.ViewModels
 
                 using (var db = new DataBaseContext())
                 {
-                    drops = db.Drops.ToList();
+                    if (model.id == 1)
+                        drops = db.Drops.ToList();
+                    else
+                        drops = db.Drops.Where(d => d.group_id == model.id).ToList();
                 }
 
                 foreach (var drop in drops)
@@ -176,6 +202,13 @@ namespace cheatbot.ViewModels
                 }
                 
             });
+        }
+
+        async Task updateGroups()
+        {            
+            using (var db = new DataBaseContext()) { 
+                Groups = db.Groups.ToList();
+            }
         }
         #endregion
 

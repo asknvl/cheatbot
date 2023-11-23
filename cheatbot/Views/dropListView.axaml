@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:cust="using:cheatbot.Views.custom"
              xmlns:conv="using:cheatbot.Views.converters"
-             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
              x:Class="cheatbot.Views.dropListView">
 
 
@@ -19,27 +19,43 @@
     <Grid
         MinWidth="200"
         ColumnDefinitions="*, Auto">
-        <cust:AutoScrollListBox
-            Items="{Binding DropList}"
-            SelectedItem="{Binding SelectedDrop}"
-            Grid.Column="0"
-            MinWidth="200">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid
-                        ColumnDefinitions="*, 30">
+        <Grid
+            RowDefinitions="Auto, *">
+            <ComboBox
+                Grid.Row="0"
+                HorizontalAlignment="Stretch"
+                Items="{Binding Groups}"
+                SelectedItem="{Binding SelectedGroup}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
                         <TextBlock
-                            Grid.Column="0"
-                            Text="{Binding phone_number}"/>    
-                        <Ellipse
-                            Grid.Column="1"
-                            Height="10"
-                            Width="10"
-                            Fill="{Binding IsRunning, Converter={StaticResource BoolToColorConverter}}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </cust:AutoScrollListBox>
+                            Text="{Binding name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <cust:AutoScrollListBox            
+                Items="{Binding DropList}"
+                SelectedItem="{Binding SelectedDrop}"            
+                Grid.Row="1"
+                Grid.Column="0"
+                MinWidth="200">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            ColumnDefinitions="*, 30">
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="{Binding phone_number}"/>    
+                            <Ellipse
+                                Grid.Column="1"
+                                Height="10"
+                                Width="10"
+                                Fill="{Binding IsRunning, Converter={StaticResource BoolToColorConverter}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </cust:AutoScrollListBox>
+        </Grid>
         <StackPanel
             Grid.Column="1">
             <Button
