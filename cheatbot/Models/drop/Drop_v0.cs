@@ -35,8 +35,6 @@ namespace cheatbot.Models.drop
                 readHistoryTimer.Interval = 10000;
             }
 
-            logger.inf("", "elpassed"); 
-
             try
             {
                 var chats = await user.Messages_GetAllChats();
