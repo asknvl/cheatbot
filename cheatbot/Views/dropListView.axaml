@@ -34,7 +34,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <cust:AutoScrollListBox            
-                Items="{Binding DropList}"
+                Items="{Binding ViewedDropList}"
                 SelectedItem="{Binding SelectedDrop}"            
                 Grid.Row="1"
                 Grid.Column="0"

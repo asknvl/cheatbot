@@ -27,6 +27,7 @@ namespace asknvl
         public long tg_id { get; set; }         
         public string? username { get; set; }
         public string _2fa_password { get; }
+        public bool is_active { get; set; }
         #endregion
 
         public TGUserBase(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger)
@@ -90,8 +91,7 @@ namespace asknvl
             //logger = new Logger("USR", "chains", $"{chain}_{phone_number}");
             logger.inf(phone_number, $"Starting...");
 
-            User usr = null;
-            bool res = false;
+            User usr = null;           
 
             return Task.Run(async () =>
             {
@@ -106,7 +106,9 @@ namespace asknvl
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
-                    res = true;
+                    
+                    is_active = true;
+
                 } catch (Exception ex)
                 {
                     logger.err(phone_number, $"Starting fail: {ex.Message}");
@@ -114,7 +116,7 @@ namespace asknvl
 
             }).ContinueWith(t =>
             {
-                StartedEvent?.Invoke(this, res);
+                StartedEvent?.Invoke(this, is_active);
                 logger.inf(phone_number, $"Started OK");
             });
         }
@@ -198,6 +200,7 @@ namespace asknvl
         {            
             user?.Dispose();
             StoppedEvent?.Invoke(this);
+            is_active = false;
             logger.inf(phone_number, $"Stopped");
         }
         #endregion

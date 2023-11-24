@@ -10,6 +10,7 @@ namespace asknvl
         string phone_number { get; set; }
         public string _2fa_password { get; }
         long tg_id { get; set; }
+        bool is_active { get; set; }
 
         Task Start();
         Task Subscribe(string input);

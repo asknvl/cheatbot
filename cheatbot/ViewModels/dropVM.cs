@@ -44,7 +44,9 @@ namespace cheatbot.ViewModels
             get => __2fa_password;
             set => this.RaiseAndSetIfChanged(ref __2fa_password, value);
         }
-        
+
+        public int group_id { get; }        
+
         string _code;
         public string code
         {
@@ -80,13 +82,14 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> verifyCmd { get; }
         #endregion
 
-        public dropVM(string phone_number, string _2fa_password, ILogger logger)
+        public dropVM(DropModel model, ILogger logger)
         {
 
             this.logger = logger;
 
-            this.phone_number = phone_number;
-            this._2fa_password = _2fa_password;
+            phone_number = model.phone_number;
+            _2fa_password = model._2fa_password;
+            group_id = model.group_id;
 
             dropFactory = new DropFactory(logger);
 

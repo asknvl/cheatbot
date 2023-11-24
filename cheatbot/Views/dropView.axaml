@@ -32,7 +32,7 @@
                     IsReadOnly="True"
                     Text="{Binding _2fa_password}"/>
             </Grid>
-            <Grid
+            <!--<Grid
                ColumnDefinitions="100, 105">
                 <TextBlock
                     Grid.Column="0">
@@ -42,7 +42,7 @@
                     Grid.Column="1"
                     IsReadOnly="True"
                     Text="{Binding _2fa_password}"/>
-            </Grid>
+            </Grid>-->
             <Grid
                 ColumnDefinitions="100, 100, 100">
                 <Button

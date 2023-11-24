@@ -33,9 +33,7 @@ namespace cheatbot.ViewModels
             get => groups;
             set
             {
-                this.RaiseAndSetIfChanged(ref groups, value);
-                if (groups != null && groups.Count > 0)
-                    SelectedGroup = groups[0];                    
+                this.RaiseAndSetIfChanged(ref groups, value);             
             }
         }
 
@@ -46,10 +44,11 @@ namespace cheatbot.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref selectedGroup, value);
-                updateList(logger, selectedGroup);
+                updateViewedDrops();
             }
         }
         public ObservableCollection<dropVM> DropList { get; } = new();
+        public ObservableCollection<dropVM> ViewedDropList { get; } = new();
 
         dropVM selectedDrop;
         public dropVM SelectedDrop
@@ -93,12 +92,11 @@ namespace cheatbot.ViewModels
         public dropListVM(ILogger logger)
         {
             this.logger = logger;
-            //dropVM d0 = new dropVM();
-            //d0.phone_number = "+78889993322";
-
-            //DropList.Add(d0);            
-            updateGroups();
-            //updateList(logger, SelectedGroup);
+            
+            Task.Run(async () => {                 
+                await loadDropList(logger);
+                await loadGroups();
+            });
 
             #region commands
             addCmd = ReactiveCommand.Create(() =>
@@ -143,7 +141,7 @@ namespace cheatbot.ViewModels
 
             });
 
-            deleteCmd = ReactiveCommand.Create(() =>
+            deleteCmd = ReactiveCommand.CreateFromTask(async () =>
             {
 
                 using (var db = new DataBaseContext())
@@ -156,9 +154,14 @@ namespace cheatbot.ViewModels
                 var found_list = DropList.FirstOrDefault(d => d.phone_number.Equals(SelectedDrop.phone_number));
                 DropList.Remove(found_list);
 
+                await updateViewedDrops();
+
             });
 
             set2FACmd = ReactiveCommand.Create(() => {
+
+                throw new NotImplementedException();
+
                 if (SelectedDrop != null)
                     EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordOneEventMessage(SelectedDrop.phone_number, Old2FA, New2FA));
                 else
@@ -167,7 +170,7 @@ namespace cheatbot.ViewModels
 
             startAllCmd = ReactiveCommand.CreateFromTask(async () => { 
             
-                foreach (var drop in DropList)
+                foreach (var drop in ViewedDropList)
                 {
                     drop.startCmd.Execute();
                 }
@@ -178,51 +181,77 @@ namespace cheatbot.ViewModels
         }
 
         #region private
-        async Task updateList(ILogger logger, GroupModel model)
+        async Task loadDropList(ILogger logger)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 DropList.Clear();
 
-                List<DropModel> drops = new();
+                List<DropModel> dropModels = new();
 
                 using (var db = new DataBaseContext())
                 {
-                    if (model.id == 1)
-                        drops = db.Drops.ToList();
-                    else
-                        drops = db.Drops.Where(d => d.group_id == model.id).ToList();
+                    //if (model.id == 1)
+                    //    drops = db.Drops.ToList();
+                    //else
+                    //    drops = db.Drops.Where(d => d.group_id == model.id).ToList();
+
+                    dropModels = db.Drops.ToList();
+
                 }
 
-                foreach (var drop in drops)
+                foreach (var dropModel in dropModels)
                 {
                     //Dispatcher.UIThread.InvokeAsync(() =>
                     //{
                     //    DropList.Add(new dropVM(drop.phone_number, logger));
                     //});
-                    addDrop(drop);
+                    await addDrop(dropModel);
                 }
                 
             });
         }
 
-        async Task updateGroups()
-        {            
-            using (var db = new DataBaseContext()) { 
-                Groups = db.Groups.ToList();
-            }
+        async Task updateViewedDrops()
+        {
+            await Task.Run(() => { 
+                ViewedDropList.Clear();
+
+                if (SelectedGroup != null)
+                {
+                    var viewedDrops = DropList.Where(d => d.group_id == SelectedGroup.id);
+                    foreach (var drop in viewedDrops)
+                    {
+                        ViewedDropList.Add(drop);
+                    }
+                }
+
+                
+            });
+
+        }
+
+        async Task loadGroups()
+        {
+            await Task.Run(() => { 
+                using (var db = new DataBaseContext()) { 
+                    Groups = db.Groups.ToList();
+                    if (Groups.Count > 0)
+                        SelectedGroup = Groups[0];
+                }
+            });
         }
         #endregion
 
         #region helpers
-        void addDrop(DropModel model)
+        async Task addDrop(DropModel model)
         {
-            var dvm = new dropVM(model.phone_number, model._2fa_password, logger);
+            var dvm = new dropVM(model, logger);
             dvm.ChannelAddedEvent += (link, id, name) =>
             {
                 ChannelAddedEvent?.Invoke(link, id, name);
             };
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 DropList.Add(dvm);
             });
@@ -249,7 +278,7 @@ namespace cheatbot.ViewModels
             });
         }
 
-        public void OnEvent(BaseEventMessage message)
+        public async void OnEvent(BaseEventMessage message)
         {
             switch (message)
             {
@@ -275,8 +304,14 @@ namespace cheatbot.ViewModels
 
                             db.Add(dropModel);
                             db.SaveChanges();
-
-                            addDrop(dropModel);
+                            try
+                            {
+                                await addDrop(dropModel);
+                                await updateViewedDrops();
+                            } catch (Exception ex)
+                            {
+                                throw;
+                            }
                         }
                     }
                     SubContent = null;
