@@ -160,7 +160,7 @@ namespace cheatbot.ViewModels
 
             set2FACmd = ReactiveCommand.Create(() => {
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
 
                 if (SelectedDrop != null)
                     EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordOneEventMessage(SelectedDrop.phone_number, Old2FA, New2FA));
