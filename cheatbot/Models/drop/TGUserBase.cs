@@ -138,8 +138,7 @@ namespace asknvl
                 hash = input.Replace("+", "");
                 var cci = await user.Messages_CheckChatInvite(hash);
                 var ici = await user.Messages_ImportChatInvite(hash);
-                ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);
-                
+                ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);                
             }
             else
             {

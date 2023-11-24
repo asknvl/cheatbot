@@ -16,29 +16,15 @@ namespace cheatbot.Models.drop
     {
         #region vars
         System.Timers.Timer readHistoryTimer;
+        List<messageInfo> newMessagesQueue = new();
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
-        {
-            //readHistoryTimer = new System.Timers.Timer();
-            //readHistoryTimer.Interval = 10000;
-            //readHistoryTimer.AutoReset = true;
-            //readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;            
+        {            
         }
 
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-
-            logger.inf(phone_number, "Period timer");
-
-            //if (isFirstReadHistoryTimer)
-            //{
-            //    logger.inf(phone_number, "First timer");
-            //    isFirstReadHistoryTimer = false;
-            //    readHistoryTimer.Interval = 10000;
-            //} else
-            //    logger.inf(phone_number, "Period timer");
-
             try
             {
                 if (newMessagesQueue.Count > 0)
@@ -52,11 +38,6 @@ namespace cheatbot.Models.drop
                     logger.err(phone_number, $"Viewed {m.message_id}");
                 }
 
-                //foreach (var chat in chats.chats) {                    
-                //    var history = await user.Messages_ReadHistory(chat);
-                //    Thread.Sleep(10000);
-                //}
-
             } catch (Exception ex)
             {
                 if (newMessagesQueue.Count > 0)
@@ -65,10 +46,6 @@ namespace cheatbot.Models.drop
                 logger.err("API", ex.Message);
             }
         }
-
-        //Queue<(long, int)> newMessagesQueue = new Queue<(long, int)>();
-
-        List<messageInfo> newMessagesQueue = new();
 
         protected override async Task processUpdate(Update update)
         {
@@ -102,8 +79,6 @@ namespace cheatbot.Models.drop
             }
         }
 
-
-        bool isFirstReadHistoryTimer = true;
         public override Task Start()
         {
             return base.Start().ContinueWith(t => {

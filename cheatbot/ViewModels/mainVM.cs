@@ -38,6 +38,13 @@ namespace cheatbot.ViewModels
             get => channelList;
             set => this.RaiseAndSetIfChanged(ref channelList, value);
         }
+
+        subscribesVM subscribes;
+        public subscribesVM Subscribes
+        {
+            get => subscribes;
+            set => this.RaiseAndSetIfChanged(ref subscribes, value);
+        }
         #endregion
 
         public mainVM()
@@ -65,6 +72,8 @@ namespace cheatbot.ViewModels
                     await DropList.subscribeAll(link);
                 });            
             };
+
+            Subscribes = new subscribesVM();
 
         }
 

@@ -48,10 +48,13 @@ namespace cheatbot.ViewModels
             get => _wievedMessagesCounter;
             set => this.RaiseAndSetIfChanged(ref _wievedMessagesCounter, value);
         }
+
+        public int id { get; set; }
         #endregion
 
         public channelVM(ChannelModel model) 
         {
+            id = model.id;
             geotag = model.geotag;
             link = model.link;    
             tg_id = model.tg_id;

@@ -140,9 +140,9 @@ namespace cheatbot.ViewModels
             EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelMessageViewedEventMessage(channel_id));
         }
 
-        private void Drop_ChannelAddedEvent(string link, long id, string name)
+        private void Drop_ChannelAddedEvent(string link, long channel_id, string name)
         {
-            ChannelAddedEvent?.Invoke(link, id, name);
+            ChannelAddedEvent?.Invoke(link, channel_id, name);
         }
 
         ~dropVM()
@@ -184,7 +184,7 @@ namespace cheatbot.ViewModels
         //    });
         //}
 
-        public void OnEvent(BaseEventMessage message)
+        public async void OnEvent(BaseEventMessage message)
         {
             switch (message)
             {
@@ -200,8 +200,30 @@ namespace cheatbot.ViewModels
                 case Change2FAPasswordOneEventMessage change2FAPasswordOneEventMessage:
                     if (drop.phone_number.Equals(change2FAPasswordOneEventMessage.phone_number))
                     {
-                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
- 
+                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password); 
+                    }
+                    break;
+
+                case ChannelSubscribeRequestEventMessage subscribeMessage:
+                    try
+                    {
+                        if (group_id == subscribeMessage.group_id)
+                            await subscribe(subscribeMessage.link);
+                    } catch (Exception ex)
+                    {
+                        logger.err(phone_number, $"OnEvent subscribeMessage: {ex.Message}");
+                    }
+                    break;
+
+                case ChannelUnsubscribeRequestEventMessage unsubscribeMessage:
+                    try
+                    {
+                        if (group_id == unsubscribeMessage.group_id)
+                            await drop.LeaveChannel(unsubscribeMessage.tg_id);
+
+                    } catch (Exception ex)
+                    {
+                        logger.err(phone_number, $"OnEvent unsubscribeMessage: {ex.Message}");
                     }
                     break;
             }

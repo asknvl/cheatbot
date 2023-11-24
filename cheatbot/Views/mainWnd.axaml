@@ -73,7 +73,9 @@
             </Grid>
         </TabItem>
         <TabItem
-            Header="Подписки">            
+            Header="Подписки">
+            <vv:subscribesView
+                DataContext="{Binding Subscribes}"/>
         </TabItem>
         <TabControl.Styles>
             <Style Selector="Border">

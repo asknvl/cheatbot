@@ -202,10 +202,6 @@ namespace cheatbot.ViewModels
 
                 foreach (var dropModel in dropModels)
                 {
-                    //Dispatcher.UIThread.InvokeAsync(() =>
-                    //{
-                    //    DropList.Add(new dropVM(drop.phone_number, logger));
-                    //});
                     await addDrop(dropModel);
                 }
                 
@@ -224,11 +220,8 @@ namespace cheatbot.ViewModels
                     {
                         ViewedDropList.Add(drop);
                     }
-                }
-
-                
+                }                                                
             });
-
         }
 
         async Task loadGroups()
