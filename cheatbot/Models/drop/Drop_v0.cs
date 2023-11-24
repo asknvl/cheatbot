@@ -29,11 +29,15 @@ namespace cheatbot.Models.drop
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
 
-            if (isFirstReadHistoryTimer)
-            {
-                isFirstReadHistoryTimer = false;
-                readHistoryTimer.Interval = 10000;
-            }
+            logger.inf(phone_number, "Period timer");
+
+            //if (isFirstReadHistoryTimer)
+            //{
+            //    logger.inf(phone_number, "First timer");
+            //    isFirstReadHistoryTimer = false;
+            //    readHistoryTimer.Interval = 10000;
+            //} else
+            //    logger.inf(phone_number, "Period timer");
 
             try
             {
@@ -96,10 +100,12 @@ namespace cheatbot.Models.drop
         {
             return base.Start().ContinueWith(t => {
                 Random r = new Random();
-                int offset = r.Next(0, 9) * 1000 + r.Next(1, 10) * 100;
-                logger.inf("", "offset=" + offset);
-                readHistoryTimer = new System.Timers.Timer(offset * 60);
 
+                int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
+                double secOffset = (double)offset / 1000 / 60;
+
+                logger.inf("", "offset=" + secOffset);
+                readHistoryTimer = new System.Timers.Timer(offset);
                 
                 readHistoryTimer.AutoReset = true;
                 readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
