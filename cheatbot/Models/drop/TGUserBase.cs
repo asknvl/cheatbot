@@ -17,7 +17,7 @@ namespace asknvl
         readonly ManualResetEventSlim verifyCodeReady = new();
         string verifyCode;
         protected ILogger logger;
-        Messages_Chats chats;        
+        protected Messages_Chats chats;        
         #endregion
 
         #region properties        
@@ -69,7 +69,7 @@ namespace asknvl
             }
         }
 
-        abstract protected void processUpdate(Update update);
+        abstract protected Task processUpdate(Update update);
         #endregion
 
         #region private
@@ -80,7 +80,7 @@ namespace asknvl
 
             foreach (var update in updates.UpdateList)
             {
-                processUpdate(update);
+                await processUpdate(update);
             }
         }
         #endregion

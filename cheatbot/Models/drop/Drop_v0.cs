@@ -41,8 +41,6 @@ namespace cheatbot.Models.drop
 
             try
             {
-                var chats = await user.Messages_GetAllChats();
-                
                 if (newMessagesQueue.Count > 0)
                 {
                     var m = newMessagesQueue[0];
@@ -72,7 +70,7 @@ namespace cheatbot.Models.drop
 
         List<messageInfo> newMessagesQueue = new();
 
-        protected override void processUpdate(Update update)
+        protected override async Task processUpdate(Update update)
         {
             logger.inf(phone_number, update.ToString());
             switch (update)
@@ -89,6 +87,16 @@ namespace cheatbot.Models.drop
                     {
                         var msgInfo = new messageInfo(unm);
                         newMessagesQueue.Add(msgInfo);
+                    }
+                    break;
+
+                case UpdateChannel uch:
+                    try
+                    {
+                        chats = await user.Messages_GetAllChats();
+                    } catch (Exception ex)
+                    {
+                        logger.err(phone_number, $"processUpdate: {ex.Message}");
                     }
                     break;
             }
