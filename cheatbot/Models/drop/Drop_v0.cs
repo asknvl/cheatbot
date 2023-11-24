@@ -20,14 +20,23 @@ namespace cheatbot.Models.drop
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
         {
-            readHistoryTimer = new System.Timers.Timer();
-            readHistoryTimer.Interval = 10000;
-            readHistoryTimer.AutoReset = true;
-            readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;            
+            //readHistoryTimer = new System.Timers.Timer();
+            //readHistoryTimer.Interval = 10000;
+            //readHistoryTimer.AutoReset = true;
+            //readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;            
         }
 
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
+
+            if (isFirstReadHistoryTimer)
+            {
+                isFirstReadHistoryTimer = false;
+                readHistoryTimer.Interval = 10000;
+            }
+
+            logger.inf("", "elpassed"); 
+
             try
             {
                 var chats = await user.Messages_GetAllChats();
@@ -68,8 +77,13 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
-                    var m = (Message)unm.message;
-                    if (!newMessagesQueue.Any(m => m.grouped_id == m.grouped_id))
+                    var nm = (Message)unm.message;
+                    var found = false;
+
+                    if (nm.grouped_id != 0)
+                        found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
+
+                    if (!found)
                     {
                         var msgInfo = new messageInfo(unm);
                         newMessagesQueue.Add(msgInfo);
@@ -78,9 +92,19 @@ namespace cheatbot.Models.drop
             }
         }
 
+
+        bool isFirstReadHistoryTimer = true;
         public override Task Start()
         {
             return base.Start().ContinueWith(t => {
+                Random r = new Random();
+                int offset = r.Next(0, 9) * 1000 + r.Next(1, 10) * 100;
+                logger.inf("", "offset=" + offset);
+                readHistoryTimer = new System.Timers.Timer(offset * 60);
+
+                
+                readHistoryTimer.AutoReset = true;
+                readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                 readHistoryTimer.Start();
             });
         }
@@ -89,6 +113,7 @@ namespace cheatbot.Models.drop
         {
             base.Stop();
             readHistoryTimer.Stop();
+            readHistoryTimer.Elapsed -= ReadHistoryTimer_Elapsed;
         }
     }
 
