@@ -135,9 +135,9 @@ namespace cheatbot.ViewModels
             }
         }
 
-        private void Drop_ChannelMessageViewedEvent(long channel_id)
+        private void Drop_ChannelMessageViewedEvent(long channel_id, uint counter)
         {
-            EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelMessageViewedEventMessage(channel_id));
+            EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelMessageViewedEventMessage(channel_id, counter));
         }
 
         private void Drop_ChannelAddedEvent(string link, long channel_id, string name)

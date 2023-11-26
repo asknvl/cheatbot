@@ -70,7 +70,7 @@ namespace cheatbot.ViewModels
             {
                 case ChannelMessageViewedEventMessage messageWieved:
                     if (messageWieved.channel_id == tg_id)
-                        viewedMessagesCounter++;
+                        viewedMessagesCounter += messageWieved.counter;
                     break;
             }            
         }

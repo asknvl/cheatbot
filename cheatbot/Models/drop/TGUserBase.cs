@@ -208,9 +208,9 @@ namespace asknvl
         #endregion
 
         #region protected
-        protected void SendChannelMessageViewedEvent(long channel_id)
+        protected void SendChannelMessageViewedEvent(long channel_id, uint counter)
         {
-            ChannelMessageViewedEvent?.Invoke(channel_id);
+            ChannelMessageViewedEvent?.Invoke(channel_id, counter);
         }
         #endregion
 
@@ -219,7 +219,7 @@ namespace asknvl
         public event Action<ITGUser, bool> StartedEvent;
         public event Action<ITGUser> StoppedEvent;
         public event Action<string, long, string> ChannelAddedEvent;
-        public event Action<long> ChannelMessageViewedEvent;
+        public event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;  
         #endregion
     }

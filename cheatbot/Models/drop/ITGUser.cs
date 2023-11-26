@@ -23,7 +23,7 @@ namespace asknvl
         event Action<ITGUser, bool> StartedEvent;
         event Action<ITGUser> StoppedEvent;
         event Action<string, long, string> ChannelAddedEvent;
-        event Action<long> ChannelMessageViewedEvent;
+        event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;
     }
 }

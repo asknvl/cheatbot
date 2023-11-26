@@ -35,19 +35,29 @@ namespace cheatbot.Models.drop
                 if (newMessagesQueue.Count > 0)
                 {
 
-                    //int index = r.Next(0, newMessagesQueue.Count - 1);
-                    //var m = newMessagesQueue[index];
+                    int index = r.Next(0, newMessagesQueue.Count - 1);
 
-                    
-
-
-                    var m = newMessagesQueue[0];
+                    var m = newMessagesQueue[index];
                     InputPeer channel = chats.chats[m.peer_id];
-                    //var h = await user.Messages_ReadHistory(channel);
-                    var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
-                    newMessagesQueue.RemoveAt(0);
-                    SendChannelMessageViewedEvent(m.peer_id);
-                    logger.err(phone_number, $"Viewed {m.message_id}");
+
+                    List<messageInfo> tmpList = new();
+                    foreach (var item in newMessagesQueue)
+                    {
+                        if (item.peer_id == m.peer_id)
+                            tmpList.Add(item);
+                    }
+
+                    foreach (var item in tmpList)
+                        newMessagesQueue.Remove(item);
+
+                    var messages = tmpList.Select(m => m.message_id).ToArray();
+
+                    var v = await user.Messages_GetMessagesViews(channel, messages, true);
+
+                    //var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
+                    //newMessagesQueue.RemoveAt(0);
+                    SendChannelMessageViewedEvent(m.peer_id, (uint)messages.Length);
+                    //logger.err(phone_number, $"Viewed {m.message_id}");
                 }
 
             } catch (Exception ex)
@@ -97,11 +107,17 @@ namespace cheatbot.Models.drop
                 Random r = new Random();
 
                 int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
-                double secOffset = (double)offset / 1000 / 60;
+                double minOffset = (double)offset / 1000 / 60;
+                logger.inf("", "offset=" + minOffset);
 
-                logger.inf("", "offset=" + secOffset);
-                readHistoryTimer = new System.Timers.Timer(offset);
+                //int minuteOffset = r.Next(1, 2);
                 
+
+                readHistoryTimer = new System.Timers.Timer(offset);
+                //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
+
+                //logger.inf("", "minuteOffset=" + minuteOffset);
+
                 readHistoryTimer.AutoReset = true;
                 readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                 readHistoryTimer.Start();
