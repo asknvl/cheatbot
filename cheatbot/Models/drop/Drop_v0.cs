@@ -23,12 +23,24 @@ namespace cheatbot.Models.drop
         {            
         }
 
+
+        Random r = new Random();
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
+
+            logger.inf(phone_number, "elpased");
+
             try
             {
                 if (newMessagesQueue.Count > 0)
                 {
+
+                    //int index = r.Next(0, newMessagesQueue.Count - 1);
+                    //var m = newMessagesQueue[index];
+
+                    
+
+
                     var m = newMessagesQueue[0];
                     InputPeer channel = chats.chats[m.peer_id];
                     //var h = await user.Messages_ReadHistory(channel);
