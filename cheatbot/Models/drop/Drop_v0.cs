@@ -96,11 +96,13 @@ namespace cheatbot.Models.drop
             });
         }
 
-        public override void Stop()
+        public override async Task Stop()
         {
-            base.Stop();
-            readHistoryTimer.Stop();
-            readHistoryTimer.Elapsed -= ReadHistoryTimer_Elapsed;
+            await base.Stop().ContinueWith(t => {
+                readHistoryTimer.Stop();
+                readHistoryTimer.Elapsed -= ReadHistoryTimer_Elapsed;
+            });
+            
         }
     }
 

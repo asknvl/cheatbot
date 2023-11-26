@@ -195,12 +195,15 @@ namespace asknvl
             }
         }
 
-        public virtual void Stop()
-        {            
-            user?.Dispose();
-            StoppedEvent?.Invoke(this);
-            is_active = false;
-            logger.inf(phone_number, $"Stopped");
+        public virtual async Task Stop()
+        {
+            await Task.Run(() =>
+            {
+                user?.Dispose();
+                StoppedEvent?.Invoke(this);
+                is_active = false;
+                logger.inf(phone_number, $"Stopped");
+            });
         }
         #endregion
 

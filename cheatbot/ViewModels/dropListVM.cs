@@ -87,7 +87,8 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> addCmd { get; }
         public ReactiveCommand<Unit, Unit> deleteCmd { get; }
         public ReactiveCommand<Unit, Unit> set2FACmd { get; }
-        public ReactiveCommand<Unit, Unit> startAllCmd { get; }
+        public ReactiveCommand<Unit, Unit> startGroupCmd { get; }
+        public ReactiveCommand<Unit, Unit> stopGroupCmd { get; }
         #endregion
         public dropListVM(ILogger logger)
         {
@@ -168,11 +169,20 @@ namespace cheatbot.ViewModels
                     EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordAllEventMessage(Old2FA, New2FA));
             });
 
-            startAllCmd = ReactiveCommand.CreateFromTask(async () => { 
+            startGroupCmd = ReactiveCommand.CreateFromTask(async () => { 
             
                 foreach (var drop in ViewedDropList)
                 {
                     drop.startCmd.Execute();
+                }
+            
+            });
+
+            stopGroupCmd = ReactiveCommand.CreateFromTask(async () => { 
+
+                foreach (var drop in ViewedDropList)
+                {
+                    drop.stopCmd.Execute();
                 }
             
             });

@@ -16,7 +16,7 @@ namespace asknvl
         Task Subscribe(string input);
         Task LeaveChannel(long id);
         Task Change2FAPassword(string old_password, string new_password);
-        void Stop();
+        Task Stop();
         void SetVerifyCode(string code);
 
         event Action<ITGUser> VerificationCodeRequestEvent;

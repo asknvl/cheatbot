@@ -107,9 +107,9 @@ namespace cheatbot.ViewModels
             {
                 await drop.Start();
             });
-            stopCmd = ReactiveCommand.Create(() =>
+            stopCmd = ReactiveCommand.CreateFromTask(async () =>
             {
-                drop.Stop();
+                await drop.Stop();
             });
             verifyCmd = ReactiveCommand.Create(() =>
             {

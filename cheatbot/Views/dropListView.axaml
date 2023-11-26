@@ -95,10 +95,13 @@
                 Margin="5"/>
 
             <Button
-                Command="{Binding startAllCmd}">
-                Start
+                Command="{Binding startGroupCmd}">
+                Старт
             </Button>
-                
+            <Button
+                Command="{Binding stopGroupCmd}">
+                Стоп
+            </Button>     
 
             <StackPanel.Styles>
                 <Style Selector="Button">
