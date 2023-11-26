@@ -96,10 +96,10 @@ namespace cheatbot.ViewModels
         {
             await Task.Run(() => {
 
-                using (var db = new DataBaseContext())
-                {
-                    var chanhelIds = db.GroupSubscribes.Where(gs => gs.group_id == SelectedGroup.id).Select(c => c.channel_id).ToList();                    
-                }
+                //using (var db = new DataBaseContext())";````                                                                                                                                          `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+                //{
+                //    var chanhelIds = db.GroupSubscribes.Where(gs => gs.group_id == SelectedGroup.id).Select(c => c.channel_id).ToList();                    
+                //}
             
             });
         }
