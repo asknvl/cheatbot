@@ -14,6 +14,6 @@ namespace cheatbot.Database.models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         public int group_id { get; set; }
-        public int channel_id { get; set; }
+        public long channel_id { get; set; }
     }
 }

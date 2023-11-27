@@ -73,7 +73,8 @@
             </Grid>
         </TabItem>
         <TabItem
-            Header="Подписки">
+            Header="Подписки"
+            IsSelected="{Binding IsSelected, Mode=TwoWay}">
             <vv:subscribesView
                 DataContext="{Binding Subscribes}"/>
         </TabItem>

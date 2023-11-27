@@ -17,24 +17,24 @@ namespace asknvl
         readonly ManualResetEventSlim verifyCodeReady = new();
         string verifyCode;
         protected ILogger logger;
-        protected Messages_Chats chats;        
+        protected Messages_Chats chats;
         #endregion
 
         #region properties        
-        public string api_id { get; set; }        
-        public string api_hash { get; set; }        
-        public string phone_number { get; set; }    
-        public long tg_id { get; set; }         
+        public string api_id { get; set; }
+        public string api_hash { get; set; }
+        public string phone_number { get; set; }
+        public long tg_id { get; set; }
         public string? username { get; set; }
         public string _2fa_password { get; }
         public bool is_active { get; set; }
         #endregion
 
         public TGUserBase(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger)
-        {            
+        {
             this.api_id = api_id;
             this.api_hash = api_hash;
-            this.phone_number = phone_number;            
+            this.phone_number = phone_number;
             this.logger = logger;
 
             this._2fa_password = _2fa_password;
@@ -62,9 +62,9 @@ namespace asknvl
                     verifyCodeReady.Reset();
                     verifyCodeReady.Wait();
                     return verifyCode;
-                case "first_name": return "Stevie";  
-                case "last_name": return "Voughan";  
-                case "password": return _2fa_password;  
+                case "first_name": return "Stevie";
+                case "last_name": return "Voughan";
+                case "password": return _2fa_password;
                 default: return null;
             }
         }
@@ -91,13 +91,13 @@ namespace asknvl
             //logger = new Logger("USR", "chains", $"{chain}_{phone_number}");
             logger.inf(phone_number, $"Starting...");
 
-            User usr = null;           
+            User usr = null;
 
             return Task.Run(async () =>
             {
                 try
                 {
-                    user = new Client(Config);                    
+                    user = new Client(Config);
                     usr = await user.LoginUserIfNeeded();
                     username = usr.username;
                     tg_id = usr.ID;
@@ -106,10 +106,11 @@ namespace asknvl
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
-                    
+
                     is_active = true;
 
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     logger.err(phone_number, $"Starting fail: {ex.Message}");
                 }
@@ -136,9 +137,22 @@ namespace asknvl
             if (input.Contains("+"))
             {
                 hash = input.Replace("+", "");
-                var cci = await user.Messages_CheckChatInvite(hash);
-                var ici = await user.Messages_ImportChatInvite(hash);
-                ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);                
+
+                ChatInviteBase cci = null;
+                UpdatesBase ici = null;
+
+                cci = await user.Messages_CheckChatInvite(hash);
+                switch (cci)
+                {
+                    case ChatInvite invite:
+                        ici = await user.Messages_ImportChatInvite(hash);
+                        ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);
+                        break;
+                    case ChatInviteAlready already:
+                        ChannelAddedEvent?.Invoke(input, already.chat.ID, already.chat.Title);
+                        break;
+                }
+
             }
             else
             {
@@ -154,7 +168,7 @@ namespace asknvl
         }
 
         public async Task LeaveChannel(long id)
-        {   
+        {
             if (user == null)
                 return;
 
@@ -165,12 +179,13 @@ namespace asknvl
                 await user.LeaveChat(chat);
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.err(phone_number, $"LeaveChannel: {ex.Message}");
             }
         }
-        
+
         public async Task Change2FAPassword(string old_password, string new_password)
         {
             try
@@ -189,7 +204,8 @@ namespace asknvl
 
                 _2FAPasswordChanged.Invoke(new_password);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.err(phone_number, $"Change2FAPassword: {ex.Message}");
             }
@@ -220,7 +236,7 @@ namespace asknvl
         public event Action<ITGUser> StoppedEvent;
         public event Action<string, long, string> ChannelAddedEvent;
         public event Action<long, uint> ChannelMessageViewedEvent;
-        public event Action<string> _2FAPasswordChanged;  
+        public event Action<string> _2FAPasswordChanged;
         #endregion
     }
 }

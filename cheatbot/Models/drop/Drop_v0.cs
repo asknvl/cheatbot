@@ -106,9 +106,12 @@ namespace cheatbot.Models.drop
             return base.Start().ContinueWith(t => {
                 Random r = new Random();
 
-                int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
-                double minOffset = (double)offset / 1000 / 60;
-                logger.inf("", "offset=" + minOffset);
+                //int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
+                //double minOffset = (double)offset / 1000 / 60;
+
+                int offset = 10000;
+
+                //logger.inf("", "offset=" + minOffset);
 
                 //int minuteOffset = r.Next(1, 2);
                 

@@ -175,6 +175,8 @@ namespace cheatbot.ViewModels
                 {
                     drop.startCmd.Execute();
                 }
+
+                EventAggregator.getInstance().Publish((BaseEventMessage)new GroupStartedEventMessage(SelectedGroup.id));
             
             });
 
@@ -184,7 +186,8 @@ namespace cheatbot.ViewModels
                 {
                     drop.stopCmd.Execute();
                 }
-            
+
+                EventAggregator.getInstance().Publish((BaseEventMessage)new GroupStoppedEventMessage(SelectedGroup.id));
             });
 
             #endregion

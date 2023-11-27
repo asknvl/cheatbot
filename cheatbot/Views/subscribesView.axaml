@@ -28,8 +28,8 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <cust:AutoScrollListBox
-                Items="{Binding ChannelList}"
-                SelectedItem="{Binding SelectedChannel}"
+                Items="{Binding GroupSubscribes}"
+                SelectedItem="{Binding SelectedSubscribe}"
                 Grid.Row="1"
                 MinWidth="200">
                 <ListBox.ItemTemplate>

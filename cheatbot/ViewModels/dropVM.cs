@@ -45,7 +45,7 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref __2fa_password, value);
         }
 
-        public int group_id { get; }        
+        public int group_id { get; }
 
         string _code;
         public string code
@@ -200,7 +200,7 @@ namespace cheatbot.ViewModels
                 case Change2FAPasswordOneEventMessage change2FAPasswordOneEventMessage:
                     if (drop.phone_number.Equals(change2FAPasswordOneEventMessage.phone_number))
                     {
-                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password); 
+                        drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
                     }
                     break;
 
@@ -209,7 +209,8 @@ namespace cheatbot.ViewModels
                     {
                         if (group_id == subscribeMessage.group_id)
                             await subscribe(subscribeMessage.link);
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         logger.err(phone_number, $"OnEvent subscribeMessage: {ex.Message}");
                     }
@@ -221,7 +222,8 @@ namespace cheatbot.ViewModels
                         if (group_id == unsubscribeMessage.group_id)
                             await drop.LeaveChannel(unsubscribeMessage.tg_id);
 
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         logger.err(phone_number, $"OnEvent unsubscribeMessage: {ex.Message}");
                     }

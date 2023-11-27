@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using cheatbot.ViewModels.events;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,10 @@ namespace cheatbot.ViewModels
         public addChannelVM()
         {
             okCmd = ReactiveCommand.Create(() => {
+
                 AddChannelRequestEvent?.Invoke(geotag, link);
+                //EventAggregator.getInstance().Publish((BaseEventMessage)new AddChannelRequestEventMessage(geotag, link));
+
             });
 
             cancelCmd = ReactiveCommand.Create(() => {

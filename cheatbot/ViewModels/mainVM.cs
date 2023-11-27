@@ -45,6 +45,19 @@ namespace cheatbot.ViewModels
             get => subscribes;
             set => this.RaiseAndSetIfChanged(ref subscribes, value);
         }
+
+
+        bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref isSelected, value);
+                if (isSelected)
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage());
+            }
+        }
         #endregion
 
         public mainVM()
@@ -63,7 +76,9 @@ namespace cheatbot.ViewModels
 
 
             DropList.ChannelAddedEvent += (link, id, name) => { 
-                ChannelList.updateChannelInfo(link, id, name);
+                //ChannelList.updateChannelInfo(link, id, name);
+                EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage(link, id, name));
+
             };
 
             ChannelList = new channelListVM();
@@ -73,7 +88,7 @@ namespace cheatbot.ViewModels
                 });            
             };
 
-            Subscribes = new subscribesVM();
+            Subscribes = new subscribesVM(Logger);
 
         }
 

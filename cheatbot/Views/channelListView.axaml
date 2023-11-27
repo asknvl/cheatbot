@@ -49,14 +49,14 @@
                 Command="{Binding deleteCmd}">
                 -
             </Button>
-            <Button
+            <!--<Button
                Command="{Binding subscribeCmd}">
                 П
             </Button>
             <Button
               Command="{Binding unsubscribeCmd}">
                 О
-            </Button>
+            </Button>-->
             <StackPanel.Styles>
                 <Style Selector="Button">
                     <Setter Property="MinWidth" Value="70"/>

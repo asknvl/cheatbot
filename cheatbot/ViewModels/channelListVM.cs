@@ -10,13 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
+using DynamicData;
 
 namespace cheatbot.ViewModels
 {
-    public class channelListVM : ViewModelBase
+    public class channelListVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
-        #region vars
-        DataBaseContext db;
+        #region vars        
         #endregion
 
         #region properties
@@ -44,8 +44,8 @@ namespace cheatbot.ViewModels
         #region commands
         public ReactiveCommand<Unit, Unit> addCmd { get; }
         public ReactiveCommand<Unit, Unit> deleteCmd { get; }
-        public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
-        public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
+        //public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
+        //public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
         #endregion
 
         public channelListVM()
@@ -60,6 +60,9 @@ namespace cheatbot.ViewModels
 
                 addVM.AddChannelRequestEvent += (geotag, link) => {
 
+                    if (string.IsNullOrEmpty(geotag) || string.IsNullOrEmpty(link))
+                        return;
+
                     using (var db = new DataBaseContext())
                     {
                         var found = db.Channels.FirstOrDefault(c => c.link.Equals(link) || c.geotag.Equals(geotag));
@@ -72,6 +75,7 @@ namespace cheatbot.ViewModels
                                 link = link
                             };
                             db.Channels.Add(channelModel);
+                            ChannelList.Add(new channelVM(channelModel));
                         }
                         else
                         {
@@ -81,7 +85,9 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
 
-                    updateList();
+                    //updateList();
+
+
                     SubContent = null;
                 };
             });
@@ -105,23 +111,23 @@ namespace cheatbot.ViewModels
                 ChannelList.Remove(found_list);
             });
 
-            subscribeCmd = ReactiveCommand.CreateFromTask(async () => {
-                if (SelectedChannel != null)
-                {
-                    var link = SelectedChannel.link;
-                    if (SubscribeAllRequestEvent != null)
-                        await Task.Run(() => SubscribeAllRequestEvent(link));
-                }
-            });
+            //subscribeCmd = ReactiveCommand.CreateFromTask(async () => {
+            //    if (SelectedChannel != null)
+            //    {
+            //        var link = SelectedChannel.link;
+            //        if (SubscribeAllRequestEvent != null)
+            //            await Task.Run(() => SubscribeAllRequestEvent(link));
+            //    }
+            //});
 
-            unsubscribeCmd = ReactiveCommand.CreateFromTask(async () =>
-            {
-                if (SelectedChannel != null)
-                {
-                    //UnsubscribeAllRequestEvent?.Invoke((long)SelectedChannel.tg_id);
-                    EventAggregator.getInstance().Publish((BaseEventMessage)(new ChannelUnsubscibeEventMessage(SelectedChannel.tg_id)));
-                }
-            });
+            //unsubscribeCmd = ReactiveCommand.CreateFromTask(async () =>
+            //{
+            //    if (SelectedChannel != null)
+            //    {
+            //        //UnsubscribeAllRequestEvent?.Invoke((long)SelectedChannel.tg_id);
+            //        EventAggregator.getInstance().Publish((BaseEventMessage)(new ChannelUnsubscibeEventMessage(SelectedChannel.tg_id)));
+            //    }
+            //});
         }
 
         #region private
@@ -159,6 +165,16 @@ namespace cheatbot.ViewModels
                 db.SaveChanges();
             }
             updateList();
+        }
+
+        public void OnEvent(BaseEventMessage message)
+        {
+            switch (message)
+            {
+                case ChannelListUpdateRequestEventMessage updateMessage:
+                    updateChannelInfo(updateMessage.link, updateMessage.channel_id, updateMessage.name);
+                    break;              
+            }
         }
         #endregion
 
