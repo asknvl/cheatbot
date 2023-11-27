@@ -85,8 +85,7 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
 
-                    //updateList();
-
+                    updateList();
 
                     SubContent = null;
                 };
@@ -106,9 +105,8 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
                 }
-                var found_list = ChannelList.FirstOrDefault(c => c.link.Equals(SelectedChannel.link));    
-                
-                ChannelList.Remove(found_list);
+
+                updateList();
             });
 
             //subscribeCmd = ReactiveCommand.CreateFromTask(async () => {
@@ -151,15 +149,9 @@ namespace cheatbot.ViewModels
         }
         #endregion
 
-        #region public
-        long tg_id_prev;
+        #region public        
         public void updateChannelInfo(string link, long tg_id, string name)
         {
-            if (tg_id == tg_id_prev)
-                return;
-
-            tg_id_prev = tg_id;
-
             using (var db = new DataBaseContext())
             {
                 var found = db.Channels.FirstOrDefault(c => c.link.Contains(link));

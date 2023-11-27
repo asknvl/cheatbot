@@ -201,14 +201,7 @@ namespace cheatbot.ViewModels
             switch (message)
             {
                 case ChannelListUpdateRequestEventMessage chanelUpdateMessage:
-
-                    if (chanelUpdateMessage.channel_id == tg_id_prev)
-                        return;
-
-                    tg_id_prev = chanelUpdateMessage.channel_id;
-
                     updateChannels();
-
                     break;
 
                 case GroupStartedEventMessage groupStartMessage:
