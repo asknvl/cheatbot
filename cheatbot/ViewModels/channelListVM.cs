@@ -152,8 +152,14 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region public
+        long tg_id_prev;
         public void updateChannelInfo(string link, long tg_id, string name)
         {
+            if (tg_id == tg_id_prev)
+                return;
+
+            tg_id_prev = tg_id;
+
             using (var db = new DataBaseContext())
             {
                 var found = db.Channels.FirstOrDefault(c => c.link.Contains(link));

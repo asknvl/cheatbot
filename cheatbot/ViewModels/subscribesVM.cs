@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Reactive;
@@ -103,7 +104,7 @@ namespace cheatbot.ViewModels
                         db.GroupSubscribes.Add(subscribeModel);
                         db.SaveChanges();
                         
-                        updateGroupSubscribes();
+                        updateGroupSubscribes();                             
                     }
 
                 }
@@ -124,13 +125,14 @@ namespace cheatbot.ViewModels
                     {
                         db.GroupSubscribes.Remove(found);
                         db.SaveChanges();
-
-                        updateGroupSubscribes();
                     }
                 }
 
                 var unsubscribeMessage = new ChannelUnsubscribeRequestEventMessage(SelectedGroup.id, SelectedSubscribe.tg_id);
                 EventAggregator.getInstance().Publish((BaseEventMessage)unsubscribeMessage);
+
+                updateGroupSubscribes();
+
             });
 
         }
@@ -164,25 +166,24 @@ namespace cheatbot.ViewModels
             });
         }
 
-        async Task updateGroupSubscribes()
+        void updateGroupSubscribes()
         {
-            await Task.Run(() => {
+            using (var db = new DataBaseContext())
+            {
+                var subscribes = db.GroupSubscribes.Where(s => s.group_id == SelectedGroup.id).ToList();
+                var channels = db.Channels.ToList();
+                                
+                GroupSubscribes.Clear();
 
-                using (var db = new DataBaseContext())
+                foreach (var sub in subscribes)
                 {
-                    var subscribes = db.GroupSubscribes.Where(s => s.group_id == SelectedGroup.id).ToList();
-                    var channels = db.Channels.ToList();
-
-                    GroupSubscribes.Clear();
-                    foreach (var sub in subscribes)
-                    {
-                        var ch = channels.FirstOrDefault(c => c.id == sub.channel_id);
-                        if (ch != null)
-                            GroupSubscribes.Add(new channelVM(ch));
+                    var ch = channels.FirstOrDefault(c => c.id == sub.channel_id);
+                    if (ch != null)
+                    {                        
+                        GroupSubscribes.Add(new channelVM(ch));
                     }
                 }
-            
-            });
+            }
         }
 
         void update()
@@ -194,12 +195,20 @@ namespace cheatbot.ViewModels
             });
         }
 
+        long tg_id_prev;
         public void OnEvent(BaseEventMessage message)
         {
             switch (message)
             {
-                case ChannelListUpdateRequestEventMessage:
+                case ChannelListUpdateRequestEventMessage chanelUpdateMessage:
+
+                    if (chanelUpdateMessage.channel_id == tg_id_prev)
+                        return;
+
+                    tg_id_prev = chanelUpdateMessage.channel_id;
+
                     updateChannels();
+
                     break;
 
                 case GroupStartedEventMessage groupStartMessage:
