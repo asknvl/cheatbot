@@ -93,7 +93,9 @@ namespace cheatbot.ViewModels
         public dropListVM(ILogger logger)
         {
             this.logger = logger;
-            
+
+            EventAggregator.getInstance().Subscribe(this);
+
             Task.Run(async () => {                 
                 await loadDropList(logger);
                 await loadGroups();
