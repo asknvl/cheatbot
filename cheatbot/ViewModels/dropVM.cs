@@ -207,7 +207,7 @@ namespace cheatbot.ViewModels
         public async Task subscribe(string link)
         {
             if (IsRunning)
-                await drop.Subscribe(link);
+                await drop.Subscribe(link) а тут не подписывать если уже подписаны
         }
 
         //public void OnEvent(ChannelUnsubscibeEvent message)
