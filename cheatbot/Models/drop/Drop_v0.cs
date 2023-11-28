@@ -104,26 +104,31 @@ namespace cheatbot.Models.drop
         public override Task Start()
         {
             return base.Start().ContinueWith(t => {
-                Random r = new Random();
 
-                int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
-                double minOffset = (double)offset / 1000 / 60;
+                if (is_active)
+                {
 
-                //int offset = 10000;
+                    Random r = new Random();
 
-                logger.inf("", "offset=" + minOffset);
+                    //int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
+                    //double minOffset = (double)offset / 1000 / 60;
 
-                //int minuteOffset = r.Next(1, 2);
-                
+                    int offset = 10000;
 
-                readHistoryTimer = new System.Timers.Timer(offset);
-                //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
+                    //logger.inf("", "offset=" + minOffset);
 
-                //logger.inf("", "minuteOffset=" + minuteOffset);
+                    //int minuteOffset = r.Next(1, 2);
 
-                readHistoryTimer.AutoReset = true;
-                readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
-                readHistoryTimer.Start();
+
+                    readHistoryTimer = new System.Timers.Timer(offset);
+                    //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
+
+                    //logger.inf("", "minuteOffset=" + minuteOffset);
+
+                    readHistoryTimer.AutoReset = true;
+                    readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
+                    readHistoryTimer.Start();
+                }
             });
         }
 

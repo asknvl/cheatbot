@@ -41,14 +41,8 @@
                                 <TextBlock
                                     Grid.Column="0"
                                     Text="{Binding geotag}"
-                                    FontWeight="DemiBold"/>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Text="{Binding viewedMessagesCounter}"/>
-                            </Grid>
-
-                            <TextBlock Text="{Binding name}"
-                                       Foreground="LightGray"/>
+                                    FontWeight="DemiBold"/>                                
+                            </Grid>                            
                         </StackPanel>
                     </DataTemplate>
             </ListBox.ItemTemplate>
@@ -93,10 +87,7 @@
                                     Grid.Column="0"
                                     Text="{Binding geotag}"
                                     FontWeight="DemiBold"/>                                
-                            </Grid>
-                            <TextBlock
-                                Text="{Binding name}"
-                                Foreground="LightGray"/>
+                            </Grid>                            
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

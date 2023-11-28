@@ -115,10 +115,14 @@ namespace asknvl
                     logger.err(phone_number, $"Starting fail: {ex.Message}");
                 }
 
-            }).ContinueWith(t =>
+            }).ContinueWith(async t =>
             {
                 StartedEvent?.Invoke(this, is_active);
-                logger.inf(phone_number, $"Started OK");
+                if (is_active)
+                {
+                    await user.Account_UpdateStatus(false);
+                    logger.inf(phone_number, $"Started OK");
+                }
             });
         }
 

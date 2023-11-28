@@ -85,7 +85,7 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
 
-                    updateList();
+                    //updateList();
 
                     SubContent = null;
                 };
@@ -161,8 +161,19 @@ namespace cheatbot.ViewModels
                     found.name = name;
                 }
                 db.SaveChanges();
+
+                var viewed = ChannelList.FirstOrDefault(c => c.tg_id == tg_id);
+                if (viewed != null)
+                {
+                    viewed.name = name;
+                }
+                    
+
             }
-            updateList();
+
+
+
+            //updateList();
         }
 
         public void OnEvent(BaseEventMessage message)

@@ -201,7 +201,7 @@ namespace cheatbot.ViewModels
             switch (message)
             {
                 case ChannelListUpdateRequestEventMessage chanelUpdateMessage:
-                    updateChannels();
+                    //updateChannels();
                     break;
 
                 case GroupStartedEventMessage groupStartMessage:
