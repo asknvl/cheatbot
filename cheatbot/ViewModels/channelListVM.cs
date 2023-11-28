@@ -162,7 +162,7 @@ namespace cheatbot.ViewModels
                 }
                 db.SaveChanges();
 
-                var viewed = ChannelList.FirstOrDefault(c => c.tg_id == tg_id);
+                var viewed = ChannelList.FirstOrDefault(c => c.link.Contains(link));
                 if (viewed != null)
                 {
                     viewed.name = name;

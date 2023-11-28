@@ -171,7 +171,7 @@ namespace asknvl
             chats = await user.Messages_GetAllChats();
         }
 
-        public async Task LeaveChannel(long id)
+        public async Task LeaveChannel(long channel_tg_id)
         {
             if (user == null)
                 return;
@@ -179,8 +179,9 @@ namespace asknvl
             try
             {
                 var chats = await user.Messages_GetAllChats();
-                var chat = chats.chats[id];
+                var chat = chats.chats[channel_tg_id];
                 await user.LeaveChat(chat);
+                ChannelLeftEvent?.Invoke(channel_tg_id);
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 
             }
@@ -239,6 +240,8 @@ namespace asknvl
         public event Action<ITGUser, bool> StartedEvent;
         public event Action<ITGUser> StoppedEvent;
         public event Action<string, long, string> ChannelAddedEvent;
+        public event Action<long> ChannelLeftEvent;
+
         public event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;
         #endregion

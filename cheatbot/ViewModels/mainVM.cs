@@ -54,8 +54,8 @@ namespace cheatbot.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref isSelected, value);
-                if (isSelected)
-                    EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage());
+                //if (isSelected)
+                //    EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage());
             }
         }
         #endregion
@@ -74,12 +74,6 @@ namespace cheatbot.ViewModels
 
             DropList = new dropListVM(Logger);
 
-
-            DropList.ChannelAddedEvent += (link, id, name) => { 
-                //ChannelList.updateChannelInfo(link, id, name);
-                EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage(link, id, name));
-
-            };
 
             ChannelList = new channelListVM();
             ChannelList.SubscribeAllRequestEvent += async (link) => {

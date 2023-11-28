@@ -147,10 +147,17 @@ namespace cheatbot.ViewModels
             deleteCmd = ReactiveCommand.CreateFromTask(async () =>
             {
 
+                if (SelectedDrop == null)
+                    return;
+
                 using (var db = new DataBaseContext())
                 {
                     var found_db = db.Drops.FirstOrDefault(d => d.phone_number.Equals(SelectedDrop.phone_number));
                     db.Remove(found_db);
+
+                    var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == SelectedDrop.id);
+                    db.RemoveRange(found_subs);
+
                     db.SaveChanges();
                 }
 

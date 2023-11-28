@@ -81,7 +81,7 @@ namespace cheatbot.ViewModels
 
             subscribeCmd = ReactiveCommand.Create(() => {
 
-                if (SelectedChannel == null)
+                if (SelectedChannel == null) //переделать тут убрать нахуй группы и сделать подписку по одному, а список груп формировать динамически из ответов о подписке
                     return;
 
                 if (!runningGroups.Contains(SelectedGroup.id))

@@ -9,6 +9,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,6 +97,7 @@ namespace cheatbot.ViewModels
             drop = dropFactory.Get(DropType.v0, phone_number, _2fa_password);
             drop.ChannelAddedEvent += Drop_ChannelAddedEvent;
             drop.ChannelMessageViewedEvent += Drop_ChannelMessageViewedEvent;
+            drop.ChannelLeftEvent += Drop_ChannelLeftEvent;
             drop._2FAPasswordChanged += Drop__2FAPasswordChanged;
 
 
@@ -140,9 +142,42 @@ namespace cheatbot.ViewModels
             EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelMessageViewedEventMessage(channel_id, counter));
         }
 
-        private void Drop_ChannelAddedEvent(string link, long channel_id, string name)
+        private void Drop_ChannelAddedEvent(string link, long channel_tg_id, string name)
         {
-            ChannelAddedEvent?.Invoke(link, channel_id, name);
+
+            using (var db = new DataBaseContext())
+            {
+                var channel = db.Channels.FirstOrDefault(c => c.link.Contains(link));
+                if (channel != null) {
+                    var found = db.DropSubscribes.FirstOrDefault(ds => ds.drop_id == id && ds.channel_id == channel.id);
+                    if (found == null)
+                    {
+                        var ds = new DropSubscribeModel(id, channel.id);
+                        db.DropSubscribes.Add(ds);
+                        db.SaveChanges();
+
+                        EventAggregator.getInstance().Publish((BaseEventMessage)new ChannelListUpdateRequestEventMessage(link, channel_tg_id, name));
+                    }
+                }                       
+            }                        
+        }
+
+        private void Drop_ChannelLeftEvent(long channel_tg_id)
+        {
+            using (var db = new DataBaseContext())
+            {
+                var channel = db.Channels.FirstOrDefault(c => c.tg_id == channel_tg_id);
+                if (channel != null)
+                {
+                    var found = db.DropSubscribes.FirstOrDefault(ds => ds.drop_id == id && ds.channel_id == channel.id);
+                    if (found != null)
+                    {
+                        db.DropSubscribes.Remove(found);
+                        db.SaveChanges();
+                    }
+                }
+
+            }
         }
 
         ~dropVM()
