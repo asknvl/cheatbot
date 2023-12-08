@@ -89,24 +89,23 @@ namespace cheatbot.ViewModels
 
                 using (var db = new DataBaseContext())
                 {
-                    var found = db.GroupSubscribes.FirstOrDefault(gs => gs.group_id == SelectedGroup.id && gs.channel_id == SelectedChannel.id);
+
+                    var subscribeMessage = new ChannelSubscribeRequestEventMessage(SelectedGroup.id, SelectedChannel.link);
+                    EventAggregator.getInstance().Publish((BaseEventMessage)subscribeMessage);
+
+                    var subscribeModel = new GroupSubscribeModel()
+                    {
+                        group_id = SelectedGroup.id,
+                        channel_id = SelectedChannel.id
+                    };
+
+                    var found = db.GroupSubscribes.FirstOrDefault(g => g.id == SelectedGroup.id);
                     if (found == null)
                     {
-                        var subscribeMessage = new ChannelSubscribeRequestEventMessage(SelectedGroup.id, SelectedChannel.link);
-                        EventAggregator.getInstance().Publish((BaseEventMessage)subscribeMessage);
-
-                        var subscribeModel = new GroupSubscribeModel()
-                        {
-                            group_id = SelectedGroup.id,
-                            channel_id = SelectedChannel.id
-                        };
-
                         db.GroupSubscribes.Add(subscribeModel);
                         db.SaveChanges();
-                        
-                        updateGroupSubscribes();                             
                     }
-
+                    updateGroupSubscribes();
                 }
 
             });

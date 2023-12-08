@@ -207,7 +207,22 @@ namespace cheatbot.ViewModels
         public async Task subscribe(string link)
         {
             if (IsRunning)
-                await drop.Subscribe(link) а тут не подписывать если уже подписаны
+            {
+                using (var db = new DataBaseContext())
+                {
+                    var channel = db.Channels.FirstOrDefault(c => c.link.Contains(link));
+                    if (channel != null)
+                    {
+                        var found = db.DropSubscribes.FirstOrDefault(ds => ds.drop_id == id && ds.channel_id == channel.id);
+                        if (found == null)
+                        {
+                            await drop.Subscribe(link);
+                        }
+                        else
+                            logger.inf(phone_number, "уже подписан");
+                    }
+                }               
+            }                
         }
 
         //public void OnEvent(ChannelUnsubscibeEvent message)
