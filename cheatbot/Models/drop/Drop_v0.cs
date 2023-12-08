@@ -113,14 +113,14 @@ namespace cheatbot.Models.drop
                     //int offset = (r.Next(1, 9) * 1000 + r.Next(1, 10) * 100) * 60;
                     //double minOffset = (double)offset / 1000 / 60;
 
-                    int offset = 10000;
 
-                    //logger.inf("", "offset=" + minOffset);
+                    double minOffset = r.Next(1, 10) + (1.0d * r.Next(1, 10) / 10);
+                    int offset = (int)(minOffset * 60 * 1000);
 
-                    //int minuteOffset = r.Next(1, 2);
-
+                    logger.inf("", $"minoffset={minOffset} offset={offset}");
 
                     readHistoryTimer = new System.Timers.Timer(offset);
+
                     //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
 
                     //logger.inf("", "minuteOffset=" + minuteOffset);
