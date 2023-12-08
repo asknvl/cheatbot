@@ -1,5 +1,7 @@
 ﻿using asknvl.logger;
 using Avalonia.Threading;
+using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,7 +37,34 @@ namespace cheatbot.ViewModels
                 disableFileOutput = value;
             }
         }
-        public ObservableCollection<LogMessage> Messages { get; set; } = new();        
+
+        bool isFilterEnabled;
+        public bool IsFilterEnabled
+        {
+            get => isFilterEnabled;
+            set => this.RaiseAndSetIfChanged(ref isFilterEnabled, value);
+        }
+
+        string filter;
+        public string Filter
+        {
+            get => filter;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref filter, value);
+                var splt = filter.Replace(" ", "").Split(";");
+                FilterList = new List<string>(splt);
+            }
+        }
+
+        List<string> filterList = new();
+        public List<string> FilterList
+        {
+            get => filterList;
+            set => this.RaiseAndSetIfChanged(ref filterList, value);
+        }
+
+        public ObservableCollection<LogMessage> Messages { get; set; } = new();
         #endregion
 
         public loggerVM()
@@ -66,7 +95,6 @@ namespace cheatbot.ViewModels
         {
             try
             {
-
                 using (StreamWriter sw = File.AppendText(filePath))
                 {
                     while (logMessages.Count > 0)
@@ -88,10 +116,22 @@ namespace cheatbot.ViewModels
         #region helpers
         void post(LogMessage message)
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+
+            var found = true;
+
+            if (IsFilterEnabled)
             {
-                Messages.Add(message);
-            });
+                var filtered = message.ToFiltered();
+                found = (FilterList.Count > 0) ? FilterList.Any(x => filtered.Contains(x)) : true;
+            }
+
+            if (found)
+            {
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    Messages.Add(message);
+                });
+            }
 
             if (!DisableFileOutput)
                 logMessages.Enqueue(message);

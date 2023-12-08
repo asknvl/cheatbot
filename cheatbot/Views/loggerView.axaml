@@ -5,8 +5,26 @@
              xmlns:cust="using:cheatbot.Views.custom"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="cheatbot.Views.loggerView">
-    <Grid>
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </UserControl.Styles>
+    
+    <Grid
+        RowDefinitions="Auto, *">
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="*, Auto">
+            <TextBox
+                Grid.Column="0"                
+                Text="{Binding Filter}"/>
+            <CheckBox
+                IsChecked="{Binding IsFilterEnabled}"
+                Grid.Column="1"/>
+        </Grid>       
+            
         <cust:AutoScrollListBox
+            Grid.Row="1"
             Items="{Binding Messages}">                        
             <ListBox.ItemTemplate>
                 <DataTemplate>

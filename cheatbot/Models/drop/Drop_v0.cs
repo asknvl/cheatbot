@@ -27,9 +27,6 @@ namespace cheatbot.Models.drop
         Random r = new Random();
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-
-            logger.inf(phone_number, "elpased");
-
             try
             {
                 if (newMessagesQueue.Count > 0)
