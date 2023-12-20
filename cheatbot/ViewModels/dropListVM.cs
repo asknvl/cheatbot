@@ -81,6 +81,13 @@ namespace cheatbot.ViewModels
             get => _new2FA;
             set => this.RaiseAndSetIfChanged(ref _new2FA, value);   
         }
+
+        int total;
+        public int Total
+        {
+            get => total;
+            set => this.RaiseAndSetIfChanged(ref total, value);
+        }
         #endregion
 
         #region commands

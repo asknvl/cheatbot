@@ -20,7 +20,7 @@
         MinWidth="200"
         ColumnDefinitions="*, Auto">
         <Grid
-            RowDefinitions="Auto, *">
+            RowDefinitions="Auto, *, Auto">
             <ComboBox
                 Grid.Row="0"
                 HorizontalAlignment="Stretch"
@@ -55,6 +55,15 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </cust:AutoScrollListBox>
+            <TextBlock
+                Grid.Row="2">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Всего: {0})">
+                        <!--<Binding Path="CurrentAmount" />-->
+                        <Binding Path="Total" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </Grid>
         <StackPanel
             Grid.Column="1">
