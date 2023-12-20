@@ -91,6 +91,7 @@ namespace cheatbot.ViewModels
             phone_number = model.phone_number;
             _2fa_password = model._2fa_password;
             group_id = model.group_id;
+            id = model.id;
 
             dropFactory = new DropFactory(logger);
 

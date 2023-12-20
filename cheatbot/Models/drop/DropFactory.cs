@@ -1,6 +1,7 @@
 ﻿using asknvl;
 using asknvl.logger;
 using cheatbot.Database;
+using cheatbot.Database.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

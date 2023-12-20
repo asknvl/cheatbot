@@ -145,15 +145,23 @@ namespace asknvl
                 ChatInviteBase cci = null;
                 UpdatesBase ici = null;
 
-                cci = await user.Messages_CheckChatInvite(hash);
+                try
+                {
+                    cci = await user.Messages_CheckChatInvite(hash);
+                } catch (Exception ex)
+                {
+                    logger.err(phone_number, ex.Message);
+                }
                 switch (cci)
                 {
                     case ChatInvite invite:
                         ici = await user.Messages_ImportChatInvite(hash);
                         ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);
+                        logger.inf(phone_number, $"JoinedChannel: {ici.Chats.First().Value.Title} OK");
                         break;
                     case ChatInviteAlready already:
                         ChannelAddedEvent?.Invoke(input, already.chat.ID, already.chat.Title);
+                        logger.inf(phone_number, $"JoinedChannel: {already.chat.Title} OK");
                         break;
                 }
 

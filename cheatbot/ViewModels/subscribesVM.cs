@@ -84,8 +84,6 @@ namespace cheatbot.ViewModels
                 if (SelectedChannel == null) //переделать тут убрать нахуй группы и сделать подписку по одному, а список груп формировать динамически из ответов о подписке
                     return;
 
-                if (!runningGroups.Contains(SelectedGroup.id))
-                    return;
 
                 using (var db = new DataBaseContext())
                 {
@@ -99,7 +97,7 @@ namespace cheatbot.ViewModels
                         channel_id = SelectedChannel.id
                     };
 
-                    var found = db.GroupSubscribes.FirstOrDefault(g => g.id == SelectedGroup.id);
+                    var found = db.GroupSubscribes.FirstOrDefault(g => g.group_id == SelectedGroup.id && g.channel_id == SelectedChannel.id);
                     if (found == null)
                     {
                         db.GroupSubscribes.Add(subscribeModel);
@@ -114,8 +112,8 @@ namespace cheatbot.ViewModels
                 if (SelectedSubscribe == null)
                     return;
 
-                if (!runningGroups.Contains(SelectedGroup.id))
-                    return;
+                //if (!runningGroups.Contains(SelectedGroup.id))
+                //    return;
 
                 using (var db = new DataBaseContext())
                 {

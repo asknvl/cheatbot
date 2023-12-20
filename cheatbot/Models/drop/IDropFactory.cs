@@ -1,4 +1,5 @@
 ﻿using asknvl;
+using cheatbot.Database.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace cheatbot.Models.drop
 {
     public interface IDropFactory
     {
-        ITGUser Get(DropType type, string phone_number, string? old_2fa_password = null);
+        ITGUser Get(DropType type, string phone_number, string? old_2fa_password = null);        
     }
 
     public enum DropType 
