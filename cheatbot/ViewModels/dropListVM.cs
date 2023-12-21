@@ -343,7 +343,9 @@ namespace cheatbot.ViewModels
                     break;
 
                     case DropStatusChangedEventMessage dropStatusChangedEventMessage:
-                    OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
+                    await Dispatcher.UIThread.InvokeAsync(() => {
+                        OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
+                    });                    
                     break;
 
                 default:
