@@ -155,6 +155,7 @@ namespace asknvl
                 switch (cci)
                 {
                     case ChatInvite invite:
+                    case ChatInvitePeek peek:
                         ici = await user.Messages_ImportChatInvite(hash);
                         ChannelAddedEvent?.Invoke(input, ici.Chats.First().Key, ici.Chats.First().Value.Title);
                         logger.inf(phone_number, $"JoinedChannel: {ici.Chats.First().Value.Title} OK");
