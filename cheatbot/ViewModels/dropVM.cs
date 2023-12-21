@@ -189,6 +189,7 @@ namespace cheatbot.ViewModels
         private void Drop_StoppedEvent(ITGUser drop)
         {
             IsRunning = false;
+            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
         }
 
         #region private
@@ -196,6 +197,7 @@ namespace cheatbot.ViewModels
         {
             IsRunning = result;
             NeedVerification = false;
+            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
         }
 
         private void Drop_VerificationCodeRequestEvent(ITGUser obj)

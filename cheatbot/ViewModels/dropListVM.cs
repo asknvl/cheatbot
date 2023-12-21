@@ -47,6 +47,14 @@ namespace cheatbot.ViewModels
                 updateViewedDrops();
             }
         }
+
+        int onlineCount;
+        public int OnlineCount
+        {
+            get => onlineCount;
+            set => this.RaiseAndSetIfChanged(ref onlineCount, value);
+        }
+
         public ObservableCollection<dropVM> DropList { get; } = new();
         public ObservableCollection<dropVM> ViewedDropList { get; } = new();
 
@@ -228,6 +236,7 @@ namespace cheatbot.ViewModels
                 }
                 
             });
+
         }
 
         async Task updateViewedDrops()
@@ -244,6 +253,7 @@ namespace cheatbot.ViewModels
                     }
                 }                                                
             });
+
         }
 
         async Task loadGroups()
@@ -268,7 +278,7 @@ namespace cheatbot.ViewModels
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                DropList.Add(dvm);
+                DropList.Add(dvm);                
             });
         }        
     
@@ -330,6 +340,10 @@ namespace cheatbot.ViewModels
                         }
                     }
                     SubContent = null;
+                    break;
+
+                    case DropStatusChangedEventMessage dropStatusChangedEventMessage:
+                    OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
                     break;
 
                 default:

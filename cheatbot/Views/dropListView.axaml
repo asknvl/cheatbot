@@ -20,7 +20,7 @@
         MinWidth="200"
         ColumnDefinitions="*, Auto">
         <Grid
-            RowDefinitions="Auto, *">
+            RowDefinitions="Auto, *, Auto">
             <ComboBox
                 Grid.Row="0"
                 HorizontalAlignment="Stretch"
@@ -55,6 +55,70 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </cust:AutoScrollListBox>
+            <Grid
+                Grid.Row="2"
+                RowDefinitions="Auto, Auto, Auto"
+                ColumnDefinitions="60, *">
+
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="0">
+                    Группa:
+                </TextBlock>
+
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Text="{Binding ViewedDropList.Count}"/>
+                    
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="1">
+                    Всего:
+                </TextBlock>
+
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Text="{Binding DropList.Count}"/>
+
+                <TextBlock
+                    Grid.Column="0"
+                    Grid.Row="2">
+                    Онлайн:
+                </TextBlock>
+
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Text="{Binding OnlineCount}"/>
+
+                <!--<TextBlock
+                    Grid.Row="0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Группа:{0} шт">
+                            <Binding Path="ViewedDropList.Count"/>                            
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock
+                    Grid.Row="1">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Онлайн:{0} из {1}">
+                            <Binding Path="OnlineCount"/>
+                            <Binding Path="DropList.Count"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>-->
+                <Grid.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="FontSize" Value="12"/>
+                    </Style>
+                </Grid.Styles>
+            </Grid>
         </Grid>
         <StackPanel
             Grid.Column="1">
