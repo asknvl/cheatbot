@@ -188,8 +188,12 @@ namespace cheatbot.ViewModels
 
         private void Drop_StoppedEvent(ITGUser drop)
         {
-            IsRunning = false;
-            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
+            if (IsRunning)
+            {
+                IsRunning = false;
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
+            }
+
         }
 
         #region private

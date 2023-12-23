@@ -132,11 +132,16 @@ namespace asknvl
             verifyCodeReady.Set();
         }
 
+        Random subDelay = new Random();
         public async Task Subscribe(string input)
         {
             string hash = "";
             string[] splt = input.Split("/");
             input = splt.Last();
+
+            int minutes = subDelay.Next(0, 4);
+
+            await Task.Delay(1000);
 
             if (input.Contains("+"))
             {
@@ -174,6 +179,8 @@ namespace asknvl
                 if (resolved.Chat is Channel channel)
                 {
                     await user.Channels_JoinChannel(channel);
+                    ChannelAddedEvent?.Invoke(input, channel.ID, channel.Title);
+                    logger.inf(phone_number, $"JoinedChannel: {channel.Title} OK");
                 }
             }
 
