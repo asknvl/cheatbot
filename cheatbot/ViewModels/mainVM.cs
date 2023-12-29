@@ -104,7 +104,7 @@ namespace cheatbot.ViewModels
                 db.ApiSettings.Add(settings);
                 db.SaveChanges();
             }
-        }
+        }     
         #endregion
     }
 }

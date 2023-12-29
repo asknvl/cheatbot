@@ -4,13 +4,17 @@ using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
 using cheatbot.Models.drop;
+using cheatbot.Models.files;
 using cheatbot.ViewModels.events;
+using cheatbot.WS;
 using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.Intrinsics.Arm;
@@ -33,7 +37,7 @@ namespace cheatbot.ViewModels
             get => groups;
             set
             {
-                this.RaiseAndSetIfChanged(ref groups, value);             
+                this.RaiseAndSetIfChanged(ref groups, value);
             }
         }
 
@@ -83,11 +87,25 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _old2FA, value);
         }
 
-        string _new2FA;        
+        string _new2FA;
         public string New2FA
         {
             get => _new2FA;
-            set => this.RaiseAndSetIfChanged(ref _new2FA, value);   
+            set => this.RaiseAndSetIfChanged(ref _new2FA, value);
+        }
+
+        string rootPath;
+        public string RootPath
+        {
+            get => rootPath;
+            set => this.RaiseAndSetIfChanged(ref rootPath, value);
+        }
+
+        string tgpath;
+        public string TGPath
+        {
+            get => tgpath;
+            set => this.RaiseAndSetIfChanged(ref tgpath, value);
         }
         #endregion
 
@@ -97,59 +115,129 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> set2FACmd { get; }
         public ReactiveCommand<Unit, Unit> startGroupCmd { get; }
         public ReactiveCommand<Unit, Unit> stopGroupCmd { get; }
+        public ReactiveCommand<Unit, Unit> loadNewCmd { get; }
+        public ReactiveCommand<Unit, Unit> setRootPathCmd { get; }
+        public ReactiveCommand<Unit, Unit> setTGPathCmd { get; }
+        public ReactiveCommand<Unit, Unit> closeTGsCmd { get; }
         #endregion
         public dropListVM(ILogger logger)
         {
+
+            InitAppSettings();
+
             this.logger = logger;
 
             EventAggregator.getInstance().Subscribe(this);
 
-            Task.Run(async () => {                 
+            Task.Run(async () =>
+            {
                 await loadDropList(logger);
                 await loadGroups();
             });
 
             #region commands
-            addCmd = ReactiveCommand.Create(() =>
+            loadNewCmd = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var gdir = Path.Combine(RootPath, "" + SelectedGroup.id);
+                var subdirs = Directory.GetDirectories(gdir);
+
+                using (var db = new DataBaseContext())
+                {
+                    foreach (var subdir in subdirs)
+                    {
+                        var drops = db.Drops.ToList();
+                        var phone_number = $"+{Path.GetFileName(subdir)}";
+                        var found = drops.Any(d => d.phone_number.Equals(phone_number));
+                        if (!found)
+                        {
+                            Files.CopyDir(TGPath, subdir);
+                            
+                            var dropModel = new DropModel()
+                            {
+                                phone_number = phone_number,
+                                _2fa_password = "",
+                                group_id = SelectedGroup.id
+                            };
+
+                            db.Drops.Add(dropModel);
+                            db.SaveChanges();
+                            await addDrop(dropModel);
+
+                            try
+                            {
+
+                                Process.Start(Path.Combine(subdir, "Telegram.exe"));
+
+                            } catch (Exception ex)
+                            {
+
+                            }
+
+                        }
+                    }
+                }
+                await updateViewedDrops();
+            });
+
+            closeTGsCmd = ReactiveCommand.Create(() => {
+
+                Process[] GetPArry = Process.GetProcesses();
+                foreach (Process testProcess in GetPArry)
+                {
+                    string ProcessName = testProcess.ProcessName;
+
+                    ProcessName = ProcessName.ToLower();
+                    if (ProcessName.CompareTo("telegram") == 0)
+                        testProcess.Kill();
+                }
+
+            });
+
+            setRootPathCmd = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var result = await WindowService.getInstance().ShowFolderDialog();
+                if (result != null)
+                {
+                    using (var db = new DataBaseContext())
+                    {
+                        AppSettings? found = db.AppSettings.FirstOrDefault();
+                        if (found == null)
+                        {
+                            found = new AppSettings();
+                            db.AppSettings.Add(found);
+                        }
+                        found.RootPath = result;
+                        db.SaveChanges();
+                    }
+                    RootPath = result;
+                }
+            });
+
+            setTGPathCmd = ReactiveCommand.CreateFromTask(async () =>
             {
 
+                var result = await WindowService.getInstance().ShowFolderDialog();
+                if (result != null)
+                {
+                    using (var db = new DataBaseContext())
+                    {
+                        AppSettings? found = db.AppSettings.FirstOrDefault();
+                        if (found == null)
+                        {
+                            found = new AppSettings();
+                            db.AppSettings.Add(found);
+                        }
+                        found.TGPath = result;
+                        db.SaveChanges();
+                    }
+                    TGPath = result;
+                }
+            });
+
+            addCmd = ReactiveCommand.Create(() =>
+            {
                 addDropVM addVM = new addDropVM(SelectedGroup.id);
                 SubContent = addVM;
-
-                //addVM.AddDropRequestEvent += (phone, _2fa_password) =>
-                //{
-                //    phone = phone.Replace(" ", "");
-                //    if (!phone.Contains("+"))
-                //        phone = "+" + phone;
-
-                //    using (var db = new DataBaseContext())
-                //    {
-                //        var found = db.Drops.Any(d => d.phone_number.Equals(phone));
-                //        if (!found)
-                //        {
-                //            var dropModel = new DropModel()
-                //            {
-                //                phone_number = phone,
-                //                _2fa_password = _2fa_password
-                //            };
-
-                //            db.Add(dropModel);
-                //            db.SaveChanges();
-
-                //            //var dvm = new dropVM(phone, logger);
-                //            //dvm.ChannelAddedEvent += (link, id, name) => {
-                //            //    ChannelAddedEvent?.Invoke(link, id, name);
-                //            //};
-
-                //            //DropList.Add(dvm);
-
-                //            addDrop(dropModel);
-                //        }
-                //    }
-                //    SubContent = null;
-                //};
-
-
             });
 
             deleteCmd = ReactiveCommand.CreateFromTask(async () =>
@@ -176,7 +264,8 @@ namespace cheatbot.ViewModels
 
             });
 
-            set2FACmd = ReactiveCommand.Create(() => {
+            set2FACmd = ReactiveCommand.Create(() =>
+            {
 
                 //throw new NotImplementedException();
 
@@ -186,18 +275,20 @@ namespace cheatbot.ViewModels
                     EventAggregator.getInstance().Publish((BaseEventMessage)new Change2FAPasswordAllEventMessage(Old2FA, New2FA));
             });
 
-            startGroupCmd = ReactiveCommand.CreateFromTask(async () => { 
-            
+            startGroupCmd = ReactiveCommand.CreateFromTask(async () =>
+            {
+
                 foreach (var drop in ViewedDropList)
                 {
                     drop.startCmd.Execute();
                 }
 
                 EventAggregator.getInstance().Publish((BaseEventMessage)new GroupStartedEventMessage(SelectedGroup.id));
-            
+
             });
 
-            stopGroupCmd = ReactiveCommand.CreateFromTask(async () => { 
+            stopGroupCmd = ReactiveCommand.CreateFromTask(async () =>
+            {
 
                 foreach (var drop in ViewedDropList)
                 {
@@ -234,14 +325,15 @@ namespace cheatbot.ViewModels
                 {
                     await addDrop(dropModel);
                 }
-                
+
             });
 
         }
 
         async Task updateViewedDrops()
         {
-            await Task.Run(() => { 
+            await Task.Run(() =>
+            {
                 ViewedDropList.Clear();
 
                 if (SelectedGroup != null)
@@ -251,15 +343,17 @@ namespace cheatbot.ViewModels
                     {
                         ViewedDropList.Add(drop);
                     }
-                }                                                
+                }
             });
 
         }
 
         async Task loadGroups()
         {
-            await Task.Run(() => { 
-                using (var db = new DataBaseContext()) { 
+            await Task.Run(() =>
+            {
+                using (var db = new DataBaseContext())
+                {
                     Groups = db.Groups.ToList();
                     if (Groups.Count > 0)
                         SelectedGroup = Groups[0];
@@ -269,6 +363,18 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region helpers
+        void InitAppSettings()
+        {
+            using (var db = new DataBaseContext())
+            {
+                var found = db.AppSettings.FirstOrDefault();
+                if (found != null)
+                {
+                    RootPath = found.RootPath;
+                    TGPath = found.TGPath;
+                }
+            }
+        }
         async Task addDrop(DropModel model)
         {
             var dvm = new dropVM(model, logger);
@@ -278,23 +384,25 @@ namespace cheatbot.ViewModels
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                DropList.Add(dvm);                
+                DropList.Add(dvm);
             });
-        }        
-    
-    #endregion
+        }
+
+        #endregion
 
         #region public
-    public async Task subscribeAll(string link)
+        public async Task subscribeAll(string link)
         {
-            await Task.Run(async () => { 
-            
+            await Task.Run(async () =>
+            {
+
                 foreach (var drop in DropList)
                 {
                     try
                     {
                         await drop.subscribe(link);
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         logger.err("ERR", ex.Message);
                     }
@@ -333,7 +441,8 @@ namespace cheatbot.ViewModels
                             {
                                 await addDrop(dropModel);
                                 await updateViewedDrops();
-                            } catch (Exception ex)
+                            }
+                            catch (Exception ex)
                             {
                                 throw;
                             }
@@ -342,10 +451,11 @@ namespace cheatbot.ViewModels
                     SubContent = null;
                     break;
 
-                    case DropStatusChangedEventMessage dropStatusChangedEventMessage:
-                    await Dispatcher.UIThread.InvokeAsync(() => {
+                case DropStatusChangedEventMessage dropStatusChangedEventMessage:
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
                         OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
-                    });                    
+                    });
                     break;
 
                 default:

@@ -17,6 +17,7 @@ namespace cheatbot.Database
         public DbSet<GroupModel> Groups { get; set; }
         public DbSet<GroupSubscribeModel> GroupSubscribes { get; set; }
         public DbSet<DropSubscribeModel> DropSubscribes { get; set; }
+        public DbSet<AppSettings> AppSettings { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //string db = Directory.GetCurrentDirectory();

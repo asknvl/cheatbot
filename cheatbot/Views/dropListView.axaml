@@ -123,6 +123,14 @@
         <StackPanel
             Grid.Column="1">
             <Button
+                Command="{Binding loadNewCmd}">
+                Sync
+            </Button>
+            <Button
+               Command="{Binding closeTGsCmd}">
+                -TG
+            </Button>
+            <Button
                 Command="{Binding addCmd}">
                 +
             </Button>

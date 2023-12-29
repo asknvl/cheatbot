@@ -8,7 +8,7 @@
         x:Class="cheatbot.Views.mainWnd"
         xmlns:vv="using:cheatbot.Views"
         Icon="/Assets/avalonia-logo.ico"
-        Title="cheatbot v0.0">
+        Title="cheatbot v0.2">
 
     <Design.DataContext>
         <vm:mainVM/>
@@ -77,6 +77,54 @@
             IsSelected="{Binding IsSelected, Mode=TwoWay}">
             <vv:subscribesView
                 DataContext="{Binding Subscribes}"/>
+        </TabItem>
+        <TabItem
+            Header="Настройки">
+            <StackPanel
+                DataContext="{Binding DropList}">
+                <Grid
+                    ColumnDefinitions="100, 200, 50 ">
+                    <TextBlock
+                        Grid.Column="0">
+                        Корневая папка:
+                    </TextBlock>
+                    <TextBox
+                        Grid.Column="1"
+                        Text="{Binding RootPath}"
+                        Height="30"/>
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding setRootPathCmd}">
+                        Установить
+                    </Button>
+                    <Grid.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>                            
+                        </Style>
+                    </Grid.Styles>
+                </Grid>
+                <Grid
+                    ColumnDefinitions="100, 200, 50 ">
+                    <TextBlock
+                        Grid.Column="0">
+                        TG папка:
+                    </TextBlock>
+                    <TextBox
+                        Grid.Column="1"
+                        Text="{Binding TGPath}"
+                        Height="30"/>
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding setTGPathCmd}">
+                        Установить
+                    </Button>
+                    <Grid.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Styles>
+                </Grid>
+            </StackPanel>            
         </TabItem>
         <TabControl.Styles>
             <Style Selector="Border">

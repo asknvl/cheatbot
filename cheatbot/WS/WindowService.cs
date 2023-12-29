@@ -99,6 +99,12 @@ namespace cheatbot.WS
                 found.Activate();
 
         }
+
+        public async Task<string> ShowFolderDialog()
+        {
+            var dlg = new OpenFolderDialog();
+            return await dlg.ShowAsync(mainWindow);
+        }
         #endregion
     }
 }
