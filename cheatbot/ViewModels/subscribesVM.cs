@@ -1,4 +1,5 @@
 ﻿using asknvl.logger;
+using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
@@ -19,8 +20,7 @@ namespace cheatbot.ViewModels
     public class subscribesVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
-        ILogger logger;
-        List<int> runningGroups = new();
+        ILogger logger;        
         #endregion
 
         #region properties
@@ -81,13 +81,11 @@ namespace cheatbot.ViewModels
 
             subscribeCmd = ReactiveCommand.Create(() => {
 
-                if (SelectedChannel == null) //переделать тут убрать нахуй группы и сделать подписку по одному, а список груп формировать динамически из ответов о подписке
+                if (SelectedChannel == null) 
                     return;
-
 
                 using (var db = new DataBaseContext())
                 {
-
                     var subscribeMessage = new ChannelSubscribeRequestEventMessage(SelectedGroup.id, SelectedChannel.link);
                     EventAggregator.getInstance().Publish((BaseEventMessage)subscribeMessage);
 
@@ -154,11 +152,14 @@ namespace cheatbot.ViewModels
                 using (var db = new DataBaseContext())
                 {
                     var channels = db.Channels.ToList();
-                    ChannelList.Clear();
-                    foreach (var channel in channels)
-                    {
-                        ChannelList.Add(new channelVM(channel));
-                    }
+
+                    Dispatcher.UIThread.InvokeAsync(() => { 
+                        ChannelList.Clear();
+                        foreach (var channel in channels)
+                        {
+                            ChannelList.Add(new channelVM(channel));
+                        }
+                    });
                 }
             });
         }
@@ -201,14 +202,14 @@ namespace cheatbot.ViewModels
                     //updateChannels();
                     break;
 
-                case GroupStartedEventMessage groupStartMessage:
-                    if (!runningGroups.Contains(groupStartMessage.group_id))
-                        runningGroups.Add(groupStartMessage.group_id);
+                case GroupStartedEventMessage groupStartMessage:                    
                     break;
 
-                case GroupStoppedEventMessage groupStopMessage:
-                    if (runningGroups.Contains(groupStopMessage.group_id))
-                        runningGroups.Remove(groupStopMessage.group_id);
+                case GroupStoppedEventMessage groupStopMessage:                    
+                    break;
+
+                case SubscribesChannelsUpdateRequestMessage subscribesUpdateMessage:
+                    updateChannels();
                     break;
             }
         }

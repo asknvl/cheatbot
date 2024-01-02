@@ -284,7 +284,7 @@ namespace cheatbot.ViewModels
                     {
                         logger.err(phone_number, $"OnEvent unsubscribeMessage: {ex.Message}");
                     }
-                    break;
+                    break;              
             }
         }
         #endregion

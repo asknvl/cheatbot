@@ -85,6 +85,8 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
 
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
+
                     //updateList();
 
                     SubContent = null;
@@ -107,6 +109,8 @@ namespace cheatbot.ViewModels
                 }
 
                 updateList();
+
+                EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
             });
 
             //subscribeCmd = ReactiveCommand.CreateFromTask(async () => {

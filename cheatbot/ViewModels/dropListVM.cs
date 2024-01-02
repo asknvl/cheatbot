@@ -119,6 +119,8 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> setRootPathCmd { get; }
         public ReactiveCommand<Unit, Unit> setTGPathCmd { get; }
         public ReactiveCommand<Unit, Unit> closeTGsCmd { get; }
+        public ReactiveCommand<Unit, Unit> startAllCmd { get; }
+        public ReactiveCommand<Unit, Unit> stopAllCmd { get; }
         #endregion
         public dropListVM(ILogger logger)
         {
@@ -296,6 +298,21 @@ namespace cheatbot.ViewModels
                 }
 
                 EventAggregator.getInstance().Publish((BaseEventMessage)new GroupStoppedEventMessage(SelectedGroup.id));
+            });
+
+            startAllCmd = ReactiveCommand.CreateFromTask(async () => { 
+            
+                foreach (var drop in DropList)
+                {
+                    drop.startCmd.Execute();
+                }            
+            });
+
+            stopAllCmd = ReactiveCommand.CreateFromTask(async () => { 
+                foreach (var drop in DropList)
+                {
+                    drop.stopCmd.Execute();
+                }
             });
 
             #endregion
