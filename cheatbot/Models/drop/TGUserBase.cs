@@ -139,10 +139,10 @@ namespace asknvl
             string[] splt = input.Split("/");
             input = splt.Last();
 
-            int f = subDelay.Next(0, 4);
-            double d = subDelay.NextDouble();
+            //int f = subDelay.Next(0, 4);
+            //double d = subDelay.NextDouble();
 
-            await Task.Delay((int)((f + d) * 60 * 1000));
+            //await Task.Delay((int)((f + d) * 60 * 1000));
 
             if (input.Contains("+"))
             {

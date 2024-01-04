@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reactive;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels
@@ -428,6 +429,8 @@ namespace cheatbot.ViewModels
             });
         }
 
+        Random subsRand = new Random();
+
         public async void OnEvent(BaseEventMessage message)
         {
             switch (message)
@@ -473,6 +476,34 @@ namespace cheatbot.ViewModels
                     {
                         OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
                     });
+                    break;
+
+                case ChannelSubscribeRequestEventMessage subscribeMessage:
+                    try
+                    {
+                        //if (group_id == subscribeMessage.group_id)
+                        //    await subscribe(subscribeMessage.link);
+
+                        var groupedDrops = DropList.Where(d => d.group_id == subscribeMessage.group_id).ToList();
+                        foreach (var drop in groupedDrops) {
+
+                            try
+                            {
+                                await Task.Run(async () => { 
+                                    await drop.subscribe(subscribeMessage.link);
+                                    Thread.Sleep(subsRand.Next(3, 5) * 1000);
+                                });
+
+                            } catch (Exception ex)
+                            {
+                                logger.err($"GroupSubscribe {drop.phone_number}", $"OnEvent subscribeMessage: {ex.Message}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.err($"GroupSubscribe {subscribeMessage.group_id}", $"OnEvent subscribeMessage: {ex.Message}");
+                    }
                     break;
 
                 default:

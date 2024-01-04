@@ -261,17 +261,17 @@ namespace cheatbot.ViewModels
                     }
                     break;
 
-                case ChannelSubscribeRequestEventMessage subscribeMessage:
-                    try
-                    {
-                        if (group_id == subscribeMessage.group_id)
-                            await subscribe(subscribeMessage.link);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.err(phone_number, $"OnEvent subscribeMessage: {ex.Message}");
-                    }
-                    break;
+                //case ChannelSubscribeRequestEventMessage subscribeMessage:
+                //    try
+                //    {
+                //        if (group_id == subscribeMessage.group_id)
+                //            await subscribe(subscribeMessage.link);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        logger.err(phone_number, $"OnEvent subscribeMessage: {ex.Message}");
+                //    }
+                //    break;
 
                 case ChannelUnsubscribeRequestEventMessage unsubscribeMessage:
                     try
