@@ -1,6 +1,8 @@
 ﻿
 using asknvl.logger;
+using cheatbot.ViewModels.events;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -17,7 +19,9 @@ namespace asknvl
         readonly ManualResetEventSlim verifyCodeReady = new();
         string verifyCode;
         protected ILogger logger;
+
         protected Messages_Chats chats;
+        protected List<Messages_ChatFull> fullChats = new();
         #endregion
 
         #region properties        
@@ -103,6 +107,18 @@ namespace asknvl
                     tg_id = usr.ID;
 
                     chats = await user.Messages_GetAllChats();
+
+                    foreach (var chat in chats.chats)
+                    {
+                        try
+                        {
+                            var full = await user.GetFullChat(chat.Value);
+                            fullChats.Add(full);
+                        } catch (Exception ex)
+                        {
+                            logger.err(phone_number, ex.Message);
+                        }
+                    }
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
