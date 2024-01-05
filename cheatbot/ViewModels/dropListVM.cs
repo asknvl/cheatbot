@@ -490,8 +490,10 @@ namespace cheatbot.ViewModels
                             try
                             {
                                 await Task.Run(async () => { 
-                                    await drop.subscribe(subscribeMessage.link);
-                                    Thread.Sleep(subsRand.Next(3, 5) * 1000);
+                                    var res = await drop.subscribe(subscribeMessage.link);
+                                    if (res)
+                                        //Thread.Sleep(subsRand.Next(3, 5) * 1000);
+                                        await Task.Delay(subsRand.Next(3, 5) * 1000);
                                 });
 
                             } catch (Exception ex)

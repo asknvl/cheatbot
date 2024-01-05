@@ -211,7 +211,7 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region public
-        public async Task subscribe(string link)
+        public async Task<bool> subscribe(string link)
         {
             if (IsRunning)
             {
@@ -224,12 +224,16 @@ namespace cheatbot.ViewModels
                         if (found == null)
                         {
                             await drop.Subscribe(link);
+                            return true;
                         }
                         else
-                            logger.inf(phone_number, "уже подписан");
+                        {
+                            logger.inf(phone_number, "уже подписан");                         
+                        }
                     }
                 }               
-            }                
+            }
+            return false;
         }
 
         //public void OnEvent(ChannelUnsubscibeEvent message)
@@ -246,7 +250,7 @@ namespace cheatbot.ViewModels
             switch (message)
             {
                 case ChannelUnsubscibeEventMessage unsubscribeMesage:
-                    drop.LeaveChannel(unsubscribeMesage.tg_id);
+                    await drop.LeaveChannel(unsubscribeMesage.tg_id);
                     break;
 
                 case Change2FAPasswordAllEventMessage change2FAPasswordMessage:
