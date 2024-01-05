@@ -29,47 +29,53 @@ namespace cheatbot.Models.drop
         {
             try
             {
-                if (newMessagesQueue.Count > 0)
-                {
 
-                    int index = r.Next(0, newMessagesQueue.Count - 1);
+                var channel = chats.chats.ElementAt(r.Next(0, chats.chats.Count)).Value;
+                var history = await user.Messages_GetHistory(channel, limit: 10);
+                var ids = history.Messages.Select(m => m.ID).ToArray();
+                await user.Messages_GetMessagesViews(channel, ids, true);
 
-                    var m = newMessagesQueue[index];
-                    InputPeer channel = chats.chats[m.peer_id];
+                //if (newMessagesQueue.Count > 0)
+                //{
 
-                    List<messageInfo> tmpList = new();
-                    foreach (var item in newMessagesQueue)
-                    {
-                        if (item.peer_id == m.peer_id)
-                            tmpList.Add(item);
-                    }
+                //    int index = r.Next(0, newMessagesQueue.Count - 1);
 
-                    foreach (var item in tmpList)
-                        newMessagesQueue.Remove(item);
+                //    var m = newMessagesQueue[index];
+                //    InputPeer channel = chats.chats[m.peer_id];
 
-                    var messages = tmpList.Select(m => m.message_id).ToArray();
+                //    List<messageInfo> tmpList = new();
+                //    foreach (var item in newMessagesQueue)
+                //    {
+                //        if (item.peer_id == m.peer_id)
+                //            tmpList.Add(item);
+                //    }
 
-                    //var v = await user.Messages_GetMessagesViews(channel, messages, true);
+                //    foreach (var item in tmpList)
+                //        newMessagesQueue.Remove(item);
 
-                    var history = await user.Messages_GetHistory(channel, limit: 50);
+                //    var messages = tmpList.Select(m => m.message_id).ToArray();
 
-                    var ids = history.Messages.Select(m => m.ID).ToArray();
+                //    //var v = await user.Messages_GetMessagesViews(channel, messages, true);
 
-                    await user.Messages_GetMessagesViews(channel, ids, true);
+                //    var history = await user.Messages_GetHistory(channel, limit: 50);
+
+                //    var ids = history.Messages.Select(m => m.ID).ToArray();
+
+                //    await user.Messages_GetMessagesViews(channel, ids, true);
 
 
-                    //var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
-                    //newMessagesQueue.RemoveAt(0);
-                    SendChannelMessageViewedEvent(m.peer_id, (uint)messages.Length);
-                    //logger.err(phone_number, $"Viewed {m.message_id}");
-                }
+                //    //var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
+                //    //newMessagesQueue.RemoveAt(0);
+                //    SendChannelMessageViewedEvent(m.peer_id, (uint)messages.Length);
+                //    //logger.err(phone_number, $"Viewed {m.message_id}");
+                //}
 
             } catch (Exception ex)
             {
-                if (newMessagesQueue.Count > 0)
-                    newMessagesQueue.RemoveAt(0);
+                //if (newMessagesQueue.Count > 0)
+                //    newMessagesQueue.RemoveAt(0);
 
-                logger.err("API", ex.Message);
+                logger.err("WATHCES:", ex.Message);
             }
         }
 
@@ -92,8 +98,9 @@ namespace cheatbot.Models.drop
                     //    newMessagesQueue.Add(msgInfo);
                     //}
 
-                    var msgInfo = new messageInfo(unm);
-                    newMessagesQueue.Add(msgInfo);
+
+                    //var msgInfo = new messageInfo(unm);
+                    //newMessagesQueue.Add(msgInfo);
 
                     break;
 
@@ -129,11 +136,8 @@ namespace cheatbot.Models.drop
 
                     offset = 5000;
                     readHistoryTimer = new System.Timers.Timer(offset);
-
                     //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
-
                     //logger.inf("", "minuteOffset=" + minuteOffset);
-
                     readHistoryTimer.AutoReset = true;
                     readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                     readHistoryTimer.Start();
