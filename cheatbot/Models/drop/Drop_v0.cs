@@ -49,7 +49,14 @@ namespace cheatbot.Models.drop
 
                     var messages = tmpList.Select(m => m.message_id).ToArray();
 
-                    var v = await user.Messages_GetMessagesViews(channel, messages, true);
+                    //var v = await user.Messages_GetMessagesViews(channel, messages, true);
+
+                    var history = await user.Messages_GetHistory(channel, limit: 50);
+
+                    var ids = history.Messages.Select(m => m.ID).ToArray();
+
+                    await user.Messages_GetMessagesViews(channel, ids, true);
+
 
                     //var v = await user.Messages_GetMessagesViews(channel, new int[] { m.message_id }, true);
                     //newMessagesQueue.RemoveAt(0);
@@ -73,17 +80,21 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
-                    var nm = (Message)unm.message;
-                    var found = false;
+                    //var nm = (Message)unm.message;
+                    //var found = false;
 
-                    if (nm.grouped_id != 0)
-                        found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
+                    //if (nm.grouped_id != 0)
+                    //    found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
 
-                    if (!found)
-                    {
-                        var msgInfo = new messageInfo(unm);
-                        newMessagesQueue.Add(msgInfo);
-                    }
+                    //if (!found)
+                    //{
+                    //    var msgInfo = new messageInfo(unm);
+                    //    newMessagesQueue.Add(msgInfo);
+                    //}
+
+                    var msgInfo = new messageInfo(unm);
+                    newMessagesQueue.Add(msgInfo);
+
                     break;
 
                 case UpdateChannel uch:
@@ -116,6 +127,7 @@ namespace cheatbot.Models.drop
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
 
+                    offset = 5000;
                     readHistoryTimer = new System.Timers.Timer(offset);
 
                     //readHistoryTimer = new System.Timers.Timer(minuteOffset * 60 * 1000);
