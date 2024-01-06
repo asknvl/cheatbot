@@ -1,11 +1,14 @@
 ﻿using asknvl;
 using asknvl.logger;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using TL;
 using WTelegram;
@@ -20,9 +23,8 @@ namespace cheatbot.Models.drop
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
-        {            
+        {
         }
-
 
         Random r = new Random();
         bool needFirstWatch = true;
@@ -90,6 +92,44 @@ namespace cheatbot.Models.drop
                     //newMessagesQueue.RemoveAt(0);
                     SendChannelMessageViewedEvent(m.peer_id, (uint)messages.Length);
                     //logger.err(phone_number, $"Viewed {m.message_id}");
+
+                    int percentage = r.Next(1, 100);
+
+                    if (test_mode && percentage <= 20)                    {
+
+                        var reactions = fullChats.FirstOrDefault(c => c.chats.ContainsKey(channel.ID))?.full_chat.AvailableReactions;
+
+                        //Reaction? reaction = reactions switch
+                        //{
+                        //    ChatReactionsSome some => some.reactions[0],
+                        //    _ => null
+                        //};
+
+                        if (reactions is ChatReactionsSome)
+                        {
+                            var some = (ChatReactionsSome)reactions;
+                            var available = some.reactions;
+
+                            int selected = 0;
+                            percentage = r.Next(1, 100);
+
+                            if (percentage <= 40)
+                                selected = 0;
+                            else
+                                if (available.Length > 2 && percentage > 40 && percentage <= 70)
+                                selected = 1;
+                            else
+                                if (available.Length > 3)
+                                selected = r.Next(2, available.Length-1);
+
+                            foreach (var message in messages)
+                            {
+                                await user.Messages_SendReaction(channel, message, reaction: new[] { available[selected] });
+                                await Task.Delay(5000);
+                            }
+
+                        }
+                    }
                 }
 
             } catch (Exception ex)
@@ -147,7 +187,7 @@ namespace cheatbot.Models.drop
 
 
                     double minOffset = r.Next(1, 10) + (1.0d * r.Next(1, 10) / 10);
-                    int offset = (int)(minOffset * 60 * 1000);
+                    int offset = (int)(minOffset * 1 * 1000);
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
 

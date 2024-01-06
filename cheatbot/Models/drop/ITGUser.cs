@@ -11,6 +11,7 @@ namespace asknvl
         public string _2fa_password { get; }
         long tg_id { get; set; }
         bool is_active { get; set; }
+        bool test_mode { get; set; }
 
         Task Start();
         Task Subscribe(string input);

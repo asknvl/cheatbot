@@ -69,7 +69,7 @@ namespace cheatbot.ViewModels
 
             WTelegram.Helpers.Log = (x, y) =>
             {
-                if (x == 4 && x == 3)
+                if (x == 3 || x == 4)
                     Logger.dbg("API", $"{y}");
             };
 

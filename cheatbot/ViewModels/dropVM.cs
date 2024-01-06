@@ -108,6 +108,9 @@ namespace cheatbot.ViewModels
 
             startCmd = ReactiveCommand.CreateFromTask(async () =>
             {
+                //if (group_id == 10)
+                    drop.test_mode = true;
+
                 await drop.Start();
             });
             stopCmd = ReactiveCommand.CreateFromTask(async () =>

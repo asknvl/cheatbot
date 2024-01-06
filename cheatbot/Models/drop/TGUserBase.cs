@@ -1,6 +1,7 @@
 ﻿
 using asknvl.logger;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,7 @@ namespace asknvl
         string verifyCode;
         protected ILogger logger;
         protected Messages_Chats chats;
+        protected List<Messages_ChatFull> fullChats = new();
         #endregion
 
         #region properties        
@@ -28,6 +30,7 @@ namespace asknvl
         public string? username { get; set; }
         public string _2fa_password { get; }
         public bool is_active { get; set; }
+        public bool test_mode { get; set; }
         #endregion
 
         public TGUserBase(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger)
@@ -83,6 +86,27 @@ namespace asknvl
                 await processUpdate(update);
             }
         }
+
+        private async Task updateFullChats(Messages_Chats chats)
+        {
+            fullChats.Clear();
+
+            foreach (var chat in chats.chats)
+            {
+                if (chat.Value.IsChannel)
+                {
+                    try
+                    {
+                        var full = await user.GetFullChat(chat.Value);
+                        fullChats.Add(full);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.err(phone_number, "UpdateFullChats: " + ex.Message);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region public
@@ -103,6 +127,7 @@ namespace asknvl
                     tg_id = usr.ID;
 
                     chats = await user.Messages_GetAllChats();
+                    await updateFullChats(chats);
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
@@ -186,6 +211,8 @@ namespace asknvl
             }
 
             chats = await user.Messages_GetAllChats();
+            await updateFullChats(chats);
+            
         }
 
         public async Task LeaveChannel(long channel_tg_id)
