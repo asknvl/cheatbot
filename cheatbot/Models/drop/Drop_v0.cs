@@ -27,7 +27,8 @@ namespace cheatbot.Models.drop
         }
 
         Random r = new Random();
-        bool needFirstWatch = true;
+
+        bool needFirstWatch = false;
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
 
@@ -187,7 +188,7 @@ namespace cheatbot.Models.drop
 
 
                     double minOffset = r.Next(1, 10) + (1.0d * r.Next(1, 10) / 10);
-                    int offset = (int)(minOffset * 1 * 1000);
+                    int offset = (int)(minOffset * 60 * 1000);
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
 
