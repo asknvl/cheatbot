@@ -205,7 +205,6 @@ namespace asknvl
 
                 var chat = chats.chats[channel_tg_id];
                 await user.LeaveChat(chat);
-
                 ChannelLeftEvent?.Invoke(channel_tg_id);
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 

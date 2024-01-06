@@ -25,8 +25,43 @@ namespace cheatbot.Models.drop
 
 
         Random r = new Random();
+        bool needFirstWatch = true;
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
+
+            if (needFirstWatch) {
+
+                needFirstWatch = false;
+
+                await Task.Run(async () => { 
+
+                    foreach (var channel in chats.chats)
+                    {
+
+                        if (channel.Value.IsChannel)
+                        {
+
+                            try
+                            {
+                                var history = await user.Messages_GetHistory(channel.Value, limit: 8);
+                                var ids = history.Messages.Select(m => m.ID).ToArray();
+                                await user.Messages_GetMessagesViews(channel.Value, ids, true);
+                                Thread.Sleep(10000);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.err("ReadHistoryTimer FirstView:", ex.Message);
+                            }
+                        }
+                    }
+
+                });
+
+
+                
+            }
+
+
             try
             {
                 if (newMessagesQueue.Count > 0)
@@ -62,13 +97,13 @@ namespace cheatbot.Models.drop
                 if (newMessagesQueue.Count > 0)
                     newMessagesQueue.RemoveAt(0);
 
-                logger.err("API", ex.Message);
+                logger.err("ReadHistoryTimer View:", ex.Message);
             }
         }
 
         protected override async Task processUpdate(Update update)
         {
-            logger.inf(phone_number, update.ToString());
+            //logger.inf(phone_number, update.ToString());
             switch (update)
             {
                 case UpdateNewMessage unm:

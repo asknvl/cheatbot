@@ -67,10 +67,11 @@ namespace cheatbot.ViewModels
             initUserApiKeys().Wait();
             Logger = new loggerVM();
 
-            //WTelegram.Helpers.Log = (x, y) =>
-            //{
-            //    Logger.dbg("API", $"{y}");
-            //};
+            WTelegram.Helpers.Log = (x, y) =>
+            {
+                if (x == 4 && x == 3)
+                    Logger.dbg("API", $"{y}");
+            };
 
             DropList = new dropListVM(Logger);
 
