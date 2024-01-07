@@ -97,8 +97,9 @@ namespace asknvl
                 {
                     try
                     {
-                        var full = await user.GetFullChat(chat.Value);
+                        var full = await user.GetFullChat(chat.Value);                        
                         fullChats.Add(full);
+
                     }
                     catch (Exception ex)
                     {
@@ -127,7 +128,7 @@ namespace asknvl
                     tg_id = usr.ID;
 
                     chats = await user.Messages_GetAllChats();
-                    await updateFullChats(chats);
+                    //await updateFullChats(chats);
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
@@ -210,8 +211,8 @@ namespace asknvl
                 }
             }
 
-            chats = await user.Messages_GetAllChats();
-            await updateFullChats(chats);
+            chats = await user.Messages_GetAllChats();            
+            //await updateFullChats(chats);
             
         }
 

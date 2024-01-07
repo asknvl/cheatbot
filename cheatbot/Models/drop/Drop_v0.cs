@@ -49,6 +49,7 @@ namespace cheatbot.Models.drop
                                 var history = await user.Messages_GetHistory(channel.Value, limit: 8);
                                 var ids = history.Messages.Select(m => m.ID).ToArray();
                                 await user.Messages_GetMessagesViews(channel.Value, ids, true);
+
                                 Thread.Sleep(10000);
                             }
                             catch (Exception ex)
@@ -56,6 +57,7 @@ namespace cheatbot.Models.drop
                                 logger.err("ReadHistoryTimer FirstView:", ex.Message);
                             }
                         }
+
                     }
 
                 });
@@ -98,13 +100,9 @@ namespace cheatbot.Models.drop
 
                     if (test_mode && percentage <= 20)                    {
 
-                        var reactions = fullChats.FirstOrDefault(c => c.chats.ContainsKey(channel.ID))?.full_chat.AvailableReactions;
-
-                        //Reaction? reaction = reactions switch
-                        //{
-                        //    ChatReactionsSome some => some.reactions[0],
-                        //    _ => null
-                        //};
+                        //var reactions = fullChats.FirstOrDefault(c => c.chats.ContainsKey(channel.ID))?.full_chat.AvailableReactions;
+                        var fullchat = await user.GetFullChat(channel);
+                        var reactions = fullchat?.full_chat.AvailableReactions;
 
                         if (reactions is ChatReactionsSome)
                         {
@@ -165,7 +163,7 @@ namespace cheatbot.Models.drop
                 case UpdateChannel uch:
                     try
                     {
-                        chats = await user.Messages_GetAllChats();
+                        //chats = await user.Messages_GetAllChats();
                     } catch (Exception ex)
                     {
                         logger.err(phone_number, $"processUpdate: {ex.Message}");
