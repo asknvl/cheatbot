@@ -97,7 +97,7 @@ namespace cheatbot.Models.drop
 
                     int percentage = r.Next(1, 100);
 
-                    if (/*test_mode && percentage <= 20*/true)
+                    if (test_mode && percentage <= 20)
                     {
 
                         var reactions = fullChats.FirstOrDefault(c => c.chats.ContainsKey(channel.ID))?.full_chat.AvailableReactions;
@@ -144,12 +144,12 @@ namespace cheatbot.Models.drop
 
                                     Reaction[]? randomizedReactions = messageState.reactions;
 
-                                    string s = "";
-                                    foreach (var reaction in randomizedReactions)
-                                    {
-                                        s = s + $" {((ReactionEmoji)reaction)?.emoticon}";                                     
-                                    }
-                                    logger.inf("rndmized:", s);
+                                    //string s = "";
+                                    //foreach (var reaction in randomizedReactions)
+                                    //{
+                                    //    s = s + $" {((ReactionEmoji)reaction)?.emoticon}";                                     
+                                    //}
+                                    //logger.inf("rndmized:", s);
 
                                     if (randomizedReactions.Length > 0)
                                     {
@@ -237,8 +237,8 @@ namespace cheatbot.Models.drop
                     //double minOffset = (double)offset / 1000 / 60;
 
 
-                    double minOffset = r.Next(1, 10) + (1.0d * r.Next(1, 10) / 10);
-                    int offset = (int)(minOffset * 1 * 1000);
+                    double minOffset = r.Next(1, 7) + (1.0d * r.Next(1, 10) / 10);
+                    int offset = (int)(minOffset * 60 * 1000);
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
 
