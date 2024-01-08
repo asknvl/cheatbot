@@ -84,15 +84,17 @@ namespace cheatbot.Models.drop
                         newMessagesQueue.Remove(item);
 
                     var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
+                    //var v = await user.Messages_GetMessagesViews(channel, messagesIDs, true);
+                    //SendChannelMessageViewedEvent(m.peer_id, (uint)messagesIDs.Length);
 
-                    var v = await user.Messages_GetMessagesViews(channel, messagesIDs, true);
+                    var history = await user.Messages_GetHistory(channel, limit: tmpList.Count);
+                    var ids = history.Messages.Select(m => m.ID).ToArray();
+                    await user.Messages_GetMessagesViews(channel, ids, true);
+                    SendChannelMessageViewedEvent(m.peer_id, (uint)ids.Length);
 
-                    SendChannelMessageViewedEvent(m.peer_id, (uint)messagesIDs.Length);
+                    int percentage = r.Next(1, 100);                    
 
-                    int percentage = r.Next(1, 100);
-                    test_mode = true;
-
-                    if (test_mode && percentage <= 20)
+                    if (percentage <= 20)
                     {
 
                         var fullchat = await user.GetFullChat(channel);
@@ -145,7 +147,7 @@ namespace cheatbot.Models.drop
                                             selected = r.Next(2, available.Length - 1);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                        await Task.Delay(5000);
+                                        await Task.Delay(6000);
 
                                     }
                                 }
@@ -171,17 +173,21 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
-                    var nm = (Message)unm.message;
-                    var found = false;
+                    //var nm = (Message)unm.message;
+                    //var found = false;
 
-                    if (nm.grouped_id != 0)
-                        found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
+                    //if (nm.grouped_id != 0)
+                    //    found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
 
-                    if (!found)
-                    {
-                        var msgInfo = new messageInfo(unm);
-                        newMessagesQueue.Add(msgInfo);
-                    }
+                    //if (!found)
+                    //{
+                    //    var msgInfo = new messageInfo(unm);
+                    //    newMessagesQueue.Add(msgInfo);
+                    //}
+
+                    var msgInfo = new messageInfo(unm);
+                    newMessagesQueue.Add(msgInfo);
+
                     break;
 
                 case UpdateChannel uch:
@@ -204,7 +210,7 @@ namespace cheatbot.Models.drop
                 if (is_active)
                 {
 
-                    double minOffset = r.Next(1, 7) + (1.0d * r.Next(1, 10) / 10);
+                    double minOffset = r.Next(2, 7) + (1.0d * r.Next(1, 10) / 10);
                     int offset = (int)(minOffset * 60 * 1000);
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
