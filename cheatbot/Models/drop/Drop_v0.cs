@@ -144,7 +144,7 @@ namespace cheatbot.Models.drop
                                             selected = 1;
                                         else
                                             if (available.Length > 3)
-                                            selected = r.Next(2, available.Length - 1);
+                                            selected = r.Next(2, available.Length);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
                                         await Task.Delay(6000);
