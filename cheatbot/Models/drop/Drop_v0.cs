@@ -29,39 +29,63 @@ namespace cheatbot.Models.drop
         {
         }
 
-        bool needFirstWatch = false;
+        bool needFirstWatch = true;
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
 
             if (needFirstWatch)
             {
 
-                needFirstWatch = false;
-
-                await Task.Run(async () =>
+                try
                 {
 
-                    foreach (var channel in chats.chats)
-                    {
+                    await Task.Run(async () =>
+                     {
 
-                        if (channel.Value.IsChannel)
-                        {
+                         foreach (var channel in chats.chats)
+                         {
 
-                            try
-                            {
-                                var history = await user.Messages_GetHistory(channel.Value, limit: 8);
-                                var ids = history.Messages.Select(m => m.ID).ToArray();
-                                await user.Messages_GetMessagesViews(channel.Value, ids, true);
-                                Thread.Sleep(10000);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.err("ReadHistoryTimer FirstView:", ex.Message);
-                            }
-                        }
-                    }
-                });
+                             if (channel.Value.IsChannel)
+                             {
+
+                                 try
+                                 {
+                                     var history = await user.Messages_GetHistory(channel.Value, limit: 4);
+                                     var ids = history.Messages.Select(m => m.ID).ToArray();
+
+                                     foreach (var id in ids)
+                                     {
+                                         messageInfo mi = new messageInfo(channel.Value.ID, id);
+                                         newMessagesQueue.Add(mi);
+                                     }
+
+
+                                     //await user.Messages_GetMessagesViews(channel.Value, ids, true);
+                                     //Thread.Sleep(5000);
+                                     await Task.Delay(5000);
+                                 }
+                                 catch (Exception ex)
+                                 {
+                                     logger.err("ReadHistoryTimer FirstView:", ex.Message);
+                                 }
+                             }
+                         }
+                     });
+                } catch (Exception ex)
+                {
+                    logger.err("ReadHistoryTimer FirstView:", ex.Message);
+                }
             }
+
+            if (needFirstWatch)
+            {
+                needFirstWatch = false;
+                return;
+            }
+
+          
+
+           
 
             try
             {
@@ -147,7 +171,7 @@ namespace cheatbot.Models.drop
                                             selected = r.Next(2, available.Length);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                        await Task.Delay(6000);
+                                        await Task.Delay(4000);
 
                                     }
                                 }
@@ -210,7 +234,7 @@ namespace cheatbot.Models.drop
                 if (is_active)
                 {
 
-                    double minOffset = r.Next(2, 7) + (1.0d * r.Next(1, 10) / 10);
+                    double minOffset = r.Next(1, 5) + (1.0d * r.Next(1, 10) / 10);
                     int offset = (int)(minOffset * 60 * 1000);
 
                     logger.inf("", $"minoffset={minOffset} offset={offset}");
@@ -248,6 +272,12 @@ namespace cheatbot.Models.drop
             peer_id = unm.message.Peer.ID;
             message_id = unm.message.ID;
             grouped_id = ((Message)unm.message).grouped_id;
+        }
+
+        public messageInfo(long peer_id, int message_id)
+        {
+            this.peer_id = peer_id;
+            this.message_id = message_id;
         }
     }
 }
