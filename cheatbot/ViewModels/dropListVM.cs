@@ -82,7 +82,7 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref subcontent, value);
         }
 
-        string _old2FA;
+        string _old2FA = "Wf52";
         public string Old2FA
         {
             get => _old2FA;
@@ -164,7 +164,7 @@ namespace cheatbot.ViewModels
                             var dropModel = new DropModel()
                             {
                                 phone_number = phone_number,
-                                _2fa_password = "",
+                                _2fa_password = Old2FA,
                                 group_id = SelectedGroup.id
                             };
 
