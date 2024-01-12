@@ -20,7 +20,7 @@ namespace asknvl
         protected ILogger logger;
         protected Messages_Chats chats;
         protected List<Messages_ChatFull> fullChats = new();
-        string dir;
+        string dir = Path.Combine("C:", "userpool");
         #endregion
 
         #region properties        
@@ -48,7 +48,7 @@ namespace asknvl
         #region protected
         protected string Config(string what)
         {   
-            dir = Path.Combine("C:", "userpool");
+          
 
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
@@ -143,14 +143,14 @@ namespace asknvl
 
         public void ClearSession()
         {
-            if (status == DropStatus.revoked || status == DropStatus.banned || status == DropStatus.verification)
+            if (true/*status == DropStatus.revoked || status == DropStatus.banned || status == DropStatus.verification*/)
             {
                 try
                 {
                     var sp = Path.Combine(dir, $"{phone_number}.session");
                     if (File.Exists(sp))
                     {
-                        user.Dispose();
+                        user?.Dispose();
                         File.Delete(sp);
                     }
                 }
