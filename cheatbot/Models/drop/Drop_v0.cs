@@ -70,10 +70,10 @@ namespace cheatbot.Models.drop
                          }
                      });
                 }
-                catch (RpcException ex)
-                {
-                    //processRpcException(ex);
-                }
+                //catch (RpcException ex)
+                //{
+                //    //processRpcException(ex);
+                //}
                 catch (Exception ex)
                 {
                     logger.err("ReadHistoryTimer FirstView:", ex.Message);
@@ -171,7 +171,7 @@ namespace cheatbot.Models.drop
                                             selected = r.Next(2, available.Length);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                        await Task.Delay(7000);
+                                        await Task.Delay(10000);
 
                                     }
                                 }
@@ -181,10 +181,10 @@ namespace cheatbot.Models.drop
                     }
                 }
             }
-            catch (RpcException ex)
-            {
-                //processRpcException(ex);
-            }
+            //catch (RpcException ex)
+            //{
+            //    //processRpcException(ex);
+            //}
             catch (Exception ex)
             {
                 //if (newMessagesQueue.Count > 0)
