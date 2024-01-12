@@ -150,11 +150,13 @@ namespace cheatbot.ViewModels
                     foreach (var subdir in subdirs)
                     {
                         var drops = db.Drops.ToList();
-                        var phone_number = $"+{Path.GetFileName(subdir)}";
+                        string fn = Path.GetFileName(subdir);
+
+                        var phone_number = $"+{fn}";
                         var found = drops.Any(d => d.phone_number.Equals(phone_number));
                         if (!found)
                         {
-                            var istg = File.Exists(Path.Combine(RootPath, $"{SelectedGroup.id}", "Telegram.exe"));
+                            var istg = File.Exists(Path.Combine(RootPath, $"{SelectedGroup.id}", fn, "Telegram.exe"));
                             
                             if (!istg)
                                 Files.CopyDir(TGPath, subdir);
