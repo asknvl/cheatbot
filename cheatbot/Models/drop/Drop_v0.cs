@@ -241,7 +241,7 @@ namespace cheatbot.Models.drop
                 {
 
                     double minOffset = r.Next(1, 5) + (1.0d * r.Next(1, 10) / 10);
-                    int offset = (int)(minOffset * 10 * 1000);
+                    int offset = (int)(minOffset * 60 * 1000);
 
                     readHistoryTimer = new System.Timers.Timer(offset);
                     readHistoryTimer.AutoReset = true;
