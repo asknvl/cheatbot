@@ -72,7 +72,7 @@ namespace cheatbot.Models.drop
                 }
                 catch (RpcException ex)
                 {
-                    processRpcException(ex);
+                    //processRpcException(ex);
                 }
                 catch (Exception ex)
                 {
@@ -171,7 +171,7 @@ namespace cheatbot.Models.drop
                                             selected = r.Next(2, available.Length);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                        await Task.Delay(4000);
+                                        await Task.Delay(7000);
 
                                     }
                                 }
@@ -183,7 +183,7 @@ namespace cheatbot.Models.drop
             }
             catch (RpcException ex)
             {
-                processRpcException(ex);
+                //processRpcException(ex);
             }
             catch (Exception ex)
             {

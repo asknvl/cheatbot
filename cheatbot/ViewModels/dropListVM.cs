@@ -154,7 +154,10 @@ namespace cheatbot.ViewModels
                         var found = drops.Any(d => d.phone_number.Equals(phone_number));
                         if (!found)
                         {
-                            Files.CopyDir(TGPath, subdir);
+                            var istg = File.Exists(Path.Combine(RootPath, $"{SelectedGroup.id}", "Telegram.exe"));
+                            
+                            if (!istg)
+                                Files.CopyDir(TGPath, subdir);
                             
                             var dropModel = new DropModel()
                             {
