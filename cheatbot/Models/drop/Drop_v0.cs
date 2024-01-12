@@ -60,7 +60,7 @@ namespace cheatbot.Models.drop
                                      }
                                      //await user.Messages_GetMessagesViews(channel.Value, ids, true);
                                      //Thread.Sleep(5000);
-                                     await Task.Delay(5000);
+                                     await Task.Delay(7000);
                                  }
                                  catch (Exception ex)
                                  {
@@ -87,8 +87,7 @@ namespace cheatbot.Models.drop
             }
 
             try
-            {
-                logger.inf("???", "" + newMessagesQueue.Count);
+            {               
 
                 if (newMessagesQueue.Count > 0)
                 {
@@ -216,8 +215,6 @@ namespace cheatbot.Models.drop
                     var msgInfo = new messageInfo(unm);
                     newMessagesQueue.Add(msgInfo);
 
-                    logger.inf("!!!", "" + newMessagesQueue.Count);
-
                     break;
 
                 case UpdateChannel uch:
@@ -240,7 +237,7 @@ namespace cheatbot.Models.drop
                 if (status == DropStatus.active)
                 {
 
-                    double minOffset = r.Next(1, 5) + (1.0d * r.Next(1, 10) / 10);
+                    double minOffset = r.Next(2, 7) + (1.0d * r.Next(1, 10) / 10);
                     int offset = (int)(minOffset * 60 * 1000);
 
                     readHistoryTimer = new System.Timers.Timer(offset);
