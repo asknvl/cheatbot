@@ -1,4 +1,5 @@
-﻿using asknvl.logger;
+﻿using asknvl;
+using asknvl.logger;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using cheatbot.Database;
@@ -474,7 +475,7 @@ namespace cheatbot.ViewModels
                 case DropStatusChangedEventMessage dropStatusChangedEventMessage:
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        OnlineCount = (dropStatusChangedEventMessage.is_running) ? ++OnlineCount : --OnlineCount;
+                        OnlineCount = (dropStatusChangedEventMessage.status == DropStatus.active) ? ++OnlineCount : --OnlineCount;
                     });
                     break;
 

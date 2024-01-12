@@ -20,6 +20,7 @@ namespace asknvl
         protected ILogger logger;
         protected Messages_Chats chats;
         protected List<Messages_ChatFull> fullChats = new();
+        string dir;
         #endregion
 
         #region properties        
@@ -29,7 +30,8 @@ namespace asknvl
         public long tg_id { get; set; }
         public string? username { get; set; }
         public string _2fa_password { get; }
-        public bool is_active { get; set; }
+        //public bool is_active { get; set; }
+        public DropStatus status { get; set; }
         public bool test_mode { get; set; }
         #endregion
 
@@ -39,17 +41,14 @@ namespace asknvl
             this.api_hash = api_hash;
             this.phone_number = phone_number;
             this.logger = logger;
-
             this._2fa_password = _2fa_password;
+            this.status = DropStatus.stopped;
         }
 
         #region protected
         protected string Config(string what)
-        {
-
-            //string dir = Path.Combine(Directory.GetCurrentDirectory(), "userpool");
-            string dir = Path.Combine("C:", "userpool");
-
+        {   
+            dir = Path.Combine("C:", "userpool");
 
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
@@ -61,6 +60,7 @@ namespace asknvl
                 case "session_pathname": return $"{dir}/{phone_number}.session";
                 case "phone_number": return phone_number;
                 case "verification_code":
+                    setStatus(DropStatus.verification);
                     VerificationCodeRequestEvent?.Invoke(this);
                     verifyCodeReady.Reset();
                     verifyCodeReady.Wait();
@@ -85,36 +85,16 @@ namespace asknvl
             {
                 await processUpdate(update);
             }
-        }
-
-        private async Task updateFullChats(Messages_Chats chats)
-        {
-            fullChats.Clear();
-
-            foreach (var chat in chats.chats)
-            {
-                if (chat.Value.IsChannel)
-                {
-                    try
-                    {
-                        var full = await user.GetFullChat(chat.Value);
-                        fullChats.Add(full);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.err(phone_number, "UpdateFullChats: " + ex.Message);
-                    }
-                }
-            }
-        }
+        }        
         #endregion
 
         #region public
         public virtual Task Start()
         {
-            //logger = new Logger("USR", "chains", $"{chain}_{phone_number}");
-            logger.inf(phone_number, $"Starting...");
+            if (status == DropStatus.active)
+                return Task.CompletedTask;
 
+            logger.inf(phone_number, $"Starting...");
             User usr = null;
 
             return Task.Run(async () =>
@@ -127,23 +107,27 @@ namespace asknvl
                     tg_id = usr.ID;
 
                     chats = await user.Messages_GetAllChats();
-                    //await updateFullChats(chats);
-
+         
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
 
-                    is_active = true;
+                    setStatus(DropStatus.active);
 
+                } catch (RpcException ex) 
+                {
+                   processRpcException(ex);
                 }
                 catch (Exception ex)
                 {
                     logger.err(phone_number, $"Starting fail: {ex.Message}");
+                    await Stop();                    
                 }
 
             }).ContinueWith(async t =>
             {
-                StartedEvent?.Invoke(this, is_active);
-                if (is_active)
+                //StartedEvent?.Invoke(this, is_active);
+
+                if (status == DropStatus.active)
                 {
                     await user.Account_UpdateStatus(false);
                     logger.inf(phone_number, $"Started OK");
@@ -157,17 +141,31 @@ namespace asknvl
             verifyCodeReady.Set();
         }
 
-        Random subDelay = new Random();
+        public void ClearSession()
+        {
+            if (status == DropStatus.revoked || status == DropStatus.banned || status == DropStatus.verification)
+            {
+                try
+                {
+                    var sp = Path.Combine(dir, $"{phone_number}.session");
+                    if (File.Exists(sp))
+                    {
+                        user.Dispose();
+                        File.Delete(sp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.err("ClearSession:", $"{ex.Message}");
+                }
+            }
+        }
+
         public async Task Subscribe(string input)
         {
             string hash = "";
             string[] splt = input.Split("/");
             input = splt.Last();
-
-            //int f = subDelay.Next(0, 4);
-            //double d = subDelay.NextDouble();
-
-            //await Task.Delay((int)((f + d) * 60 * 1000));
 
             if (input.Contains("+"))
             {
@@ -211,8 +209,6 @@ namespace asknvl
             }
 
             chats = await user.Messages_GetAllChats();
-            //await updateFullChats(chats);
-            
         }
 
         public async Task LeaveChannel(long channel_tg_id)
@@ -270,11 +266,11 @@ namespace asknvl
         public virtual async Task Stop()
         {
             await Task.Run(() =>
-            {
+            {   
                 user?.Dispose();
-                StoppedEvent?.Invoke(this);
-                is_active = false;
-                logger.inf(phone_number, $"Stopped");
+                verifyCodeReady.Set();
+                //StoppedEvent?.Invoke(this);                
+                setStatus(DropStatus.stopped);                
             });
         }
         #endregion
@@ -284,17 +280,39 @@ namespace asknvl
         {
             ChannelMessageViewedEvent?.Invoke(channel_id, counter);
         }
+
+        protected void setStatus(DropStatus _status)
+        {
+            status = _status;
+            StatusChangedEvent?.Invoke(this, status);
+            logger.dbg(phone_number, $"{status}");
+        }
+
+        protected void processRpcException(RpcException ex)
+        {
+            switch (ex.Code)
+            {
+                case 400:
+                    setStatus(DropStatus.banned);
+                    user.Dispose();
+                    break;
+
+                case 401:
+                    setStatus(DropStatus.revoked);
+                    user.Dispose();
+                    break;
+            }
+        } 
         #endregion
 
         #region events
-        public event Action<ITGUser> VerificationCodeRequestEvent;
-        public event Action<ITGUser, bool> StartedEvent;
-        public event Action<ITGUser> StoppedEvent;
+        public event Action<ITGUser> VerificationCodeRequestEvent;        
         public event Action<string, long, string> ChannelAddedEvent;
         public event Action<long> ChannelLeftEvent;
 
         public event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;
+        public event Action<ITGUser, DropStatus> StatusChangedEvent;
         #endregion
     }
 }

@@ -58,8 +58,6 @@ namespace cheatbot.Models.drop
                                          messageInfo mi = new messageInfo(channel.Value.ID, id);
                                          newMessagesQueue.Add(mi);
                                      }
-
-
                                      //await user.Messages_GetMessagesViews(channel.Value, ids, true);
                                      //Thread.Sleep(5000);
                                      await Task.Delay(5000);
@@ -71,7 +69,12 @@ namespace cheatbot.Models.drop
                              }
                          }
                      });
-                } catch (Exception ex)
+                }
+                catch (RpcException ex)
+                {
+                    processRpcException(ex);
+                }
+                catch (Exception ex)
                 {
                     logger.err("ReadHistoryTimer FirstView:", ex.Message);
                 }
@@ -83,12 +86,10 @@ namespace cheatbot.Models.drop
                 return;
             }
 
-          
-
-           
-
             try
             {
+                logger.inf("???", "" + newMessagesQueue.Count);
+
                 if (newMessagesQueue.Count > 0)
                 {
 
@@ -116,7 +117,7 @@ namespace cheatbot.Models.drop
                     await user.Messages_GetMessagesViews(channel, ids, true);
                     SendChannelMessageViewedEvent(m.peer_id, (uint)ids.Length);
 
-                    int percentage = r.Next(1, 100);                    
+                    int percentage = r.Next(1, 100);
 
                     if (percentage <= 20)
                     {
@@ -180,12 +181,15 @@ namespace cheatbot.Models.drop
                         }
                     }
                 }
-
+            }
+            catch (RpcException ex)
+            {
+                processRpcException(ex);
             }
             catch (Exception ex)
             {
-                if (newMessagesQueue.Count > 0)
-                    newMessagesQueue.RemoveAt(0);
+                //if (newMessagesQueue.Count > 0)
+                //    newMessagesQueue.RemoveAt(0);
 
                 logger.err("ReadHistoryTimer View:", ex.Message);
             }
@@ -212,6 +216,8 @@ namespace cheatbot.Models.drop
                     var msgInfo = new messageInfo(unm);
                     newMessagesQueue.Add(msgInfo);
 
+                    logger.inf("!!!", "" + newMessagesQueue.Count);
+
                     break;
 
                 case UpdateChannel uch:
@@ -231,13 +237,11 @@ namespace cheatbot.Models.drop
         {
             return base.Start().ContinueWith(t =>
             {
-                if (is_active)
+                if (status == DropStatus.active)
                 {
 
                     double minOffset = r.Next(1, 5) + (1.0d * r.Next(1, 10) / 10);
-                    int offset = (int)(minOffset * 60 * 1000);
-
-                    logger.inf("", $"minoffset={minOffset} offset={offset}");
+                    int offset = (int)(minOffset * 10 * 1000);
 
                     readHistoryTimer = new System.Timers.Timer(offset);
                     readHistoryTimer.AutoReset = true;

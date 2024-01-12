@@ -8,6 +8,8 @@ using cheatbot.ViewModels.events;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reactive;
@@ -62,11 +64,17 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref allowStart, value);
         }
 
-        bool isRunning;
-        public bool IsRunning
+        //bool isRunning;
+        //public bool IsRunning
+        //{
+        //    get => isRunning;
+        //    set => this.RaiseAndSetIfChanged(ref isRunning, value);
+        //}
+        DropStatus status;
+        public DropStatus Status
         {
-            get => isRunning;
-            set => this.RaiseAndSetIfChanged(ref isRunning, value);
+            get => status;
+            set => this.RaiseAndSetIfChanged(ref status, value);    
         }
 
         bool needVerification;
@@ -81,6 +89,8 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> startCmd { get; }
         public ReactiveCommand<Unit, Unit> stopCmd { get; }
         public ReactiveCommand<Unit, Unit> verifyCmd { get; }
+        public ReactiveCommand<Unit, Unit> openTgCmd { get; }
+        public ReactiveCommand<Unit, Unit> clearSessionCmd { get; }
         #endregion
 
         public dropVM(DropModel model, ILogger logger)
@@ -103,8 +113,12 @@ namespace cheatbot.ViewModels
 
 
             drop.VerificationCodeRequestEvent += Drop_VerificationCodeRequestEvent;
-            drop.StartedEvent += Drop_StartedEvent;
-            drop.StoppedEvent += Drop_StoppedEvent;
+
+            //drop.StartedEvent += Drop_StartedEvent;
+            //drop.StoppedEvent += Drop_StoppedEvent;
+
+            drop.StatusChangedEvent -= Drop_StatusChangedEvent;
+            drop.StatusChangedEvent += Drop_StatusChangedEvent;
 
             startCmd = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -121,7 +135,32 @@ namespace cheatbot.ViewModels
             {
                 drop.SetVerifyCode(code);
             });
+            openTgCmd = ReactiveCommand.Create(() => {
 
+                string root = "";
+                using (var db = new DataBaseContext())
+                {
+                    var settings = db.AppSettings.FirstOrDefault();
+                    root = settings.RootPath;
+                }
+
+                if (!string.IsNullOrEmpty(root))
+                {
+                    var tg_path = Path.Combine(root, $"{group_id}", $"{phone_number.Replace("+", "")}", "Telegram.exe");
+                    try
+                    {
+                        Process.Start(tg_path);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.err("Telegram port:", ex.Message);
+                    }
+                }
+            });
+
+            clearSessionCmd = ReactiveCommand.Create(() => {
+                drop?.ClearSession();
+            });
 
             EventAggregator.getInstance().Subscribe(this);
         }
@@ -189,22 +228,25 @@ namespace cheatbot.ViewModels
             drop?.Stop();
         }
 
-        private void Drop_StoppedEvent(ITGUser drop)
-        {
-            if (IsRunning)
+        #region private
+        private void Drop_StatusChangedEvent(ITGUser drop, DropStatus status)
+        {            
+            switch (status)
             {
-                IsRunning = false;
-                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
+                case DropStatus.active:
+                    NeedVerification = false;
+                    AllowStart = false;
+                    break;
+                case DropStatus.stopped:
+                case DropStatus.revoked:
+                    AllowStart = true;
+                    break;
+                default:
+                    break;
             }
 
-        }
-
-        #region private
-        private void Drop_StartedEvent(ITGUser drop, bool result)
-        {
-            IsRunning = result;
-            NeedVerification = false;
-            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(IsRunning));
+            Status = status;
+            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(Status));
         }
 
         private void Drop_VerificationCodeRequestEvent(ITGUser obj)
@@ -216,7 +258,7 @@ namespace cheatbot.ViewModels
         #region public
         public async Task<bool> subscribe(string link)
         {
-            if (IsRunning)
+            if (Status == DropStatus.active)
             {
                 using (var db = new DataBaseContext())
                 {
@@ -239,15 +281,6 @@ namespace cheatbot.ViewModels
             return false;
         }
 
-        //public void OnEvent(ChannelUnsubscibeEvent message)
-        //{
-        //    Task.Run(async () => {
-
-        //        await drop.LeaveChannel(message.tg_id);
-
-        //    });
-        //}
-
         public async void OnEvent(BaseEventMessage message)
         {
             switch (message)
@@ -267,18 +300,6 @@ namespace cheatbot.ViewModels
                         drop.Change2FAPassword(change2FAPasswordOneEventMessage.old_password, change2FAPasswordOneEventMessage.new_password);
                     }
                     break;
-
-                //case ChannelSubscribeRequestEventMessage subscribeMessage:
-                //    try
-                //    {
-                //        if (group_id == subscribeMessage.group_id)
-                //            await subscribe(subscribeMessage.link);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        logger.err(phone_number, $"OnEvent subscribeMessage: {ex.Message}");
-                //    }
-                //    break;
 
                 case ChannelUnsubscribeRequestEventMessage unsubscribeMessage:
                     try
