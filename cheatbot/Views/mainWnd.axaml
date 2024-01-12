@@ -8,7 +8,7 @@
         x:Class="cheatbot.Views.mainWnd"
         xmlns:vv="using:cheatbot.Views"
         Icon="/Assets/avalonia-logo.ico"
-        Title="cheatbot v0.5">
+        Title="cheatbot v0.6">
 
     <Design.DataContext>
         <vm:mainVM/>
