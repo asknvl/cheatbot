@@ -241,12 +241,43 @@ namespace cheatbot.ViewModels
                 case DropStatus.revoked:
                     AllowStart = true;
                     break;
+                case DropStatus.banned:
+                    //using (var db = new DataBaseContext())
+                    //{
+                    //    var found_db = db.Drops.FirstOrDefault(d => d.phone_number.Equals(phone_number));
+                    //    if (found_db != null)
+                    //        db.Remove(found_db);
+
+                    //    var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == id);
+                    //    db.RemoveRange(found_subs);
+
+                    //    db.SaveChanges();
+                    //}
+
+                    //string root = "";
+                    //using (var db = new DataBaseContext())
+                    //{
+                    //    var settings = db.AppSettings.FirstOrDefault();
+                    //    root = settings.RootPath;
+                    //}
+
+                    //if (!string.IsNullOrEmpty(root))
+                    //{
+                    //    var tg_folder_path = Path.Combine(root, $"{group_id}", $"{phone_number.Replace("+", "")}");
+                    //    if (Directory.Exists(tg_folder_path))
+                    //        Directory.Delete(tg_folder_path, true);
+                    //}
+
+                    break;
                 default:
                     break;
             }
 
-            Status = status;
-            EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(Status));
+            if (Status != status)
+            {
+                Status = status;
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, Status));
+            }
         }
 
         private void Drop_VerificationCodeRequestEvent(ITGUser obj)

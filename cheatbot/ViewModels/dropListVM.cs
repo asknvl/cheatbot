@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
+using cheatbot.Models.cleaner;
 using cheatbot.Models.drop;
 using cheatbot.Models.files;
 using cheatbot.ViewModels.events;
@@ -29,7 +30,7 @@ namespace cheatbot.ViewModels
     {
         #region vars
         ILogger logger;
-        IEventAggregator eventAggregator;
+        DropCleaner cleaner;
         #endregion
 
         #region properties
@@ -130,6 +131,8 @@ namespace cheatbot.ViewModels
             InitAppSettings();
 
             this.logger = logger;
+
+            cleaner = new DropCleaner(logger);
 
             EventAggregator.getInstance().Subscribe(this);
 
@@ -477,10 +480,26 @@ namespace cheatbot.ViewModels
                     SubContent = null;
                     break;
 
-                case DropStatusChangedEventMessage dropStatusChangedEventMessage:
+                case DropStatusChangedEventMessage statusMessage:
+
+                    switch (statusMessage.status)
+                    {
+                        case DropStatus.banned:
+
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                var found = DropList.FirstOrDefault(d => d.id == statusMessage.id); 
+                                if (found != null)
+                                    DropList.Remove(found);
+                            });
+
+                            cleaner.Enqueue(statusMessage.group_id, statusMessage.id, statusMessage.phone_number);
+                            break;
+                    }
+
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        OnlineCount = (dropStatusChangedEventMessage.status == DropStatus.active) ? ++OnlineCount : --OnlineCount;
+                        OnlineCount = (statusMessage.status == DropStatus.active) ? ++OnlineCount : --OnlineCount;
                     });
                     break;
 

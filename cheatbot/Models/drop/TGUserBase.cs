@@ -290,17 +290,19 @@ namespace asknvl
 
         protected void processRpcException(RpcException ex)
         {
-            switch (ex.Code)
+            switch (ex.Message)
             {
-                case 400:
+                case "PHONE_NUMBER_BANNED":
                     setStatus(DropStatus.banned);
                     user.Dispose();
                     break;
 
-                case 401:
-                    setStatus(DropStatus.revoked);
+                case "SESSION_REVOKED":
+                case "AUTH_KEY_UNREGISTERED":
                     user.Dispose();
+                    setStatus(DropStatus.revoked);
                     break;
+
             }
         } 
         #endregion

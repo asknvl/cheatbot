@@ -70,10 +70,10 @@ namespace cheatbot.Models.drop
                          }
                      });
                 }
-                //catch (RpcException ex)
-                //{
-                //    //processRpcException(ex);
-                //}
+                catch (RpcException ex)
+                {
+                    processRpcException(ex);
+                }
                 catch (Exception ex)
                 {
                     logger.err("ReadHistoryTimer FirstView:", ex.Message);
@@ -181,10 +181,10 @@ namespace cheatbot.Models.drop
                     }
                 }
             }
-            //catch (RpcException ex)
-            //{
-            //    //processRpcException(ex);
-            //}
+            catch (RpcException ex)
+            {
+                processRpcException(ex);
+            }
             catch (Exception ex)
             {
                 //if (newMessagesQueue.Count > 0)
