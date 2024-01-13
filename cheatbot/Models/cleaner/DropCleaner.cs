@@ -23,7 +23,7 @@ namespace cheatbot.Models.cleaner
             this.logger = logger;   
 
             cleanTimer = new System.Timers.Timer();
-            cleanTimer.Interval = 5000; 
+            cleanTimer.Interval = 1000; 
             cleanTimer.AutoReset = true;
             cleanTimer.Elapsed += CleanTimer_Elapsed;
             cleanTimer.Start();
@@ -41,10 +41,11 @@ namespace cheatbot.Models.cleaner
                 if (cleanQueue.Count > 0)
                 {
                     var found = cleanQueue.Dequeue();
-                    await found.Clean();
-
-                    logger.inf("Clener:", $"{found.phone_number} removed");
-
+                    if (found != null)
+                    {
+                        await found.Clean();
+                        logger.inf("Clener:", $"{found.phone_number} removed");
+                    }
                 }
             } catch (Exception ex)
             {
