@@ -30,6 +30,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.13" />
+    <PackageReference Include="StarkSoftProxy" Version="1.6.0" />
     <PackageReference Include="WTelegramClient" Version="3.5.9" />
     <PackageReference Include="WTelegramClient.Extensions.Updates" Version="1.0.2" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />

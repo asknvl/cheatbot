@@ -1,5 +1,6 @@
 ﻿
 using asknvl.logger;
+using Starksoft.Net.Proxy;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,8 +66,8 @@ namespace asknvl
                     verifyCodeReady.Reset();
                     verifyCodeReady.Wait();
                     return verifyCode;
-                case "first_name": return "Stevie";
-                case "last_name": return "Voughan";
+                //case "first_name": return "Stevie";
+                //case "last_name": return "Voughan";
                 case "password": return _2fa_password;
                 default: return null;
             }
@@ -102,6 +103,14 @@ namespace asknvl
                 try
                 {
                     user = new Client(Config);
+
+                    //user.TcpHandler = async (address, port) =>
+                    //{
+                    //    var proxy = new Socks5ProxyClient("45.138.6.237", 64069, "z3dXN3TT", "SV3pephx");
+                    //    //var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
+                    //    return proxy.CreateConnection(address, port);
+                    //};
+
                     usr = await user.LoginUserIfNeeded();
                     username = usr.username;
                     tg_id = usr.ID;
