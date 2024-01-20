@@ -94,9 +94,9 @@ namespace cheatbot.Models.polls
                 return answers[0];
             }
             else
-                if (percentage > top_1_percentage && percentage <= top_2_percentage)
+                if (percentage > top_1_percentage && percentage <= top_1_percentage + top_2_percentage)
                 return answers[1];
-            else
+            else                
                 return answers[random.Next(2, answers.Length)];                
         }
     }
