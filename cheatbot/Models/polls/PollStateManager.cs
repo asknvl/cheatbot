@@ -1,6 +1,8 @@
 ﻿using cheatbot.Models.reactions;
+using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +45,7 @@ namespace cheatbot.Models.polls
                     pollsStates.Add(pollState);
                     if (pollsStates.Count > max_polls_states)
                         pollsStates.RemoveAt(0);
+
                 } catch (Exception ex)
                 {
                     throw new Exception($"UpdatePollList {ex.Message}");
@@ -82,22 +85,40 @@ namespace cheatbot.Models.polls
             //topIndex = random.Next(0, answers.Length);
 
             this.answers = answers.OrderBy(a => random.Next()).ToArray();
-            top_1_percentage = random.Next(5, 8) * 10;
-            top_2_percentage = top_1_percentage - random.Next(0, 11); 
+            top_1_percentage = random.Next(40, 60);
+            top_2_percentage = top_1_percentage + random.Next(1, 3) * 10;
         }
 
         public PollAnswer getAnswer()
         {
+
+            string s = "";
+            foreach (var a in answers)
+            {
+                s += $"{a.text} ";
+            }
+            Debug.WriteLine($"answers:={s} t1={top_1_percentage} t2={top_2_percentage}");
+
             int percentage = random.Next(1, 100);
+            Debug.WriteLine($"percentage={percentage}");
+
             if (percentage <= top_1_percentage)
             {
+                Debug.WriteLine(answers[0].text);
                 return answers[0];
             }
             else
-                if (percentage > top_1_percentage && percentage <= top_1_percentage + top_2_percentage)
+                if (percentage > top_1_percentage && percentage <= top_2_percentage)
+            {
+                Debug.WriteLine(answers[1].text);
                 return answers[1];
-            else                
-                return answers[random.Next(2, answers.Length)];                
+            }
+            else
+            {
+                int rindex = random.Next(2, answers.Length);
+                Debug.WriteLine(answers[rindex].text);
+                return answers[rindex];
+            }
         }
     }
 }

@@ -241,24 +241,29 @@ namespace cheatbot.Models.drop
         {
             int percentage = random.Next(1, 100);
 
+#if DEBUG
+            //test_mode = true;
+            //percentage = 0;
+#endif
+
             if (test_mode && percentage < poll_percent)
             {
 
-                Task.Run(async () => {
+                await Task.Run(async () => {
 
 
                     var answers = poll.poll.answers;
                     pollStateManager.UpdatePollList(peer.ID, id, answers);
 
-                    int nxt = random.Next(1, 6);
+                    int nxt = random.Next(1, 10);
 
-                    await Task.Delay(nxt * 10 * 1000);
-
-                    logger.inf("update:", $"poll {nxt}");
+                    await Task.Delay(nxt * 10 * 1000); 
 
                     var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
 
-                    var res = pollStateManager.Get(peer.ID, id).getAnswer();
+                    var state = pollStateManager.Get(peer.ID, id);
+
+                    var res = state.getAnswer();
 
                     if (res != null)
                         await user.Messages_SendVote(inputPeer, id, res.option);
