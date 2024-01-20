@@ -21,6 +21,7 @@ namespace asknvl
         protected ILogger logger;
         protected Messages_Chats chats;
         protected List<Messages_ChatFull> fullChats = new();
+        protected Messages_Dialogs dialogs;
         string dir = Path.Combine("C:", "userpool");
         #endregion
 
@@ -116,6 +117,7 @@ namespace asknvl
                     tg_id = usr.ID;
 
                     chats = await user.Messages_GetAllChats();
+                    dialogs = await user.Messages_GetAllDialogs();
          
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;

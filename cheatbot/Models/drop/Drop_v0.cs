@@ -1,5 +1,6 @@
 ﻿using asknvl;
 using asknvl.logger;
+using cheatbot.Models.polls;
 using cheatbot.Models.reactions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -18,11 +19,17 @@ namespace cheatbot.Models.drop
 {
     public class Drop_v0 : TGUserBase
     {
+        #region const
+        int watch_percent = 20;
+        int poll_percent = 100;
+        #endregion
+
         #region vars
         System.Timers.Timer readHistoryTimer;
         List<messageInfo> newMessagesQueue = new();
         ReactionsStateManager reactionsMansger = ReactionsStateManager.getInstance();
-        Random r = new Random();
+        PollStateManager pollStateManager = PollStateManager.getInstance();
+        Random random = new Random();
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
@@ -92,7 +99,7 @@ namespace cheatbot.Models.drop
                 if (newMessagesQueue.Count > 0)
                 {
 
-                    int index = r.Next(0, newMessagesQueue.Count - 1);
+                    int index = random.Next(0, newMessagesQueue.Count - 1);
 
                     var m = newMessagesQueue[index];
                     InputPeer channel = chats.chats[m.peer_id];
@@ -116,9 +123,9 @@ namespace cheatbot.Models.drop
                     await user.Messages_GetMessagesViews(channel, ids, true);
                     SendChannelMessageViewedEvent(m.peer_id, (uint)ids.Length);
 
-                    int percentage = r.Next(1, 100);
+                    int percentage = random.Next(1, 100);
 
-                    if (percentage <= 20)
+                    if (percentage <= watch_percent)
                     {
 
                         var fullchat = await user.GetFullChat(channel);
@@ -159,7 +166,7 @@ namespace cheatbot.Models.drop
                                     if (randomizedReactions.Length > 0)
                                     {
                                         int selected = 0;
-                                        percentage = r.Next(1, 100);
+                                        percentage = random.Next(1, 100);
 
                                         if (percentage <= 40)
                                             selected = 0;
@@ -168,7 +175,7 @@ namespace cheatbot.Models.drop
                                             selected = 1;
                                         else
                                             if (available.Length > 3)
-                                            selected = r.Next(2, available.Length);
+                                            selected = random.Next(2, available.Length);
 
                                         await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
                                         await Task.Delay(10000);
@@ -200,6 +207,12 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
+                    logger.inf("update:", update.ToString());
+
+                    encueueMessageToWatch(unm);
+
+                    await handleMessage(unm.message);
+
                     //var nm = (Message)unm.message;
                     //var found = false;
 
@@ -212,19 +225,68 @@ namespace cheatbot.Models.drop
                     //    newMessagesQueue.Add(msgInfo);
                     //}
 
-                    var msgInfo = new messageInfo(unm);
-                    newMessagesQueue.Add(msgInfo);
+            
 
                     break;
+            }
+        }
 
-                case UpdateChannel uch:
+        void encueueMessageToWatch(UpdateNewMessage newMessage)
+        {
+            var msgInfo = new messageInfo(newMessage);
+            newMessagesQueue.Add(msgInfo);
+        }
+
+        async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
+        {
+            int percentage = random.Next(1, 100);
+
+            if (percentage < poll_percent)
+            {
+
+                Task.Run(async () => {
+
+
+                    var answers = poll.poll.answers;
+                    pollStateManager.UpdatePollList(peer.ID, id, answers);
+
+                    int nxt = random.Next(1, 6);
+
+                    await Task.Delay(nxt * 10 * 1000);
+
+                    logger.inf("update:", $"poll {nxt}");
+
+                    var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
+
+                    var res = pollStateManager.Get(peer.ID, id).getAnswer();
+
+                    if (res != null)
+                        await user.Messages_SendVote(inputPeer, id, res.option);
+
+                });
+            }
+        }
+
+        async Task handleMessage(MessageBase messageBase)
+        {
+            var peer = messageBase.Peer;
+            var id = messageBase.ID;
+
+            switch (messageBase)
+            {
+                case Message message:
                     try
                     {
-                        //chats = await user.Messages_GetAllChats();
+                        switch (message.media) {
+
+                            case MessageMediaPoll poll:
+                                handlePollMessage(poll, peer, id);
+                                break;
+                        }
                     }
                     catch (Exception ex)
                     {
-                        logger.err(phone_number, $"processUpdate: {ex.Message}");
+
                     }
                     break;
             }
@@ -237,8 +299,12 @@ namespace cheatbot.Models.drop
                 if (status == DropStatus.active)
                 {
 
-                    double minOffset = r.Next(2, 7) + (1.0d * r.Next(1, 10) / 10);
+                    double minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
+#if DEBUG_FAST
+                    int offset = (int)(minOffset * 10 * 1000);
+#else
                     int offset = (int)(minOffset * 60 * 1000);
+#endif
 
                     readHistoryTimer = new System.Timers.Timer(offset);
                     readHistoryTimer.AutoReset = true;
