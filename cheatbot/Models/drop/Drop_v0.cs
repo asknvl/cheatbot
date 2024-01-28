@@ -21,7 +21,7 @@ namespace cheatbot.Models.drop
     {
         #region const
         int watch_percent = 20;
-        int poll_percent = 20;
+        int poll_percent = 30;
         #endregion
 
         #region vars
@@ -246,7 +246,7 @@ namespace cheatbot.Models.drop
             //percentage = 0;
 #endif
 
-            if (test_mode && percentage < poll_percent)
+            if (percentage < poll_percent)
             {
 
                 await Task.Run(async () => {

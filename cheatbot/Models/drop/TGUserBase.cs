@@ -105,12 +105,12 @@ namespace asknvl
                 {
                     user = new Client(Config);
 
-                    //user.TcpHandler = async (address, port) =>
-                    //{
-                    //    var proxy = new Socks5ProxyClient("45.138.6.237", 64069, "z3dXN3TT", "SV3pephx");
-                    //    //var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
-                    //    return proxy.CreateConnection(address, port);
-                    //};
+                    user.TcpHandler = async (address, port) =>
+                    {
+                        var proxy = new Socks5ProxyClient("45.138.6.237", 64069, "z3dXN3TT", "SV3pephx");
+                        //var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
+                        return proxy.CreateConnection(address, port);
+                    };
 
                     usr = await user.LoginUserIfNeeded();
                     username = usr.username;
