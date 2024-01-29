@@ -5,6 +5,8 @@ using cheatbot.Models.reactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using TL;
 
@@ -38,7 +40,7 @@ namespace cheatbot.Models.drop
         {
         }
 
-        bool needFirstWatch = true;
+        bool needFirstWatch = false;
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
 
@@ -209,11 +211,13 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
-                    logger.inf("update:", update.ToString());
+                    logger.inf($"{phone_number} update:", update.ToString());
 
-                    encueueMessageToWatch(unm);
+                    var needWatch = await handleMessage(unm.message);
 
-                    await handleMessage(unm.message);
+                    if (needWatch)
+                        encueueMessageToWatch(unm);
+
 
                     //var nm = (Message)unm.message;
                     //var found = false;
@@ -251,42 +255,46 @@ namespace cheatbot.Models.drop
 
             if (percentage < poll_percent)
             {
-                var pollInfo = new pollInfo(poll, peer, id);
+                var pollInfo = new pollInfo(poll, peer, id);                
                 newPollsQueue.Add(pollInfo);
             }
         }
 
         async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
         {
-            logger.err($"{phone_number}", $"poll vote {pollCounter++}");
-
             await Task.Run(async () =>
             {
 
+                InputPeer c = chats.chats[peer.ID];
+                await user.Messages_GetMessagesViews(c, new[] { id }, true);
+
+                //var delay = random.Next(2, 5);
+                //await Task.Delay(delay * 1000);
+
                 var answers = poll.poll.answers;
-                try
-                {
-                    pollStateManager.UpdatePollList(peer.ID, id, answers);
-                }
-                catch (Exception ex)
-                {
-                    logger.err($"{phone_number}", $"poll: {ex.Message}");
-                }
+                pollStateManager.UpdatePollList(peer.ID, id, answers);
 
                 var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
                 var state = pollStateManager.Get(peer.ID, id);
-                var res = state.getAnswer();
+                var res = state.getAnswer();                
 
                 if (res != null)
                     await user.Messages_SendVote(inputPeer, id, res.option);
+
             });
 
         }
 
-        async Task handleMessage(MessageBase messageBase)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="messageBase"></param>
+        /// <returns>need watch</returns>
+        async Task<bool> handleMessage(MessageBase messageBase)
         {
             var peer = messageBase.Peer;
             var id = messageBase.ID;
+            bool res = true;
 
             switch (messageBase)
             {
@@ -296,6 +304,7 @@ namespace cheatbot.Models.drop
                         switch (message.media) {
 
                             case MessageMediaPoll poll:
+                                res = false;
                                 encueuePollMessage(poll, peer, id);
                                 break;
                         }
@@ -308,6 +317,7 @@ namespace cheatbot.Models.drop
             }
 
             await Task.CompletedTask;
+            return res;
         }
 
         public override Task Start()
@@ -349,17 +359,16 @@ namespace cheatbot.Models.drop
         {
             try
             {
-
-                var newPoll = newPollsQueue.FirstOrDefault();
-                if (newPoll != null)
+                if (newPollsQueue.Count > 0)
                 {
+                    var newPoll = newPollsQueue.First();                    
                     await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);
-                    newPollsQueue.RemoveAt(0);
-                }
-
-            } catch (Exception ex)
+                    newPollsQueue.Remove(newPoll);
+                }                
+            }
+            catch (Exception ex)
             {
-                logger.err($"{phone_number}", $"PollTimer_Elpased: {ex.Message}");
+                logger.err($"{phone_number}", $"PollTimer_Elpased: {ex.Message}");               
             }
         }
 

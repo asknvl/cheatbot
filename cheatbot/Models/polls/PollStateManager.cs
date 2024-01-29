@@ -115,8 +115,12 @@ namespace cheatbot.Models.polls
             }
             else
             {
-                int rindex = random.Next(2, answers.Length);
-                Debug.WriteLine(answers[rindex].text);
+
+                int rindex = random.Next(0, 2);
+
+                if (answers.Count() > 2)
+                    rindex = random.Next(2, answers.Length);                
+
                 return answers[rindex];
             }
         }
