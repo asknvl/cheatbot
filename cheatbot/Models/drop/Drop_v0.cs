@@ -2,18 +2,11 @@
 using asknvl.logger;
 using cheatbot.Models.polls;
 using cheatbot.Models.reactions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using TL;
-using WTelegram;
 
 namespace cheatbot.Models.drop
 {
@@ -21,15 +14,24 @@ namespace cheatbot.Models.drop
     {
         #region const
         int watch_percent = 20;
+#if DEBUG_FAST
+        int poll_percent = 100;
+#else
         int poll_percent = 30;
+#endif
         #endregion
 
         #region vars
-        System.Timers.Timer readHistoryTimer;
+        System.Timers.Timer readHistoryTimer;        
         List<messageInfo> newMessagesQueue = new();
         ReactionsStateManager reactionsMansger = ReactionsStateManager.getInstance();
+
+        System.Timers.Timer pollTimer;
         PollStateManager pollStateManager = PollStateManager.getInstance();
+        List<pollInfo> newPollsQueue = new();
+
         Random random = new Random();
+        static int pollCounter = 0;
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
@@ -237,8 +239,9 @@ namespace cheatbot.Models.drop
             newMessagesQueue.Add(msgInfo);
         }
 
-        async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
+        void encueuePollMessage(MessageMediaPoll poll, Peer peer, int id)
         {
+
             int percentage = random.Next(1, 100);
 
 #if DEBUG
@@ -248,28 +251,36 @@ namespace cheatbot.Models.drop
 
             if (percentage < poll_percent)
             {
-
-                await Task.Run(async () => {
-
-
-                    var answers = poll.poll.answers;
-                    pollStateManager.UpdatePollList(peer.ID, id, answers);
-
-                    int nxt = random.Next(1, 10);
-
-                    await Task.Delay(nxt * 10 * 1000); 
-
-                    var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
-
-                    var state = pollStateManager.Get(peer.ID, id);
-
-                    var res = state.getAnswer();
-
-                    if (res != null)
-                        await user.Messages_SendVote(inputPeer, id, res.option);
-
-                });
+                var pollInfo = new pollInfo(poll, peer, id);
+                newPollsQueue.Add(pollInfo);
             }
+        }
+
+        async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
+        {
+            logger.err($"{phone_number}", $"poll vote {pollCounter++}");
+
+            await Task.Run(async () =>
+            {
+
+                var answers = poll.poll.answers;
+                try
+                {
+                    pollStateManager.UpdatePollList(peer.ID, id, answers);
+                }
+                catch (Exception ex)
+                {
+                    logger.err($"{phone_number}", $"poll: {ex.Message}");
+                }
+
+                var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
+                var state = pollStateManager.Get(peer.ID, id);
+                var res = state.getAnswer();
+
+                if (res != null)
+                    await user.Messages_SendVote(inputPeer, id, res.option);
+            });
+
         }
 
         async Task handleMessage(MessageBase messageBase)
@@ -285,16 +296,18 @@ namespace cheatbot.Models.drop
                         switch (message.media) {
 
                             case MessageMediaPoll poll:
-                                handlePollMessage(poll, peer, id);
+                                encueuePollMessage(poll, peer, id);
                                 break;
                         }
                     }
                     catch (Exception ex)
                     {
-
+                        logger.err($"{phone_number}", $"{phone_number} handleMessage: {ex.Message}");
                     }
                     break;
             }
+
+            await Task.CompletedTask;
         }
 
         public override Task Start()
@@ -315,8 +328,39 @@ namespace cheatbot.Models.drop
                     readHistoryTimer.AutoReset = true;
                     readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                     readHistoryTimer.Start();
+
+                    minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
+#if DEBUG_FAST
+                    offset = (int)(minOffset * 10 * 1000);
+#else
+                    offset = (int)(minOffset * 60 * 1000);
+#endif
+
+                    pollTimer = new System.Timers.Timer(offset);
+                    pollTimer.AutoReset = true;
+                    pollTimer.Elapsed += PollTimer_Elapsed;
+                    pollTimer.Start();
+
                 }
             });
+        }
+
+        private async void PollTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+
+                var newPoll = newPollsQueue.FirstOrDefault();
+                if (newPoll != null)
+                {
+                    await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);
+                    newPollsQueue.RemoveAt(0);
+                }
+
+            } catch (Exception ex)
+            {
+                logger.err($"{phone_number}", $"PollTimer_Elpased: {ex.Message}");
+            }
         }
 
         public override async Task Stop()
@@ -325,8 +369,14 @@ namespace cheatbot.Models.drop
             {
                 if (readHistoryTimer != null)
                 {
-                    readHistoryTimer?.Stop();
+                    readHistoryTimer.Stop();
                     readHistoryTimer.Elapsed -= ReadHistoryTimer_Elapsed;
+                }
+
+                if (pollTimer != null)
+                {
+                    pollTimer.Stop();
+                    pollTimer.Elapsed -= PollTimer_Elapsed; 
                 }
             });
 
@@ -350,6 +400,21 @@ namespace cheatbot.Models.drop
         {
             this.peer_id = peer_id;
             this.message_id = message_id;
+        }
+    }
+
+    public class pollInfo
+    {        
+
+        public MessageMediaPoll? poll { get; set; }
+        public Peer? peer { get; set; }
+        public int id { get; set; }
+
+        public pollInfo(MessageMediaPoll? poll, Peer? peer, int id)
+        {
+            this.poll = poll;
+            this.peer = peer;
+            this.id = id;
         }
     }
 }
