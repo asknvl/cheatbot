@@ -17,7 +17,7 @@ namespace cheatbot.Models.drop
         #region const
         int watch_percent = 20;
 #if DEBUG_FAST
-        int poll_percent = 100;
+        int poll_percent = 30;
 #else
         int poll_percent = 30;
 #endif
@@ -243,9 +243,16 @@ namespace cheatbot.Models.drop
             newMessagesQueue.Add(msgInfo);
         }
 
-        void encueuePollMessage(MessageMediaPoll poll, Peer peer, int id)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="poll"></param>
+        /// <param name="peer"></param>
+        /// <param name="id"></param>
+        /// <returns>true-нужно делать просмотр на это сообщение</returns>
+        bool encueuePollMessage(MessageMediaPoll poll, Peer peer, int id)
         {
-
+            bool res = true;
             int percentage = random.Next(1, 100);
 
 #if DEBUG
@@ -257,7 +264,10 @@ namespace cheatbot.Models.drop
             {
                 var pollInfo = new pollInfo(poll, peer, id);                
                 newPollsQueue.Add(pollInfo);
+                res = false;
             }
+
+            return res; 
         }
 
         async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
@@ -303,9 +313,8 @@ namespace cheatbot.Models.drop
                     {
                         switch (message.media) {
 
-                            case MessageMediaPoll poll:
-                                res = false;
-                                encueuePollMessage(poll, peer, id);
+                            case MessageMediaPoll poll:                                
+                                res = encueuePollMessage(poll, peer, id); //
                                 break;
                         }
                     }
