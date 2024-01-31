@@ -34,26 +34,35 @@ namespace cheatbot.Models.reactions
         #region public        
         public void UpdateMessageList(long channelID, int messageID, Reaction[] available)
         {
-            var found = messageStates.Any(ms => ms.channelID == channelID && ms.messageID == messageID);
-            if (!found)
+            try
             {
-                try
+                var found = messageStates.Any(ms => ms.channelID == channelID && ms.messageID == messageID);
+                if (!found)
                 {
-                    var messageState = new messageState(channelID, messageID, available);
-                    messageStates.Add(messageState);
-                    if (messageStates.Count > max_messages_states)
-                        messageStates.RemoveAt(0);
-                } catch (Exception ex)
-                {
-                    throw new Exception($"UpdateMessageList {ex.Message}");
+                    try
+                    {
+                        var messageState = new messageState(channelID, messageID, available);
+                        messageStates.Add(messageState);
+                        if (messageStates.Count > max_messages_states)
+                            messageStates.RemoveAt(0);
+                    }
+                    catch (Exception ex)
+                    {
+                        //throw new Exception($"UpdateMessageList {ex.Message}");
+                    }
                 }
+            } catch (Exception ex)
+            {
+
             }
         }
+
 
         public messageState? Get(long channelID, int messageID) {
             var found = messageStates.FirstOrDefault(ms => ms.channelID == channelID && ms.messageID == messageID);
             return found;
         }
+
         #endregion
     }
 

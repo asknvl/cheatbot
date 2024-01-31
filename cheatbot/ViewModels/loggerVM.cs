@@ -23,7 +23,7 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region properties
-        bool disableFileOutput;
+        bool disableFileOutput = true;
         public bool DisableFileOutput
         {
             get => disableFileOutput;
