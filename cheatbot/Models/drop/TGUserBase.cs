@@ -1,5 +1,6 @@
 ﻿
 using asknvl.logger;
+using cheatbot.Database;
 using Starksoft.Net.Proxy;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace asknvl
         protected List<Messages_ChatFull> fullChats = new();
         protected Messages_Dialogs dialogs;
         string dir = Path.Combine("C:", "userpool");
+
+        protected List<long> acceptedIds = new();
         #endregion
 
         #region properties        
@@ -118,7 +121,12 @@ namespace asknvl
 
                     chats = await user.Messages_GetAllChats();
                     dialogs = await user.Messages_GetAllDialogs();
-         
+
+                    using (var db = new DataBaseContext())
+                    {
+                        acceptedIds = db.Channels.Select(c => c.tg_id).ToList();
+                    }
+
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
 

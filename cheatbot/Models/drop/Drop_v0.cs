@@ -1,5 +1,6 @@
 ﻿using asknvl;
 using asknvl.logger;
+using cheatbot.Database;
 using cheatbot.Models.polls;
 using cheatbot.Models.reactions;
 using System;
@@ -33,7 +34,8 @@ namespace cheatbot.Models.drop
         List<pollInfo> newPollsQueue = new();
 
         Random random = new Random();
-        static int pollCounter = 0;
+
+       
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
@@ -55,13 +57,15 @@ namespace cheatbot.Models.drop
 
                          foreach (var channel in chats.chats)
                          {
+                             if (!acceptedIds.Contains(channel.Key))
+                                 continue;
 
                              if (channel.Value.IsChannel)
                              {
 
                                  try
                                  {
-                                     var history = await user.Messages_GetHistory(channel.Value, limit: 4);
+                                     var history = await user.Messages_GetHistory(channel.Value, limit: 6);
                                      var ids = history.Messages.Select(m => m.ID).ToArray();
 
                                      foreach (var id in ids)
@@ -212,12 +216,16 @@ namespace cheatbot.Models.drop
             {
                 case UpdateNewMessage unm:
 
-                    logger.inf($"{phone_number} update:", update.ToString());
+                    var id = unm.message.Peer.ID;
+                    if (acceptedIds.Contains(id))
+                    {
+                        logger.inf($"{phone_number} update:", update.ToString());
 
-                    var needWatch = await handleMessage(unm.message);
+                        var needWatch = await handleMessage(unm.message);
 
-                    if (needWatch)
-                        encueueMessageToWatch(unm);
+                        if (needWatch)
+                            encueueMessageToWatch(unm);
+                    }
 
 
                     //var nm = (Message)unm.message;
@@ -336,6 +344,9 @@ namespace cheatbot.Models.drop
             {
                 if (status == DropStatus.active)
                 {
+
+
+                   
 
                     double minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
 #if DEBUG_FAST
