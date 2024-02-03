@@ -23,6 +23,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TL;
 
 namespace cheatbot.ViewModels
 {
@@ -110,6 +111,13 @@ namespace cheatbot.ViewModels
             get => tgpath;
             set => this.RaiseAndSetIfChanged(ref tgpath, value);
         }
+
+        string? proxyString;
+        public string? ProxyString
+        {
+            get => proxyString;
+            set => this.RaiseAndSetIfChanged(ref proxyString, value); 
+        }
         #endregion
 
         #region commands
@@ -121,9 +129,10 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> loadNewCmd { get; }
         public ReactiveCommand<Unit, Unit> setRootPathCmd { get; }
         public ReactiveCommand<Unit, Unit> setTGPathCmd { get; }
+        public ReactiveCommand<Unit, Unit> setProxyCmd { get; }
         public ReactiveCommand<Unit, Unit> closeTGsCmd { get; }
         public ReactiveCommand<Unit, Unit> startAllCmd { get; }
-        public ReactiveCommand<Unit, Unit> stopAllCmd { get; }
+        public ReactiveCommand<Unit, Unit> stopAllCmd { get; }        
         #endregion
         public dropListVM(ILogger logger)
         {
@@ -243,6 +252,21 @@ namespace cheatbot.ViewModels
                         db.SaveChanges();
                     }
                     TGPath = result;
+                }
+            });
+
+            setProxyCmd = ReactiveCommand.Create(() => {
+
+                using (var db = new DataBaseContext())
+                {
+                    AppSettings? found = db.AppSettings.FirstOrDefault();
+                    if (found == null)
+                    {
+                        found = new AppSettings();
+                        db.AppSettings.Add(found);  
+                    }
+                    found.ProxyString = ProxyString;
+                    db.SaveChanges();
                 }
             });
 
@@ -399,6 +423,7 @@ namespace cheatbot.ViewModels
                 {
                     RootPath = found.RootPath;
                     TGPath = found.TGPath;
+                    ProxyString = found.ProxyString;
                 }
             }
         }
@@ -484,6 +509,7 @@ namespace cheatbot.ViewModels
 
                     switch (statusMessage.status)
                     {
+                        case DropStatus.removed:
                         case DropStatus.banned:
 
                             await Dispatcher.UIThread.InvokeAsync(() =>

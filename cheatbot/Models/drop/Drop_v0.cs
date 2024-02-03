@@ -338,9 +338,9 @@ namespace cheatbot.Models.drop
             return res;
         }
 
-        public override Task Start()
+        public override Task Start(string proxy)
         {
-            return base.Start().ContinueWith(t =>
+            return base.Start(proxy).ContinueWith(t =>
             {
                 if (status == DropStatus.active)
                 {

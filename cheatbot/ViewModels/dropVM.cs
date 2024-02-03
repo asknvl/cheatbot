@@ -74,7 +74,23 @@ namespace cheatbot.ViewModels
         public DropStatus Status
         {
             get => status;
-            set => this.RaiseAndSetIfChanged(ref status, value);    
+            set
+            {
+
+                switch (value)
+                {
+                    case DropStatus.revoked:
+                    case DropStatus.verification:
+                    case DropStatus.banned:
+                        AllowRemove = true;
+                        break;
+                    default:
+                        AllowRemove = false;
+                        break;
+                }
+
+                this.RaiseAndSetIfChanged(ref status, value);
+            }
         }
 
         bool needVerification;
@@ -82,6 +98,13 @@ namespace cheatbot.ViewModels
         {
             get => needVerification;
             set => this.RaiseAndSetIfChanged(ref needVerification, value);
+        }
+
+        bool allowRemove;
+        public bool AllowRemove
+        {
+            get => allowRemove;
+            set => this.RaiseAndSetIfChanged(ref allowRemove, value);
         }
         #endregion
 
@@ -91,6 +114,7 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> verifyCmd { get; }
         public ReactiveCommand<Unit, Unit> openTgCmd { get; }
         public ReactiveCommand<Unit, Unit> clearSessionCmd { get; }
+        public ReactiveCommand<Unit, Unit> removeCmd { get; }
         #endregion
 
         public dropVM(DropModel model, ILogger logger)
@@ -124,8 +148,16 @@ namespace cheatbot.ViewModels
             {
                 //if (group_id == 8)
                 //    drop.test_mode = true;
-
-                await drop.Start();
+                string? proxy = null;
+                using (var db = new DataBaseContext())
+                {
+                    var found = db.AppSettings.FirstOrDefault();
+                    if (found != null)
+                    {
+                        proxy = found.ProxyString;
+                    }
+                }
+                await drop.Start(proxy);
             });
             stopCmd = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -160,6 +192,11 @@ namespace cheatbot.ViewModels
 
             clearSessionCmd = ReactiveCommand.Create(() => {
                 drop?.ClearSession();
+            });
+
+            removeCmd = ReactiveCommand.Create(() => {
+                Status = DropStatus.removed;
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, DropStatus.removed));
             });
 
             EventAggregator.getInstance().Subscribe(this);

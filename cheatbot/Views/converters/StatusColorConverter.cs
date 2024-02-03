@@ -28,6 +28,8 @@ namespace cheatbot.Views.converters
                     return Brushes.Yellow;
                 case DropStatus.banned:
                     return Brushes.Black;
+                case DropStatus.removed:
+                    return Brushes.LightGray;
                 default:
                     return Brushes.Transparent;
             }  

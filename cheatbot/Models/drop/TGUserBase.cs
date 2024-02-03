@@ -94,13 +94,31 @@ namespace asknvl
         #endregion
 
         #region public
-        public virtual Task Start()
+        public virtual Task Start(string proxy)
         {
             if (status == DropStatus.active)
                 return Task.CompletedTask;
 
-            logger.inf(phone_number, $"Starting...");
-            User usr = null;
+            string[] proxy_cred = null!;
+            int port = 0;
+
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                try
+                {
+                    proxy_cred = proxy.Split(':');
+                    if (proxy_cred.Length < 4)
+                        throw new ArgumentException("Неправильный формат адреса прокси");
+                    port = int.Parse(proxy_cred[1]);
+
+                } catch (Exception ex)
+                {
+                    logger.err(phone_number, ex.Message);
+                    throw;
+                }
+            }           
+
+            User usr = null!;
 
             return Task.Run(async () =>
             {
@@ -108,12 +126,20 @@ namespace asknvl
                 {
                     user = new Client(Config);
 
-                    //user.TcpHandler = async (address, port) =>
-                    //{
-                    //    var proxy = new Socks5ProxyClient("45.138.6.237", 64069, "z3dXN3TT", "SV3pephx");
-                    //    //var proxy = xNet.Socks5ProxyClient.Parse("host:port:username:password");
-                    //    return proxy.CreateConnection(address, port);
-                    //};
+                    if (proxy_cred != null)
+                    {
+                        user.TcpHandler = async (address, port) =>
+                        {
+                            var proxy = new Socks5ProxyClient(
+                                                        proxy_cred[0],
+                                                        int.Parse(proxy_cred[1]),
+                                                        proxy_cred[2],
+                                                        proxy_cred[3]);
+                            return proxy.CreateConnection(address, port);
+                        };
+                    }
+
+                    logger.inf(phone_number, $"Starting...");
 
                     usr = await user.LoginUserIfNeeded();
                     username = usr.username;

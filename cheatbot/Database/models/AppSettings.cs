@@ -15,5 +15,7 @@ namespace cheatbot.Database.models
         public int id { get; set; }
         public string? RootPath { get; set; }
         public string? TGPath { get; set; }
+        public string? ProxyString { get; set; }
+          
     }
 }

@@ -15,7 +15,7 @@ namespace asknvl
 
         bool test_mode { get; set; }
 
-        Task Start();
+        Task Start(string proxy);
         Task Subscribe(string input);
         Task LeaveChannel(long id);
         Task Change2FAPassword(string old_password, string new_password);
@@ -37,6 +37,7 @@ namespace asknvl
         active,
         verification,
         revoked,
-        banned
+        banned,
+        removed
     }
 }
