@@ -1,6 +1,7 @@
 ﻿
 using asknvl.logger;
 using cheatbot.Database;
+using cheatbot.Database.models;
 using Starksoft.Net.Proxy;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace asknvl
         //public bool is_active { get; set; }
         public DropStatus status { get; set; }
         public bool test_mode { get; set; }
+        public bool is_subscription_running { get; set; }
         #endregion
 
         public TGUserBase(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger)
@@ -254,6 +256,42 @@ namespace asknvl
             }
 
             chats = await user.Messages_GetAllChats();
+        }
+
+        public async Task Subscribe(List<ChannelModel> channels, CancellationToken cts)
+        {
+            if (is_subscription_running)
+                return;
+
+            chats = await user.Messages_GetAllChats();
+
+            List<ChannelModel> delta = new();
+
+            foreach (var channel in channels)
+            {
+                var found = chats.chats.ContainsKey(channel.tg_id);
+                if (found)
+                    delta.Add(channel);
+            }
+
+            Random random = new Random();
+            var randomDelta = delta.OrderBy(item => random.Next()).ToList();
+
+            try
+            {
+                foreach (var channel in randomDelta)
+                {
+                    cts.ThrowIfCancellationRequested();
+
+                    await Subscribe(channel.link);
+
+                    await Task.Delay(random.Next(5, 20) * 60 * 1000);
+                }
+            } catch (OperationCanceledException ex)
+            {
+                chats = await user.Messages_GetAllChats();
+            }            
+
         }
 
         public async Task LeaveChannel(long channel_tg_id)

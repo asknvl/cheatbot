@@ -12,7 +12,7 @@ namespace asknvl
         long tg_id { get; set; }
         //bool is_active { get; set; }
         DropStatus status { get; set; }
-
+        bool is_subscription_running { get; set; }  
         bool test_mode { get; set; }
 
         Task Start(string proxy);

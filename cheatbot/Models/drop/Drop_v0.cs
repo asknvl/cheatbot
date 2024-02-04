@@ -72,9 +72,7 @@ namespace cheatbot.Models.drop
                                      {
                                          messageInfo mi = new messageInfo(channel.Value.ID, id);
                                          newMessagesQueue.Add(mi);
-                                     }
-                                     //await user.Messages_GetMessagesViews(channel.Value, ids, true);
-                                     //Thread.Sleep(5000);
+                                     }                                     
                                      await Task.Delay(7000);
                                  }
                                  catch (Exception ex)
@@ -123,9 +121,7 @@ namespace cheatbot.Models.drop
                     foreach (var item in tmpList)
                         newMessagesQueue.Remove(item);
 
-                    var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
-                    //var v = await user.Messages_GetMessagesViews(channel, messagesIDs, true);
-                    //SendChannelMessageViewedEvent(m.peer_id, (uint)messagesIDs.Length);
+                    var messagesIDs = tmpList.Select(m => m.message_id).ToArray();                    
 
                     var history = await user.Messages_GetHistory(channel, limit: tmpList.Count);
                     var ids = history.Messages.Select(m => m.ID).ToArray();
@@ -138,8 +134,7 @@ namespace cheatbot.Models.drop
                     {
 
                         var fullchat = await user.GetFullChat(channel);
-                        var reactions = fullchat?.full_chat.AvailableReactions;
-                        //var reactions = fullChats.FirstOrDefault(c => c.chats.ContainsKey(channel.ID))?.full_chat.AvailableReactions;
+                        var reactions = fullchat?.full_chat.AvailableReactions;                        
 
                         if (reactions is ChatReactionsSome)
                         {
@@ -161,16 +156,7 @@ namespace cheatbot.Models.drop
 
                                 if (messageState != null)
                                 {
-
-
                                     Reaction[]? randomizedReactions = messageState.reactions;
-
-                                    //string s = "";
-                                    //foreach (var reaction in randomizedReactions)
-                                    //{
-                                    //    s = s + $" {((ReactionEmoji)reaction)?.emoticon}";                                     
-                                    //}
-                                    //logger.inf("rndmized:", s);
 
                                     if (randomizedReactions.Length > 0)
                                     {
@@ -223,25 +209,9 @@ namespace cheatbot.Models.drop
 
                         var needWatch = await handleMessage(unm.message);
 
-                        if (needWatch)
+                        //if (needWatch)
                             encueueMessageToWatch(unm);
                     }
-
-
-                    //var nm = (Message)unm.message;
-                    //var found = false;
-
-                    //if (nm.grouped_id != 0)
-                    //    found = newMessagesQueue.Any(m => m.grouped_id == nm.grouped_id);
-
-                    //if (!found)
-                    //{
-                    //    var msgInfo = new messageInfo(unm);
-                    //    newMessagesQueue.Add(msgInfo);
-                    //}
-
-            
-
                     break;
             }
         }
@@ -264,9 +234,9 @@ namespace cheatbot.Models.drop
             bool res = true;
             int percentage = random.Next(1, 100);
 
-#if DEBUG
+#if DEBUG_FAST
             //test_mode = true;
-            //percentage = 0;
+            percentage = 0;
 #endif
 
             if (percentage < poll_percent)
@@ -284,11 +254,8 @@ namespace cheatbot.Models.drop
             await Task.Run(async () =>
             {
 
-                InputPeer c = chats.chats[peer.ID];
-                await user.Messages_GetMessagesViews(c, new[] { id }, true);
-
-                //var delay = random.Next(2, 5);
-                //await Task.Delay(delay * 1000);
+                //InputPeer c = chats.chats[peer.ID];
+                //await user.Messages_GetMessagesViews(c, new[] { id }, true);
 
                 var answers = poll.poll.answers;
                 pollStateManager.UpdatePollList(peer.ID, id, answers);
@@ -360,7 +327,7 @@ namespace cheatbot.Models.drop
                     readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                     readHistoryTimer.Start();
 
-                    minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
+                    minOffset = random.Next(3, 14) + (1.0d * random.Next(1, 10) / 10);
 #if DEBUG_FAST
                     offset = (int)(minOffset * 10 * 1000);
 #else

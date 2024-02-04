@@ -46,6 +46,12 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref subscribes, value);
         }
 
+        autoSubscribesVM autoSubscribes;
+        public autoSubscribesVM AutoSubscribes
+        {
+            get => autoSubscribes;
+            set => this.RaiseAndSetIfChanged(ref autoSubscribes, value);    
+        }
 
         bool isSelected;
         public bool IsSelected
@@ -84,6 +90,7 @@ namespace cheatbot.ViewModels
             };
 
             Subscribes = new subscribesVM(Logger);
+            AutoSubscribes = new autoSubscribesVM(DropList.DropList);
 
         }
 

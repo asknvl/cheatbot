@@ -13,6 +13,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reactive;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace cheatbot.ViewModels
@@ -20,7 +21,8 @@ namespace cheatbot.ViewModels
     public class subscribesVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
-        ILogger logger;        
+        ILogger logger;
+        CancellationTokenSource cts;
         #endregion
 
         #region properties
@@ -70,7 +72,7 @@ namespace cheatbot.ViewModels
 
         #region commands
         public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
-        public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
+        public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }        
         #endregion
 
         public subscribesVM(ILogger logger) {
@@ -129,7 +131,6 @@ namespace cheatbot.ViewModels
                 updateGroupSubscribes();
 
             });
-
         }
 
         #region private

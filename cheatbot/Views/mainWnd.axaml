@@ -79,6 +79,11 @@
                 DataContext="{Binding Subscribes}"/>
         </TabItem>
         <TabItem
+           Header="Автоподписки">
+            <vv:autoSubscribesView
+                DataContext="{Binding AutoSubscribes}"/>
+        </TabItem>
+        <TabItem
             Header="Настройки">
             <StackPanel
                 DataContext="{Binding DropList}">
