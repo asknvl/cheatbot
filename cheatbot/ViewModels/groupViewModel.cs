@@ -30,7 +30,7 @@ namespace cheatbot.ViewModels
         public ObservableCollection<dropVM> GroupDropList { get; } = new();
         public ObservableCollection<channelSubsVM> ActionChannelsList { get; } = new();
         public ObservableCollection<channelSubsVM> ChannelsList { get; } = new();
-        public ObservableCollection<channelSubsVM> SelectedChannels { get; } = new();
+        public ObservableCollection<channelSubsVM> SelectedChannels { get; } = new();        
 
         channelSubsVM selectedActionChannel;
         public channelSubsVM SelectedActionChannel
@@ -175,25 +175,56 @@ namespace cheatbot.ViewModels
                 using (var db = new DataBaseContext())
                 {
                     var channels = db.Channels.ToList();
+                    var groups = db.Groups.ToList();
+
                     foreach (var channel in channels)
                     {
 
-                        int count = 0;
+                        int channeled_count = 0;
+                        List<dropVM> channeled = new();
+
                         if (dropList != null)
                         {
-                            count = dropList.Where(d => d.drop.GetSubscribes().Contains(channel.tg_id)).Count();
+                            channeled = dropList.Where(d => d.drop.GetSubscribes().Contains(channel.tg_id)).ToList();
+                            channeled_count = channeled.Count;
                         }
 
-                        Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            ChannelsList.Add(new channelSubsVM()
+                        
+
+                            var chSubs = new channelSubsVM();
+                            chSubs.Geotag = channel.geotag;
+                            chSubs.TG_id = channel.tg_id;
+                            chSubs.Link = channel.link;
+
+                            chSubs.TotalSubscribes = channeled_count;
+
+                            foreach (var g in groups)
                             {
-                                Geotag = channel.geotag,
-                                TG_id = channel.tg_id,
-                                Link = channel.link,
-                                TotalSubscribes = count
-                            });
+
+                                var chGrp = new channelGroupVM();
+                                var grouped = db.Drops.Where(d => d.group_id == g.id);
+                                var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
+
+
+
+                                chSubs.Groups.Add(chGrp);
+                                chGrp.ID = selected.Count();
+
+                        }
+
+
+                        Dispatcher.UIThread.InvokeAsync(() => { 
+                            ChannelsList.Add(chSubs);
                         });
+
+                        //ChannelsList.Add(new channelSubsVM()
+                        //{
+                        //    Geotag = channel.geotag,
+                        //    TG_id = channel.tg_id,
+                        //    Link = channel.link,
+                        //    TotalSubscribes = count,                                
+                        //});
+
                     }
                 }
 

@@ -152,18 +152,37 @@
                             <TextBlock
                                 Grid.Column="0"
                                 Text="{Binding Geotag}"
+                                VerticalAlignment="Center"
                                 FontWeight="DemiBold"/>
                             <Grid
                                 Grid.Column="1"
-                                Width="300"
-                                Background="Yellow">
-                                <ItemsControl>
-
+                                Width="500">
+                                <ItemsControl
+                                    Background="AliceBlue"
+                                    Items="{Binding Groups}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <!-- Your item template here -->
+                                            <TextBlock
+                                                Background="Aqua"
+                                                Text="{Binding ID}"
+                                                Width="40"
+                                                TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
                             <TextBlock
                                 Grid.Column="2"
                                 Text="{Binding TotalSubscribes}"
+                                VerticalAlignment="Center"
                                 HorizontalAlignment="Right"/>
                         </Grid>
                     </DataTemplate>
