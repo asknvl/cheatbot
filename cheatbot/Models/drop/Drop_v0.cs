@@ -60,7 +60,7 @@ namespace cheatbot.Models.drop
 
                          foreach (var channel in chats)
                          {
-                             if (/*!acceptedIds.Contains(channel.Key)*/false)
+                             if (!acceptedIds.Contains(channel.Key))
                                  continue;
 
                              if (channel.Value.IsChannel)
@@ -205,7 +205,7 @@ namespace cheatbot.Models.drop
                 case UpdateNewMessage unm:
 
                     var id = unm.message.Peer.ID;
-                    if (/*acceptedIds.Contains(id)*/true)
+                    if (acceptedIds.Contains(id))
                     {
                         logger.inf($"{phone_number} update:", update.ToString());
 
