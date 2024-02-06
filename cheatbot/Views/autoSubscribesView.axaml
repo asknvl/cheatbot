@@ -19,7 +19,7 @@
         ColumnDefinitions="Auto, Auto, Auto, Auto">
         <Grid
             Grid.Column="0"
-            Width="200"                     
+            Width="200"
             RowDefinitions="Auto, *, Auto">
             <ComboBox
                Grid.Row="0"
@@ -29,13 +29,14 @@
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock
-                            Text="{Binding name}"/>
+                            Text="{Binding Name}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <cust:AutoScrollListBox                                
+            <cust:AutoScrollListBox
+                DataContext="{Binding SelectedGroup}"
                 HorizontalAlignment="Stretch"
-                Items="{Binding ViewedDropList}"
+                Items="{Binding GroupDropList}"
                 SelectedItem="{Binding SelectedDrop}"
                 Grid.Row="1"
                 Grid.Column="0"
@@ -57,16 +58,19 @@
                 </ListBox.ItemTemplate>
             </cust:AutoScrollListBox>
             <Grid
-                Grid.Row="2"                
+                DataContext="{Binding SelectedGroup}"
+                Grid.Row="2"
                 ColumnDefinitions="*, *"
                 Margin="2">
                 <Button
-                    Grid.Column="0">
-                    1
+                    Grid.Column="0"
+                    Command="{Binding subscribeCmd}">
+                    Подписать
                 </Button>
                 <Button
-                    Grid.Column="1">
-                    2
+                    Grid.Column="1"
+                    Command="{Binding unsubscribeCmd}">
+                    Отписать
                 </Button>
                 <Grid.Styles>
                     <Style Selector="Button">
@@ -77,11 +81,12 @@
             </Grid>
         </Grid>
         <Grid
+            DataContext="{Binding SelectedGroup}"
             Grid.Column="1"
             RowDefinitions="Auto, *">
-            <cust:AutoScrollListBox               
-               Items="{Binding ChannelList}"               
-               SelectedItem="{Binding SelectedChannel}"
+            <cust:AutoScrollListBox
+               Items="{Binding ActionChannelsList}"
+               SelectedItem="{Binding SelectedActionChannel}"
                Grid.Row="1"
                MinWidth="200">
                 <ListBox.ItemTemplate>
@@ -92,73 +97,90 @@
                                 ColumnDefinitions="*, 30">
                                 <TextBlock
                                     Grid.Column="0"
-                                    Text="{Binding geotag}"
+                                    Text="{Binding Geotag}"
                                     FontWeight="DemiBold"/>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Text="{Binding viewedMessagesCounter}"/>
                             </Grid>
 
-                            <TextBlock Text="{Binding name}"
-                                       Foreground="LightGray"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </cust:AutoScrollListBox>
         </Grid>
         <Grid
+            DataContext="{Binding SelectedGroup}"
             Grid.Column="2"
             VerticalAlignment="Center">
             <StackPanel>
-                <Button>
+                <Button
+                    Command="{Binding addOneCmd}">
                     Добавить один
                 </Button>
-                <Button>
+                <Button
+                    Command="{Binding removeOneCmd}">
                     Удалить один
                 </Button>
                 <Button>
                     Добавить все
                 </Button>
                 <Button>
-                    Удвлить все
+                    Удaлить все
                 </Button>
                 <StackPanel.Styles>
                     <Style Selector="Button">
                         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>                        
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     </Style>
                 </StackPanel.Styles>
             </StackPanel>
         </Grid>
         <Grid
+            DataContext="{Binding SelectedGroup}"
             Grid.Column="3"
-            RowDefinitions="Auto, *">
-            <cust:AutoScrollListBox               
-               Items="{Binding ChannelList}"
-               SelectedItem="{Binding SelectedChannel}"
+            RowDefinitions="Auto, *"
+            ColumnDefinitions="*, Auto">
+            <cust:AutoScrollListBox
+               Grid.Column="0"
+               Items="{Binding ChannelsList}"
+               SelectedItems="{Binding SelectedChannels}"
+               SelectionMode="Multiple, Toggle"
                Grid.Row="1"
-               MinWidth="200">
+               MinWidth="400">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel
-                            Orientation="Vertical">
+                        <Grid
+                            ColumnDefinitions="100, *, 100">
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="{Binding Geotag}"
+                                FontWeight="DemiBold"/>
                             <Grid
-                                ColumnDefinitions="*, 30">
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Text="{Binding geotag}"
-                                    FontWeight="DemiBold"/>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Text="{Binding viewedMessagesCounter}"/>
-                            </Grid>
+                                Grid.Column="1"
+                                Width="300"
+                                Background="Yellow">
+                                <ItemsControl>
 
-                            <TextBlock Text="{Binding name}"
-                                       Foreground="LightGray"/>
-                        </StackPanel>
+                                </ItemsControl>
+                            </Grid>
+                            <TextBlock
+                                Grid.Column="2"
+                                Text="{Binding TotalSubscribes}"
+                                HorizontalAlignment="Right"/>
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </cust:AutoScrollListBox>
+            <StackPanel
+                Grid.Column="1"
+                Grid.Row="1"
+                Orientation="Vertical">
+                <Button
+                    Height="40"
+                    Width="40"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Command="{Binding refreshCmd}">                    
+                </Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

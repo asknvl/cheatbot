@@ -149,6 +149,12 @@ namespace cheatbot.ViewModels
             {
                 await loadDropList(logger);
                 await loadGroups();
+
+                foreach (var group in Groups)
+                {                    
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(group.id, DropList));
+                }
+
             });
 
             #region commands
@@ -376,7 +382,6 @@ namespace cheatbot.ViewModels
                 {
                     await addDrop(dropModel);
                 }
-
             });
 
         }
@@ -396,7 +401,6 @@ namespace cheatbot.ViewModels
                     }
                 }
             });
-
         }
 
         async Task loadGroups()

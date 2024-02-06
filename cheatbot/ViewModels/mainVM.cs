@@ -90,7 +90,7 @@ namespace cheatbot.ViewModels
             };
 
             Subscribes = new subscribesVM(Logger);
-            AutoSubscribes = new autoSubscribesVM(DropList.DropList);
+            AutoSubscribes = new autoSubscribesVM(dropList);
 
         }
 

@@ -27,6 +27,7 @@ namespace asknvl
         string dir = Path.Combine("C:", "userpool");
 
         protected List<long> acceptedIds = new();
+        Random random = new Random();
         #endregion
 
         #region properties        
@@ -54,8 +55,8 @@ namespace asknvl
 
         #region protected
         protected string Config(string what)
-        {   
-          
+        {
+
 
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
@@ -92,7 +93,7 @@ namespace asknvl
             {
                 await processUpdate(update);
             }
-        }        
+        }
         #endregion
 
         #region public
@@ -113,12 +114,13 @@ namespace asknvl
                         throw new ArgumentException("Неправильный формат адреса прокси");
                     port = int.Parse(proxy_cred[1]);
 
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     logger.err(phone_number, ex.Message);
                     throw;
                 }
-            }           
+            }
 
             User usr = null!;
 
@@ -160,14 +162,15 @@ namespace asknvl
 
                     setStatus(DropStatus.active);
 
-                } catch (RpcException ex) 
+                }
+                catch (RpcException ex)
                 {
-                   processRpcException(ex);
+                    processRpcException(ex);
                 }
                 catch (Exception ex)
                 {
                     logger.err(phone_number, $"Starting fail: {ex.Message}");
-                    await Stop();                    
+                    await Stop();
                 }
 
             }).ContinueWith(async t =>
@@ -224,7 +227,8 @@ namespace asknvl
                 try
                 {
                     cci = await user.Messages_CheckChatInvite(hash);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     logger.err(phone_number, ex.Message);
                 }
@@ -258,10 +262,12 @@ namespace asknvl
             chats = await user.Messages_GetAllChats();
         }
 
-        public async Task Subscribe(List<ChannelModel> channels, CancellationToken cts)
+        public async Task Subscribe(List<ChannelModel> channels, CancellationTokenSource cts)
         {
-            if (is_subscription_running)
+            if (status != DropStatus.active)
                 return;
+
+            setStatus(DropStatus.subscription);
 
             chats = await user.Messages_GetAllChats();
 
@@ -270,31 +276,51 @@ namespace asknvl
             foreach (var channel in channels)
             {
                 var found = chats.chats.ContainsKey(channel.tg_id);
-                if (found)
+                if (!found)
                     delta.Add(channel);
             }
 
-            Random random = new Random();
             var randomDelta = delta.OrderBy(item => random.Next()).ToList();
 
             try
             {
                 foreach (var channel in randomDelta)
                 {
-                    cts.ThrowIfCancellationRequested();
-
+                    cts.Token.ThrowIfCancellationRequested();
+#if DEBUG_FAST
+                    await Task.Delay(random.Next(5, 20) * 1 * 1000);
+#else
+                    await Task.Delay(random.Next(5, 20) * 60 * 1000);
+#endif
                     await Subscribe(channel.link);
 
-                    await Task.Delay(random.Next(5, 20) * 60 * 1000);
                 }
-            } catch (OperationCanceledException ex)
+            }
+            catch (OperationCanceledException ex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                logger.err(phone_number, $"Subscribe: {ex.Message}");
+            } finally
             {
                 chats = await user.Messages_GetAllChats();
-            }            
-
+                setStatus(DropStatus.active);
+            }
         }
 
-        public async Task LeaveChannel(long channel_tg_id)
+        public List<long> GetSubscribes()
+        {
+            List<long> res = new();
+
+            if (status == DropStatus.active || status == DropStatus.subscription)
+                return chats.chats.Keys.ToList();
+
+            return res;
+        }
+
+        public async Task Unsubscribe(long channel_tg_id)
         {
             if (user == null)
                 return;
@@ -318,6 +344,58 @@ namespace asknvl
             catch (Exception ex)
             {
                 logger.err(phone_number, $"LeaveChannel: {ex.Message}");
+            }
+        }
+
+        public async Task Unsubscribe(List<ChannelModel> channels, CancellationTokenSource cts)
+        {
+            if (status != DropStatus.active)
+                return;
+
+            setStatus(DropStatus.subscription);
+
+            try
+            {
+                chats = await user.Messages_GetAllChats();
+
+                var randomChannels = channels.OrderBy(item => random.Next()).ToList();
+
+                foreach (var channel in randomChannels)
+                {
+                    cts.Token.ThrowIfCancellationRequested();
+
+                    var found = chats.chats.ContainsKey(channel.tg_id);
+                    if (found)
+                    {
+                        try
+                        {
+#if DEBUG_FAST
+                            await Task.Delay(random.Next(5, 20) * 1 * 1000);
+#else
+                            await Task.Delay(random.Next(5, 20) * 60 * 1000);
+#endif
+                            var chat = chats.chats[channel.tg_id];
+                            await user.LeaveChat(chat);
+                            ChannelLeftEvent?.Invoke(channel.tg_id);
+                            logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException ex)
+            {
+            }
+            catch (Exception ex)
+            {
+                logger.err(phone_number, $"Unsubscribe: {ex.Message}");
+            } finally
+            {
+                chats = await user.Messages_GetAllChats();
+                setStatus(DropStatus.active);
             }
         }
 
@@ -349,11 +427,11 @@ namespace asknvl
         public virtual async Task Stop()
         {
             await Task.Run(() =>
-            {   
+            {
                 user?.Dispose();
                 verifyCodeReady.Set();
                 //StoppedEvent?.Invoke(this);                
-                setStatus(DropStatus.stopped);                
+                setStatus(DropStatus.stopped);
             });
         }
         #endregion
@@ -366,9 +444,13 @@ namespace asknvl
 
         protected void setStatus(DropStatus _status)
         {
-            status = _status;
-            StatusChangedEvent?.Invoke(this, status);
-            logger.dbg(phone_number, $"{status}");
+
+            if (status != _status)
+            {
+                status = _status;
+                StatusChangedEvent?.Invoke(this, status);
+                logger.dbg(phone_number, $"{status}");
+            }
         }
 
         protected void processRpcException(RpcException ex)
@@ -387,11 +469,11 @@ namespace asknvl
                     break;
 
             }
-        } 
+        }
         #endregion
 
         #region events
-        public event Action<ITGUser> VerificationCodeRequestEvent;        
+        public event Action<ITGUser> VerificationCodeRequestEvent;
         public event Action<string, long, string> ChannelAddedEvent;
         public event Action<long> ChannelLeftEvent;
 

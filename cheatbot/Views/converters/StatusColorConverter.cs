@@ -30,6 +30,8 @@ namespace cheatbot.Views.converters
                     return Brushes.Black;
                 case DropStatus.removed:
                     return Brushes.LightGray;
+                case DropStatus.subscription:
+                    return Brushes.Orange;
                 default:
                     return Brushes.Transparent;
             }  

@@ -21,12 +21,13 @@ namespace cheatbot.ViewModels
     public class dropVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
-        IDropFactory dropFactory;
-        ITGUser drop;
+        IDropFactory dropFactory;        
         ILogger logger;
         #endregion
 
         #region properties
+        public ITGUser drop { get; }
+
         int _id;
         public int id
         {
@@ -196,7 +197,7 @@ namespace cheatbot.ViewModels
 
             removeCmd = ReactiveCommand.Create(() => {
                 Status = DropStatus.removed;
-                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, DropStatus.removed));
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, DropStatus.removed, new() { }));
             });
 
             EventAggregator.getInstance().Subscribe(this);
@@ -286,8 +287,8 @@ namespace cheatbot.ViewModels
 
             if (Status != status)
             {
-                Status = status;
-                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, Status));
+                Status = status;                
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropStatusChangedEventMessage(group_id, id, phone_number, Status, drop.GetSubscribes()));
             }
         }
 
@@ -328,7 +329,7 @@ namespace cheatbot.ViewModels
             switch (message)
             {
                 case ChannelUnsubscibeEventMessage unsubscribeMesage:
-                    await drop.LeaveChannel(unsubscribeMesage.tg_id);
+                    await drop.Unsubscribe(unsubscribeMesage.tg_id);
                     break;
 
                 case Change2FAPasswordAllEventMessage change2FAPasswordMessage:
@@ -347,7 +348,7 @@ namespace cheatbot.ViewModels
                     try
                     {
                         if (group_id == unsubscribeMessage.group_id)
-                            await drop.LeaveChannel(unsubscribeMessage.tg_id);
+                            await drop.Unsubscribe(unsubscribeMessage.tg_id);
 
                     }
                     catch (Exception ex)

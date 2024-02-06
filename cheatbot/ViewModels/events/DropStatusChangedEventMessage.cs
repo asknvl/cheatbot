@@ -15,12 +15,14 @@ namespace cheatbot.ViewModels.events
         public int id { get; set; }
         public string phone_number { get; set; }
         public DropStatus status { get; set; }        
+        public List<long> subscribes { get; set; }
 
-        public DropStatusChangedEventMessage(int _group_id, int _id, string _phone_number, DropStatus _status) {
+        public DropStatusChangedEventMessage(int _group_id, int _id, string _phone_number, DropStatus _status, List<long> _subscribes) {
             group_id = _group_id;
             id = _id;
             phone_number = _phone_number;
             status = _status;
+            subscribes = _subscribes;
         }
     }
 }

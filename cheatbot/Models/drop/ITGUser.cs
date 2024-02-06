@@ -1,4 +1,7 @@
-﻿using System;
+﻿using cheatbot.Database.models;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace asknvl
@@ -17,7 +20,10 @@ namespace asknvl
 
         Task Start(string proxy);
         Task Subscribe(string input);
-        Task LeaveChannel(long id);
+        Task Subscribe(List<ChannelModel> channels, CancellationTokenSource cts);
+        List<long> GetSubscribes();
+        Task Unsubscribe(long id);
+        Task Unsubscribe(List<ChannelModel> channels, CancellationTokenSource cts);
         Task Change2FAPassword(string old_password, string new_password);
         Task Stop();
         void SetVerifyCode(string code);
@@ -34,10 +40,11 @@ namespace asknvl
     public enum DropStatus
     {
         stopped,
-        active,
+        active,        
         verification,
         revoked,
         banned,
-        removed
+        removed,
+        subscription
     }
 }

@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using asknvl;
+using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,71 +18,76 @@ namespace cheatbot.ViewModels
     {
 
         #region properties
-        public ObservableCollection<dropVM> DropList { get; } = new();
-        public ObservableCollection<dropVM> ViewedDropList { get; } = new();
-
-        List<GroupModel> groups;
-        public List<GroupModel> Groups
-        {
-            get => groups;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref groups, value);
-            }
-        }
-
-        GroupModel selectedGroup;
-        public GroupModel SelectedGroup
+        //public dropListVM dropList;
+        public ObservableCollection<groupViewModel> Groups { get; } = new();
+      
+        groupViewModel selectedGroup;
+        public groupViewModel SelectedGroup
         {
             get => selectedGroup;
             set
             {
                 this.RaiseAndSetIfChanged(ref selectedGroup, value);
-                updateViewedDrops();
+                //updateViewedDrops();
             }
         }
         #endregion
 
-        public autoSubscribesVM(ObservableCollection<dropVM> dropVMs)
+        #region commands        
+        #endregion
+
+        public autoSubscribesVM(dropListVM dropList)
         {
-            DropList = dropVMs;
+            EventAggregator.getInstance().Subscribe(this);
+
+            //this.dropList = dropList;
             loadGroups();
+            //loadChannels();
+
+            #region commands
+           
+            #endregion
+
         }
 
         #region helpers                
-        async Task updateViewedDrops()
-        {
-            await Task.Run(() =>
-            {
-                ViewedDropList.Clear();
-
-                if (SelectedGroup != null)
-                {
-                    var viewedDrops = DropList.Where(d => d.group_id == SelectedGroup.id);
-                    foreach (var drop in viewedDrops)
-                    {
-                        ViewedDropList.Add(drop);
-                    }
-                }
-            });
-
-        }
-        async Task loadGroups()
+        async void loadGroups()
         {
             await Task.Run(() =>
             {
                 using (var db = new DataBaseContext())
                 {
-                    Groups = db.Groups.ToList();
+                    var models = db.Groups.ToList();
+                    foreach (var model in models)
+                    {
+                        Groups.Add(new groupViewModel(model));
+                    }
+
                     if (Groups.Count > 0)
                         SelectedGroup = Groups[0];
                 }
             });
         }
+
+        
         #endregion
         public void OnEvent(BaseEventMessage message)
         {
-            //throw new NotImplementedException();
+            switch (message)
+            {
+                case DropStatusChangedEventMessage dscem:
+
+                    //int delta = (dscem.status == DropStatus.active) ? 1 : -1;
+
+                    //foreach (var channel in ChannelsList)
+                    //{
+                    //    var found = dscem.subscribes.FirstOrDefault(s => s == channel.TG_id);
+                    //    if (found != null)                        
+                    //        channel.UpdateSubsCounter(delta);
+                    //}
+
+                    break;
+            }
         }
     }
 }
