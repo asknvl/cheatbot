@@ -67,7 +67,7 @@ namespace cheatbot.Models.drop
                              {
                                  try
                                  {
-                                     var history = await user.Messages_GetHistory(channel.Value, limit: 6);
+                                     var history = await user.Messages_GetHistory(channel.Value, limit: 2);
                                      var ids = history.Messages.Select(m => m.ID).ToArray();
 
                                      foreach (var id in ids)
