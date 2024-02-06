@@ -25,7 +25,7 @@ namespace cheatbot.Models.drop
         #endregion
 
         #region vars
-        System.Timers.Timer readHistoryTimer;        
+        System.Timers.Timer readHistoryTimer;
         List<messageInfo> newMessagesQueue = new();
         ReactionsStateManager reactionsMansger = ReactionsStateManager.getInstance();
 
@@ -35,14 +35,17 @@ namespace cheatbot.Models.drop
 
         Random random = new Random();
 
-       
+
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
         {
         }
-
+#if DEBUG_FAST
+        bool needFirstWatch = false;
+#else
         bool needFirstWatch = true;
+#endif
         async void ReadHistoryTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
 
@@ -55,14 +58,13 @@ namespace cheatbot.Models.drop
                     await Task.Run(async () =>
                      {
 
-                         foreach (var channel in chats.chats)
+                         foreach (var channel in chats)
                          {
-                             if (!acceptedIds.Contains(channel.Key))
+                             if (/*!acceptedIds.Contains(channel.Key)*/false)
                                  continue;
 
                              if (channel.Value.IsChannel)
                              {
-
                                  try
                                  {
                                      var history = await user.Messages_GetHistory(channel.Value, limit: 6);
@@ -72,7 +74,7 @@ namespace cheatbot.Models.drop
                                      {
                                          messageInfo mi = new messageInfo(channel.Value.ID, id);
                                          newMessagesQueue.Add(mi);
-                                     }                                     
+                                     }
                                      await Task.Delay(7000);
                                  }
                                  catch (Exception ex)
@@ -100,7 +102,7 @@ namespace cheatbot.Models.drop
             }
 
             try
-            {               
+            {
 
                 if (newMessagesQueue.Count > 0)
                 {
@@ -108,12 +110,12 @@ namespace cheatbot.Models.drop
                     int index = random.Next(0, newMessagesQueue.Count - 1);
 
                     var m = newMessagesQueue[index];
-                    InputPeer channel = chats.chats[m.peer_id];
+                    InputPeer channel = chats[m.peer_id];
 
                     List<messageInfo> tmpList = new();
                     foreach (var item in newMessagesQueue)
                     {
-                        
+
                         if (item != null && item.peer_id == m.peer_id)
                             tmpList.Add(item);
                     }
@@ -121,7 +123,7 @@ namespace cheatbot.Models.drop
                     foreach (var item in tmpList)
                         newMessagesQueue.Remove(item);
 
-                    var messagesIDs = tmpList.Select(m => m.message_id).ToArray();                    
+                    var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
 
                     var history = await user.Messages_GetHistory(channel, limit: tmpList.Count);
                     var ids = history.Messages.Select(m => m.ID).ToArray();
@@ -134,7 +136,7 @@ namespace cheatbot.Models.drop
                     {
 
                         var fullchat = await user.GetFullChat(channel);
-                        var reactions = fullchat?.full_chat.AvailableReactions;                        
+                        var reactions = fullchat?.full_chat.AvailableReactions;
 
                         if (reactions is ChatReactionsSome)
                         {
@@ -203,14 +205,14 @@ namespace cheatbot.Models.drop
                 case UpdateNewMessage unm:
 
                     var id = unm.message.Peer.ID;
-                    if (acceptedIds.Contains(id))
+                    if (/*acceptedIds.Contains(id)*/true)
                     {
                         logger.inf($"{phone_number} update:", update.ToString());
 
                         var needWatch = await handleMessage(unm.message);
 
                         //if (needWatch)
-                            encueueMessageToWatch(unm);
+                        encueueMessageToWatch(unm);
                     }
                     break;
             }
@@ -241,12 +243,12 @@ namespace cheatbot.Models.drop
 
             if (percentage < poll_percent)
             {
-                var pollInfo = new pollInfo(poll, peer, id);                
+                var pollInfo = new pollInfo(poll, peer, id);
                 newPollsQueue.Add(pollInfo);
                 res = false;
             }
 
-            return res; 
+            return res;
         }
 
         async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
@@ -260,9 +262,12 @@ namespace cheatbot.Models.drop
                 var answers = poll.poll.answers;
                 pollStateManager.UpdatePollList(peer.ID, id, answers);
 
-                var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
+                //var inputPeer = dialogs.UserOrChat(peer).ToInputPeer();
+
+                var inputPeer = chats[peer.ID].ToInputPeer();
+
                 var state = pollStateManager.Get(peer.ID, id);
-                var res = state.getAnswer();                
+                var res = state.getAnswer();
 
                 if (res != null)
                     await user.Messages_SendVote(inputPeer, id, res.option);
@@ -287,9 +292,10 @@ namespace cheatbot.Models.drop
                 case Message message:
                     try
                     {
-                        switch (message.media) {
+                        switch (message.media)
+                        {
 
-                            case MessageMediaPoll poll:                                
+                            case MessageMediaPoll poll:
                                 res = encueuePollMessage(poll, peer, id); //
                                 break;
                         }
@@ -311,9 +317,6 @@ namespace cheatbot.Models.drop
             {
                 if (status == DropStatus.active)
                 {
-
-
-                   
 
                     double minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
 #if DEBUG_FAST
@@ -349,14 +352,17 @@ namespace cheatbot.Models.drop
             {
                 if (newPollsQueue.Count > 0)
                 {
-                    var newPoll = newPollsQueue.First();                    
+
+                    int index = random.Next(0, newPollsQueue.Count - 1);
+                    var newPoll = newPollsQueue[index];
+                    //var newPoll = newPollsQueue.First();                    
                     await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);
                     newPollsQueue.Remove(newPoll);
-                }                
+                }
             }
             catch (Exception ex)
             {
-                logger.err($"{phone_number}", $"PollTimer_Elpased: {ex.Message}");               
+                logger.err($"{phone_number}", $"PollTimer_Elpased: {ex.Message}");
             }
         }
 
@@ -373,7 +379,7 @@ namespace cheatbot.Models.drop
                 if (pollTimer != null)
                 {
                     pollTimer.Stop();
-                    pollTimer.Elapsed -= PollTimer_Elapsed; 
+                    pollTimer.Elapsed -= PollTimer_Elapsed;
                 }
             });
 
@@ -401,7 +407,7 @@ namespace cheatbot.Models.drop
     }
 
     public class pollInfo
-    {        
+    {
 
         public MessageMediaPoll? poll { get; set; }
         public Peer? peer { get; set; }

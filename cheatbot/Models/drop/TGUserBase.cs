@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TL;
 using WTelegram;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace asknvl
 {
@@ -21,7 +22,11 @@ namespace asknvl
         readonly ManualResetEventSlim verifyCodeReady = new();
         string verifyCode;
         protected ILogger logger;
-        protected Messages_Chats chats;
+
+        protected Dictionary<long, ChatBase> chats = new();
+        protected Dictionary<long, User> users = new();
+
+        //protected Messages_Chats chats;
         protected List<Messages_ChatFull> fullChats = new();
         protected Messages_Dialogs dialogs;
         string dir = Path.Combine("C:", "userpool");
@@ -80,14 +85,21 @@ namespace asknvl
             }
         }
 
-        abstract protected Task processUpdate(Update update);
+        abstract protected Task processUpdate(TL.Update update);
         #endregion
 
         #region private
-        private async Task OnUpdate(TL.IObject arg)
+        private async Task OnUpdate(UpdatesBase updates)
         {
-            if (arg is not UpdatesBase updates)
-                return;
+            updates.CollectUsersChats(users, chats);
+
+            if (updates is UpdateShortMessage usm && !users.ContainsKey(usm.user_id))
+                (await user.Updates_GetDifference(usm.pts - usm.pts_count, usm.date, 0)).CollectUsersChats(users, chats);
+            else if (updates is UpdateShortChatMessage uscm && (!users.ContainsKey(uscm.from_id) || !chats.ContainsKey(uscm.chat_id)))
+                (await user.Updates_GetDifference(uscm.pts - uscm.pts_count, uscm.date, 0)).CollectUsersChats(users, chats);
+
+            //if (arg is not UpdatesBase updates)
+            //    return;
 
             foreach (var update in updates.UpdateList)
             {
@@ -149,8 +161,9 @@ namespace asknvl
                     username = usr.username;
                     tg_id = usr.ID;
 
-                    chats = await user.Messages_GetAllChats();
+                    //chats = await user.Messages_GetAllChats();
                     dialogs = await user.Messages_GetAllDialogs();
+                    dialogs.CollectUsersChats(users, chats);
 
                     using (var db = new DataBaseContext())
                     {
@@ -259,7 +272,7 @@ namespace asknvl
                 }
             }
 
-            chats = await user.Messages_GetAllChats();
+            //chats = await user.Messages_GetAllChats();
         }
 
         public async Task Subscribe(List<ChannelModel> channels, CancellationTokenSource cts)
@@ -269,13 +282,13 @@ namespace asknvl
 
             setStatus(DropStatus.subscription);
 
-            chats = await user.Messages_GetAllChats();
+            //chats = await user.Messages_GetAllChats();
 
             List<ChannelModel> delta = new();
 
             foreach (var channel in channels)
             {
-                var found = chats.chats.ContainsKey(channel.tg_id);
+                var found = chats.ContainsKey(channel.tg_id);
                 if (!found)
                     delta.Add(channel);
             }
@@ -305,7 +318,13 @@ namespace asknvl
                 logger.err(phone_number, $"Subscribe: {ex.Message}");
             } finally
             {
-                chats = await user.Messages_GetAllChats();
+                //chats = await user.Messages_GetAllChats();
+
+                using (var db = new DataBaseContext())
+                {
+                    acceptedIds = db.Channels.Select(c => c.tg_id).ToList();
+                }
+
                 setStatus(DropStatus.active);
             }
         }
@@ -315,7 +334,7 @@ namespace asknvl
             List<long> res = new();
 
             if (status == DropStatus.active || status == DropStatus.subscription)
-                return chats.chats.Keys.ToList();
+                return chats.Keys.ToList();
 
             return res;
         }
@@ -356,7 +375,7 @@ namespace asknvl
 
             try
             {
-                chats = await user.Messages_GetAllChats();
+                //chats = await user.Messages_GetAllChats();
 
                 var randomChannels = channels.OrderBy(item => random.Next()).ToList();
 
@@ -364,7 +383,7 @@ namespace asknvl
                 {
                     cts.Token.ThrowIfCancellationRequested();
 
-                    var found = chats.chats.ContainsKey(channel.tg_id);
+                    var found = chats.ContainsKey(channel.tg_id);
                     if (found)
                     {
                         try
@@ -374,7 +393,7 @@ namespace asknvl
 #else
                             await Task.Delay(random.Next(5, 20) * 60 * 1000);
 #endif
-                            var chat = chats.chats[channel.tg_id];
+                            var chat = chats[channel.tg_id];
                             await user.LeaveChat(chat);
                             ChannelLeftEvent?.Invoke(channel.tg_id);
                             logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
@@ -394,7 +413,7 @@ namespace asknvl
                 logger.err(phone_number, $"Unsubscribe: {ex.Message}");
             } finally
             {
-                chats = await user.Messages_GetAllChats();
+                //chats = await user.Messages_GetAllChats();
                 setStatus(DropStatus.active);
             }
         }
