@@ -27,8 +27,7 @@ namespace cheatbot.ViewModels
             get => selectedGroup;
             set
             {
-                this.RaiseAndSetIfChanged(ref selectedGroup, value);
-                //updateViewedDrops();
+                this.RaiseAndSetIfChanged(ref selectedGroup, value);                
             }
         }
         #endregion
@@ -36,7 +35,7 @@ namespace cheatbot.ViewModels
         #region commands        
         #endregion
 
-        public autoSubscribesVM(dropListVM dropList)
+        public autoSubscribesVM()
         {
             EventAggregator.getInstance().Subscribe(this);
 

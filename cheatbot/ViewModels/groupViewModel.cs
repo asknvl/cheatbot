@@ -174,7 +174,7 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region private
-        async Task loadChannels()
+        public async Task loadChannels()
         {
 
             await Task.Run(() =>
@@ -274,8 +274,11 @@ namespace cheatbot.ViewModels
             switch (message)
             {
                 case DropListUpdatedEventMessage dluem:
+
+                    dropList = dluem.drop_list.ToList();
+
                     if (dluem.group_id == Id)
-                    {                        
+                    {
                         await updateViewedDrops(dluem.drop_list);
                         dropList = dluem.drop_list.ToList();
                         await loadChannels();

@@ -79,6 +79,8 @@ namespace cheatbot.ViewModels
                     Logger.dbg("API", $"{y}");
             };
 
+            AutoSubscribes = new autoSubscribesVM();
+
             DropList = new dropListVM(Logger);
 
 
@@ -90,7 +92,7 @@ namespace cheatbot.ViewModels
             };
 
             Subscribes = new subscribesVM(Logger);
-            AutoSubscribes = new autoSubscribesVM(dropList);
+            
 
         }
 
