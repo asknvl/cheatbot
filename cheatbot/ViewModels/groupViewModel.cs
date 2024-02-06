@@ -56,6 +56,7 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
         public ReactiveCommand<Unit, Unit> refreshCmd { get; }
 
+        public ReactiveCommand<Unit, Unit> stopCmd { get; }
         #endregion
 
         public groupViewModel(GroupModel model)
@@ -93,6 +94,8 @@ namespace cheatbot.ViewModels
 
                 cts = new CancellationTokenSource();
 
+                IsStopVisible = true;
+
                 foreach (var item in GroupDropList)
                 {
                     var task = Task.Run(async () => {
@@ -102,7 +105,9 @@ namespace cheatbot.ViewModels
                 }
 
                 await Task.WhenAll(tasks.ToArray());
-                Debug.WriteLine("3");
+
+                IsStopVisible = true;
+
                 await loadChannels();                              
 
                 cts = null!;
@@ -119,6 +124,8 @@ namespace cheatbot.ViewModels
 
                 cts = new CancellationTokenSource();
 
+                IsStopVisible = true;
+
                 foreach (var item in GroupDropList)
                 {
                     var task = Task.Run(async () => {
@@ -130,6 +137,8 @@ namespace cheatbot.ViewModels
 
                 await Task.WhenAll(tasks.ToArray());
 
+                IsStopVisible = false;
+
                 await loadChannels();
 
                 cts = null!;
@@ -137,6 +146,10 @@ namespace cheatbot.ViewModels
 
             refreshCmd = ReactiveCommand.CreateFromTask(async () => {
                 await loadChannels();
+            });
+
+            stopCmd = ReactiveCommand.Create(() => { 
+                cts?.Cancel();
             });
             #endregion
 
@@ -162,7 +175,7 @@ namespace cheatbot.ViewModels
 
         #region private
         async Task loadChannels()
-        {            
+        {
 
             await Task.Run(() =>
             {
@@ -189,31 +202,32 @@ namespace cheatbot.ViewModels
                             channeled_count = channeled.Count;
                         }
 
-                        
-
-                            var chSubs = new channelSubsVM();
-                            chSubs.Geotag = channel.geotag;
-                            chSubs.TG_id = channel.tg_id;
-                            chSubs.Link = channel.link;
-
-                            chSubs.TotalSubscribes = channeled_count;
-
-                            foreach (var g in groups)
-                            {
-
-                                var chGrp = new channelGroupVM();
-                                var grouped = db.Drops.Where(d => d.group_id == g.id);
-                                var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
 
 
+                        var chSubs = new channelSubsVM();
+                        chSubs.Geotag = channel.geotag;
+                        chSubs.TG_id = channel.tg_id;
+                        chSubs.Link = channel.link;
 
-                                chSubs.Groups.Add(chGrp);
-                                chGrp.ID = selected.Count();
+                        chSubs.TotalSubscribes = channeled_count;
+
+                        foreach (var g in groups)
+                        {
+
+                            var chGrp = new channelGroupVM();
+                            var grouped = db.Drops.Where(d => d.group_id == g.id);
+                            var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
+
+
+
+                            chSubs.Groups.Add(chGrp);
+                            chGrp.ID = selected.Count();
 
                         }
 
 
-                        Dispatcher.UIThread.InvokeAsync(() => { 
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
                             ChannelsList.Add(chSubs);
                         });
 

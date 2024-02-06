@@ -42,7 +42,7 @@ namespace cheatbot.Models.drop
         {
         }
 #if DEBUG_FAST
-        bool needFirstWatch = false;
+        bool needFirstWatch = true;
 #else
         bool needFirstWatch = true;
 #endif
@@ -56,34 +56,36 @@ namespace cheatbot.Models.drop
                 {
 
                     await Task.Run(async () =>
-                     {
+                    {
 
-                         foreach (var channel in chats)
-                         {
-                             if (!acceptedIds.Contains(channel.Key))
-                                 continue;
+                        var copy = chats.ToDictionary(e => e.Key, e => e.Value);
 
-                             if (channel.Value.IsChannel)
-                             {
-                                 try
-                                 {
-                                     var history = await user.Messages_GetHistory(channel.Value, limit: 2);
-                                     var ids = history.Messages.Select(m => m.ID).ToArray();
+                        foreach (var channel in copy)
+                        {
+                            if (!acceptedIds.Contains(channel.Key))
+                                continue;
 
-                                     foreach (var id in ids)
-                                     {
-                                         messageInfo mi = new messageInfo(channel.Value.ID, id);
-                                         newMessagesQueue.Add(mi);
-                                     }
-                                     await Task.Delay(7000);
-                                 }
-                                 catch (Exception ex)
-                                 {
-                                     logger.err("ReadHistoryTimer FirstView:", ex.Message);
-                                 }
-                             }
-                         }
-                     });
+                            if (channel.Value.IsChannel)
+                            {
+                                try
+                                {
+                                    var history = await user.Messages_GetHistory(channel.Value, limit: 2);
+                                    var ids = history.Messages.Select(m => m.ID).ToArray();
+
+                                    foreach (var id in ids)
+                                    {
+                                        messageInfo mi = new messageInfo(channel.Value.ID, id);
+                                        newMessagesQueue.Add(mi);
+                                    }
+                                    await Task.Delay(7000);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.err("ReadHistoryTimer FirstView:", ex.Message);
+                                }
+                            }
+                        }
+                    });
                 }
                 catch (RpcException ex)
                 {

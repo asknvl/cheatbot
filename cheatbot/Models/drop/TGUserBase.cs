@@ -346,16 +346,18 @@ namespace asknvl
 
             try
             {
-                var chats = await user.Messages_GetAllChats();
+                //var chats = await user.Messages_GetAllChats();
 
-                if (!chats.chats.ContainsKey(channel_tg_id))
+                if (!chats.ContainsKey(channel_tg_id))
                 {
                     ChannelLeftEvent?.Invoke(channel_tg_id);
                     return;
                 }
 
-                var chat = chats.chats[channel_tg_id];
+                var chat = chats[channel_tg_id];
                 await user.LeaveChat(chat);
+                chats.Remove(channel_tg_id);
+
                 ChannelLeftEvent?.Invoke(channel_tg_id);
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 
@@ -395,6 +397,8 @@ namespace asknvl
 #endif
                             var chat = chats[channel.tg_id];
                             await user.LeaveChat(chat);
+
+                            chats.Remove(channel.tg_id);
                             ChannelLeftEvent?.Invoke(channel.tg_id);
                             logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
                         }
@@ -412,8 +416,9 @@ namespace asknvl
             {
                 logger.err(phone_number, $"Unsubscribe: {ex.Message}");
             } finally
-            {
+            {                
                 //chats = await user.Messages_GetAllChats();
+
                 setStatus(DropStatus.active);
             }
         }

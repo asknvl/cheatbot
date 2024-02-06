@@ -72,6 +72,13 @@
                     Command="{Binding unsubscribeCmd}">
                     Отписать
                 </Button>
+                <Button
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   IsVisible="{Binding IsStopVisible}"
+                   Command="{Binding stopCmd}">
+                    Отписать
+                </Button>
                 <Grid.Styles>
                     <Style Selector="Button">
                         <Setter Property="HorizontalAlignment" Value="Stretch"/>
