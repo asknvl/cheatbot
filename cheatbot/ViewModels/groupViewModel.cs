@@ -215,14 +215,15 @@ namespace cheatbot.ViewModels
                         {
 
                             var chGrp = new channelGroupVM();
-                            var grouped = db.Drops.Where(d => d.group_id == g.id);
-                            var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
+                            //var grouped = db.Drops.Where(d => d.group_id == g.id);
+                            var grouped = channeled.Where(d => d.group_id == g.id);
+                            //var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
 
 
 
                             chSubs.Groups.Add(chGrp);
-                            chGrp.ID = selected.Count();
-
+                            //chGrp.ID = selected.Count();
+                            chGrp.ID = grouped.Count();
                         }
 
 
