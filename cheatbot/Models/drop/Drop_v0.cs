@@ -110,79 +110,83 @@ namespace cheatbot.Models.drop
                 {
 
                     int index = random.Next(0, newMessagesQueue.Count - 1);
-
                     var m = newMessagesQueue[index];
-                    InputPeer channel = chats[m.peer_id];
 
-                    List<messageInfo> tmpList = new();
-                    foreach (var item in newMessagesQueue)
+                    if (chats.ContainsKey(m.peer_id))
                     {
 
-                        if (item != null && item.peer_id == m.peer_id)
-                            tmpList.Add(item);
-                    }
+                        InputPeer channel = chats[m.peer_id];
 
-                    foreach (var item in tmpList)
-                        newMessagesQueue.Remove(item);
-
-                    var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
-
-                    var history = await user.Messages_GetHistory(channel, limit: tmpList.Count);
-                    var ids = history.Messages.Select(m => m.ID).ToArray();
-                    await user.Messages_GetMessagesViews(channel, ids, true);
-                    SendChannelMessageViewedEvent(m.peer_id, (uint)ids.Length);
-
-                    int percentage = random.Next(1, 100);
-
-                    if (percentage <= watch_percent)
-                    {
-
-                        var fullchat = await user.GetFullChat(channel);
-                        var reactions = fullchat?.full_chat.AvailableReactions;
-
-                        if (reactions is ChatReactionsSome)
+                        List<messageInfo> tmpList = new();
+                        foreach (var item in newMessagesQueue)
                         {
-                            var some = (ChatReactionsSome)reactions;
-                            var available = some.reactions;
 
-                            foreach (var messageID in messagesIDs)
+                            if (item != null && item.peer_id == m.peer_id)
+                                tmpList.Add(item);
+                        }
+
+                        foreach (var item in tmpList)
+                            newMessagesQueue.Remove(item);
+
+                        var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
+
+                        var history = await user.Messages_GetHistory(channel, limit: tmpList.Count);
+                        var ids = history.Messages.Select(m => m.ID).ToArray();
+                        await user.Messages_GetMessagesViews(channel, ids, true);
+                        SendChannelMessageViewedEvent(m.peer_id, (uint)ids.Length);
+
+                        int percentage = random.Next(1, 100);
+
+                        if (percentage <= watch_percent)
+                        {
+
+                            var fullchat = await user.GetFullChat(channel);
+                            var reactions = fullchat?.full_chat.AvailableReactions;
+
+                            if (reactions is ChatReactionsSome)
                             {
-                                try
-                                {
-                                    reactionsMansger.UpdateMessageList(channel.ID, messageID, available);
-                                }
-                                catch (Exception ex)
-                                {
-                                    logger.err("ReadHistoryTimer View:", ex.Message);
-                                }
+                                var some = (ChatReactionsSome)reactions;
+                                var available = some.reactions;
 
-                                var messageState = reactionsMansger.Get(channel.ID, messageID);
-
-                                if (messageState != null)
+                                foreach (var messageID in messagesIDs)
                                 {
-                                    Reaction[]? randomizedReactions = messageState.reactions;
-
-                                    if (randomizedReactions.Length > 0)
+                                    try
                                     {
-                                        int selected = 0;
-                                        percentage = random.Next(1, 100);
+                                        reactionsMansger.UpdateMessageList(channel.ID, messageID, available);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        logger.err("ReadHistoryTimer View:", ex.Message);
+                                    }
 
-                                        if (percentage <= 40)
-                                            selected = 0;
-                                        else
-                                            if (available.Length > 2 && percentage > 40 && percentage <= 70)
-                                            selected = 1;
-                                        else
-                                            if (available.Length > 3)
-                                            selected = random.Next(2, available.Length);
+                                    var messageState = reactionsMansger.Get(channel.ID, messageID);
 
-                                        await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                        await Task.Delay(10000);
+                                    if (messageState != null)
+                                    {
+                                        Reaction[]? randomizedReactions = messageState.reactions;
 
+                                        if (randomizedReactions.Length > 0)
+                                        {
+                                            int selected = 0;
+                                            percentage = random.Next(1, 100);
+
+                                            if (percentage <= 40)
+                                                selected = 0;
+                                            else
+                                                if (available.Length > 2 && percentage > 40 && percentage <= 70)
+                                                selected = 1;
+                                            else
+                                                if (available.Length > 3)
+                                                selected = random.Next(2, available.Length);
+
+                                            await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
+                                            await Task.Delay(10000);
+
+                                        }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
@@ -258,8 +262,8 @@ namespace cheatbot.Models.drop
             await Task.Run(async () =>
             {
 
-                //InputPeer c = chats.chats[peer.ID];
-                //await user.Messages_GetMessagesViews(c, new[] { id }, true);
+                InputPeer c = chats.chats[peer.ID];
+                await user.Messages_GetMessagesViews(c, new[] { id }, true);
 
                 var answers = poll.poll.answers;
                 pollStateManager.UpdatePollList(peer.ID, id, answers);
@@ -332,7 +336,7 @@ namespace cheatbot.Models.drop
                     readHistoryTimer.Elapsed += ReadHistoryTimer_Elapsed;
                     readHistoryTimer.Start();
 
-                    minOffset = random.Next(3, 14) + (1.0d * random.Next(1, 10) / 10);
+                    minOffset = random.Next(3, 10) + (1.0d * random.Next(1, 10) / 10);
 #if DEBUG_FAST
                     offset = (int)(minOffset * 10 * 1000);
 #else

@@ -20,17 +20,15 @@ namespace cheatbot.ViewModels
     public class groupViewModel : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
         #region vars
-        CancellationTokenSource cts;
-        List<dropVM> dropList;
+        CancellationTokenSource cts;        
         #endregion
 
         #region properties
         public int Id { get; set; }
         public string Name { get; set; }
         public ObservableCollection<dropVM> GroupDropList { get; } = new();
-        public ObservableCollection<channelSubsVM> ActionChannelsList { get; } = new();
-        public ObservableCollection<channelSubsVM> ChannelsList { get; } = new();
-        public ObservableCollection<channelSubsVM> SelectedChannels { get; } = new();        
+        public ObservableCollection<channelSubsVM> ActionChannelsList { get; } = new();       
+        public ObservableCollection<channelSubsVM> SelectedChannels { get; } = new();
 
         channelSubsVM selectedActionChannel;
         public channelSubsVM SelectedActionChannel
@@ -55,7 +53,6 @@ namespace cheatbot.ViewModels
         public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
         public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
         public ReactiveCommand<Unit, Unit> refreshCmd { get; }
-
         public ReactiveCommand<Unit, Unit> stopCmd { get; }
         #endregion
 
@@ -106,9 +103,7 @@ namespace cheatbot.ViewModels
 
                 await Task.WhenAll(tasks.ToArray());
 
-                IsStopVisible = true;
-
-                await loadChannels();                              
+                IsStopVisible = false;
 
                 cts = null!;
             });
@@ -139,21 +134,13 @@ namespace cheatbot.ViewModels
 
                 IsStopVisible = false;
 
-                await loadChannels();
-
                 cts = null!;
-            });
-
-            refreshCmd = ReactiveCommand.CreateFromTask(async () => {
-                await loadChannels();
             });
 
             stopCmd = ReactiveCommand.Create(() => { 
                 cts?.Cancel();
             });
             #endregion
-
-            Update();
         }
 
         #region helpers
@@ -174,78 +161,6 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region private
-        public async Task loadChannels()
-        {
-
-            await Task.Run(() =>
-            {
-
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    ChannelsList.Clear();
-                });
-
-                using (var db = new DataBaseContext())
-                {
-                    var channels = db.Channels.ToList();
-                    var groups = db.Groups.ToList();
-
-                    foreach (var channel in channels)
-                    {
-
-                        int channeled_count = 0;
-                        List<dropVM> channeled = new();
-
-                        if (dropList != null)
-                        {
-                            channeled = dropList.Where(d => d.drop.GetSubscribes().Contains(channel.tg_id)).ToList();
-                            channeled_count = channeled.Count;
-                        }
-
-
-
-                        var chSubs = new channelSubsVM();
-                        chSubs.Geotag = channel.geotag;
-                        chSubs.TG_id = channel.tg_id;
-                        chSubs.Link = channel.link;
-
-                        chSubs.TotalSubscribes = channeled_count;
-
-                        foreach (var g in groups)
-                        {
-
-                            var chGrp = new channelGroupVM();
-                            //var grouped = db.Drops.Where(d => d.group_id == g.id);
-                            var grouped = channeled.Where(d => d.group_id == g.id);
-                            //var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
-
-
-
-                            chSubs.Groups.Add(chGrp);
-                            //chGrp.ID = selected.Count();
-                            chGrp.ID = grouped.Count();
-                        }
-
-
-                        Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            ChannelsList.Add(chSubs);
-                        });
-
-                        //ChannelsList.Add(new channelSubsVM()
-                        //{
-                        //    Geotag = channel.geotag,
-                        //    TG_id = channel.tg_id,
-                        //    Link = channel.link,
-                        //    TotalSubscribes = count,                                
-                        //});
-
-                    }
-                }
-
-            });
-        }
-
         async Task updateViewedDrops(ObservableCollection<dropVM> dropList)
         {
             await Task.Run(() =>
@@ -256,45 +171,23 @@ namespace cheatbot.ViewModels
                 foreach (var drop in viewedDrops)
                 {
                     GroupDropList.Add(drop);
-                }
-                
+                }                
             });
-
         }
         #endregion
 
-        #region public
-        async Task Update()
-        {
-            //await loadChannels();            
-        }
-
+        #region public    
         public async void OnEvent(BaseEventMessage message)
         {
             switch (message)
             {
                 case DropListUpdatedEventMessage dluem:
 
-                    dropList = dluem.drop_list.ToList();
-
                     if (dluem.group_id == Id)
                     {
-                        await updateViewedDrops(dluem.drop_list);
-                        dropList = dluem.drop_list.ToList();
-                        await loadChannels();
+                        await updateViewedDrops(dluem.drop_list);                                            
                     }
-                    break;
-
-                case DropStatusChangedEventMessage dscem:
-
-                    //int delta = (dscem.status == DropStatus.active) ? 1 : -1;
-                    //foreach (var channel in ChannelsList)
-                    //{                        
-                    //    if (dscem.subscribes.Contains(channel.TG_id))
-                    //        channel.UpdateSubsCounter(delta);
-                    //}
-
-                    break;
+                    break;                
             }
         }
 #endregion

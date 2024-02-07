@@ -158,7 +158,7 @@
     <Style Selector="ListBoxItem">
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderThickness" Value="1"/>        
-        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Margin" Value="0"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
     <Style Selector="ListBoxItem TextBlock">
@@ -172,17 +172,18 @@
         <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderSelectedColor}"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <!--<Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderSelectedColor}"/>-->
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Background" Value="#AAF2F2F2"/>
     </Style>
 
     <Style Selector="ItemsControl">
-        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Margin" Value="0"/>
         <!--<Setter Property="Background" Value="{DynamicResource ItemsControlBackgroundColor}"/>-->
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <!--<Setter Property="BorderBrush" Value="{DynamicResource ItemsControlBorderColor}"/>-->
-        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Padding" Value="0"/>
     </Style>
 
     <Style Selector="ItemsControl.Bordered">
@@ -191,7 +192,7 @@
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ItemsControlBorderColor}"/>
-        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Padding" Value="0"/>
     </Style>
 
 

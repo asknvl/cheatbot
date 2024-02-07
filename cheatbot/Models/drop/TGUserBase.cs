@@ -298,12 +298,11 @@ namespace asknvl
             try
             {
                 foreach (var channel in randomDelta)
-                {
-                    cts.Token.ThrowIfCancellationRequested();
+                {                    
 #if DEBUG_FAST
-                    await Task.Delay(random.Next(5, 20) * 1 * 1000);
+                    await Task.Delay(random.Next(5, 20) * 1 * 1000, cts.Token);
 #else
-                    await Task.Delay(random.Next(5, 20) * 60 * 1000);
+                    await Task.Delay(random.Next(5, 20) * 60 * 1000, cts.Token);
 #endif
                     await Subscribe(channel.link);
 
@@ -382,8 +381,7 @@ namespace asknvl
                 var randomChannels = channels.OrderBy(item => random.Next()).ToList();
 
                 foreach (var channel in randomChannels)
-                {
-                    cts.Token.ThrowIfCancellationRequested();
+                {                    
 
                     var found = chats.ContainsKey(channel.tg_id);
                     if (found)
@@ -391,9 +389,9 @@ namespace asknvl
                         try
                         {
 #if DEBUG_FAST
-                            await Task.Delay(random.Next(5, 20) * 1 * 1000);
+                            await Task.Delay(random.Next(5, 20) * 1 * 1000, cts.Token);
 #else
-                            await Task.Delay(random.Next(5, 20) * 60 * 1000);
+                            await Task.Delay(random.Next(5, 20) * 60 * 1000, cts.Token);
 #endif
                             var chat = chats[channel.tg_id];
                             await user.LeaveChat(chat);
@@ -401,6 +399,10 @@ namespace asknvl
                             chats.Remove(channel.tg_id);
                             ChannelLeftEvent?.Invoke(channel.tg_id);
                             logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            throw;
                         }
                         catch (Exception ex)
                         {

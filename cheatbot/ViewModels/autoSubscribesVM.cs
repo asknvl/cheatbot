@@ -17,8 +17,11 @@ namespace cheatbot.ViewModels
     public class autoSubscribesVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
 
-        #region properties
-        //public dropListVM dropList;
+        #region vars
+        List<dropVM> dropList;
+        #endregion
+
+        #region properties        
         public ObservableCollection<groupViewModel> Groups { get; } = new();
       
         groupViewModel selectedGroup;
@@ -30,9 +33,12 @@ namespace cheatbot.ViewModels
                 this.RaiseAndSetIfChanged(ref selectedGroup, value);                
             }
         }
+
+        public ObservableCollection<channelSubsVM> ChannelsList { get; } = new();
         #endregion
 
         #region commands        
+        public ReactiveCommand<Unit, Unit> refreshCmd { get; }
         #endregion
 
         public autoSubscribesVM()
@@ -44,7 +50,9 @@ namespace cheatbot.ViewModels
             //loadChannels();
 
             #region commands
-           
+            refreshCmd = ReactiveCommand.CreateFromTask(async () => {
+                await loadChannels();
+            });
             #endregion
 
         }
@@ -73,20 +81,83 @@ namespace cheatbot.ViewModels
         public void OnEvent(BaseEventMessage message)
         {
             switch (message)
-            {
-                case DropStatusChangedEventMessage dscem:
-
-                    //int delta = (dscem.status == DropStatus.active) ? 1 : -1;
-
-                    //foreach (var channel in ChannelsList)
-                    //{
-                    //    var found = dscem.subscribes.FirstOrDefault(s => s == channel.TG_id);
-                    //    if (found != null)                        
-                    //        channel.UpdateSubsCounter(delta);
-                    //}
-
+            {   
+                case DropListUpdatedEventMessage dluem:
+                    dropList = dluem.drop_list.ToList();             
                     break;
             }
+        }
+
+        public async Task loadChannels()
+        {
+
+            await Task.Run(() =>
+            {
+
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    ChannelsList.Clear();
+                });
+
+                using (var db = new DataBaseContext())
+                {
+                    var channels = db.Channels.ToList();
+                    var groups = db.Groups.ToList();
+
+                    foreach (var channel in channels)
+                    {
+
+                        int channeled_count = 0;
+                        List<dropVM> channeled = new();
+
+                        if (dropList != null)
+                        {
+                            channeled = dropList.Where(d => d.drop.GetSubscribes().Contains(channel.tg_id)).ToList();
+                            channeled_count = channeled.Count;
+                        }
+
+
+
+                        var chSubs = new channelSubsVM();
+                        chSubs.Geotag = channel.geotag;
+                        chSubs.TG_id = channel.tg_id;
+                        chSubs.Link = channel.link;
+
+                        chSubs.TotalSubscribes = channeled_count;
+
+                        foreach (var g in groups)
+                        {
+
+                            var chGrp = new channelGroupVM();
+                            //var grouped = db.Drops.Where(d => d.group_id == g.id);
+                            var grouped = channeled.Where(d => d.group_id == g.id);
+                            //var selected = channeled.Where(i => grouped.Any(j => j.phone_number.Equals(i.phone_number)));
+
+
+
+                            chSubs.Groups.Add(chGrp);
+                            //chGrp.ID = selected.Count();
+                            chGrp.ID = grouped.Count();
+                        }
+
+
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            ChannelsList.Add(chSubs);
+                        });
+
+                        //ChannelsList.Add(new channelSubsVM()
+                        //{
+                        //    Geotag = channel.geotag,
+                        //    TG_id = channel.tg_id,
+                        //    Link = channel.link,
+                        //    TotalSubscribes = count,                                
+                        //});
+
+                    }
+                }
+
+            });
         }
     }
 }
