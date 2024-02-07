@@ -359,7 +359,7 @@ namespace cheatbot.Models.drop
                 if (newPollsQueue.Count > 0)
                 {
 
-                    int index = random.Next(0, newPollsQueue.Count - 1);
+                    int index = random.Next(0, newPollsQueue.Count);
                     var newPoll = newPollsQueue[index];
                     //var newPoll = newPollsQueue.First();                    
                     await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);
