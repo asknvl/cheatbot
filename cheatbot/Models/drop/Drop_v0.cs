@@ -262,7 +262,7 @@ namespace cheatbot.Models.drop
             await Task.Run(async () =>
             {
 
-                InputPeer c = chats.chats[peer.ID];
+                InputPeer c = chats[peer.ID];
                 await user.Messages_GetMessagesViews(c, new[] { id }, true);
 
                 var answers = poll.poll.answers;
