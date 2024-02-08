@@ -300,9 +300,9 @@ namespace asknvl
                 foreach (var channel in randomDelta)
                 {                    
 #if DEBUG_FAST
-                    await Task.Delay(random.Next(5, 20) * 1 * 1000, cts.Token);
+                    await Task.Delay(random.Next(3, 10) * 1 * 1000, cts.Token);
 #else
-                    await Task.Delay(random.Next(5, 20) * 60 * 1000, cts.Token);
+                    await Task.Delay(random.Next(3, 10) * 1 * 1000, cts.Token);
 #endif
                     await Subscribe(channel.link);
 

@@ -24,6 +24,7 @@ namespace cheatbot.ViewModels.subscribes
 
         #region properties
         public ObservableCollection<channelVM> Channels { get; } = new();        
+        public ObservableCollection<string> IDS { get; } = new();
         #endregion
 
         public subscribeTableVM()
@@ -81,6 +82,10 @@ namespace cheatbot.ViewModels.subscribes
                 {
                     var channels = db.Channels.ToList();
                     var groups = db.Groups.ToList();
+
+                    IDS.Clear();
+                    foreach (var g in groups)
+                        IDS.Add("G" + g.id);
 
                     foreach (var channel in channels)
                     {

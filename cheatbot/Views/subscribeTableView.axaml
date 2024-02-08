@@ -10,53 +10,78 @@
     </UserControl.Styles>
     
     <Grid
-        RowDefinitions="Auto, Auto, Auto"
+        RowDefinitions="Auto, *, Auto"
         ColumnDefinitions="Auto, Auto">
-
         <ItemsControl
-            Grid.Row="1"
-            Items="{Binding Channels}">
+            HorizontalAlignment="Center"
+            Grid.Row="0"
+            Items="{Binding IDS}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid
-                        ColumnDefinitions="100, Auto, 100">
-                        <TextBlock                            
-                            Grid.Column="0"
-                            Text="{Binding Name}"/>
-                        <ListBox
-                            Grid.Column="1"
-                            Items="{Binding Groups}"
-                            Selection="{Binding Selection}"
-                            SelectionMode="Multiple, Toggle">
-
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <TextBlock
-                                            MinWidth="30"
-                                            Text="{Binding ActiveDropsInGroup}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>                        
-                        <TextBlock
-                            Grid.Column="2"
-                            Text="{Binding TotalActiveDrops}"/>
-                        <Grid.Styles>
-                            <Style Selector="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center"/>                                
-                                <Setter Property="TextAlignment" Value="Center"/>
-                            </Style>                            
-                        </Grid.Styles>
-                    </Grid>
+                    <TextBlock
+                        Text="{Binding}"
+                        FontWeight="DemiBold"
+                        MinWidth="32"
+                        TextAlignment="Center"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <Border
+            Grid.Row="1">
+            <ScrollViewer>
+                <ItemsControl   
+                    Grid.Row="1"
+                    Items="{Binding Channels}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                ColumnDefinitions="100, Auto, 100">
+                                <TextBlock
+                                    Grid.Column="0"
+                                    FontWeight="DemiBold"
+                                    Text="{Binding Name}"/>
+                                <ListBox
+                                    Grid.Column="1"
+                                    Items="{Binding Groups}"
+                                    Selection="{Binding Selection}"
+                                    SelectionMode="Multiple, Toggle">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBlock
+                                                    MinWidth="30"                                                    
+                                                    Text="{Binding ActiveDropsInGroup}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <TextBlock
+                                    Grid.Column="2"
+                                    FontWeight="DemiBold"
+                                    Text="{Binding TotalActiveDrops}"/>
+                                <Grid.Styles>
+                                    <Style Selector="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
+                                    </Style>
+                                </Grid.Styles>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>                
+            </ScrollViewer>
+            
+        </Border>
         <StackPanel
             Grid.Row="1"
             Grid.Column="1">
