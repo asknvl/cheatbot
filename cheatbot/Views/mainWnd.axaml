@@ -84,6 +84,11 @@
                 DataContext="{Binding AutoSubscribes}"/>
         </TabItem>
         <TabItem
+           Header="Накрутка">
+            <vv:subscribeTableView
+                DataContext="{Binding SubscribeTable}"/>
+        </TabItem>
+        <TabItem
             Header="Настройки">
             <StackPanel
                 DataContext="{Binding DropList}">

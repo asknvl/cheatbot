@@ -310,7 +310,7 @@ namespace asknvl
             }
             catch (OperationCanceledException ex)
             {
-
+                throw;
             }
             catch (Exception ex)
             {

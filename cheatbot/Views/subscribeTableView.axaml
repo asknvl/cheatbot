@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="cheatbot.Views.subscribeTableView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
+    </UserControl.Styles>
+    
+    <Grid
+        RowDefinitions="Auto, Auto, Auto"
+        ColumnDefinitions="Auto, Auto">
+
+        <ItemsControl
+            Grid.Row="1"
+            Items="{Binding Channels}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid
+                        ColumnDefinitions="100, Auto, 100">
+                        <TextBlock                            
+                            Grid.Column="0"
+                            Text="{Binding Name}"/>
+                        <ListBox
+                            Grid.Column="1"
+                            Items="{Binding Groups}"
+                            Selection="{Binding Selection}"
+                            SelectionMode="Multiple, Toggle">
+
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <TextBlock
+                                            MinWidth="30"
+                                            Text="{Binding ActiveDropsInGroup}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>                        
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{Binding TotalActiveDrops}"/>
+                        <Grid.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>                                
+                                <Setter Property="TextAlignment" Value="Center"/>
+                            </Style>                            
+                        </Grid.Styles>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1">
+            <Button
+                Grid.Column="0"
+                Command="{Binding refreshCmd}">
+                Обновить
+            </Button>
+            <Button
+                Grid.Column="0"
+                Command="{Binding subscribeCmd}">
+                Подписать
+            </Button>
+            <Button
+                Grid.Column="1"
+                Command="{Binding unsubscribeCmd}">
+                Отписать
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

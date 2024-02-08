@@ -2,6 +2,7 @@
 using cheatbot.Database;
 using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
+using cheatbot.ViewModels.subscribes;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,13 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref autoSubscribes, value);    
         }
 
+        subscribeTableVM subscribeTable;
+        public subscribeTableVM SubscribeTable
+        {
+            get => subscribeTable;
+            set => this.RaiseAndSetIfChanged(ref subscribeTable, value);    
+        }
+
         bool isSelected;
         public bool IsSelected
         {
@@ -79,6 +87,7 @@ namespace cheatbot.ViewModels
                     Logger.dbg("API", $"{y}");
             };
 
+            SubscribeTable = new subscribeTableVM();
             AutoSubscribes = new autoSubscribesVM();
 
             DropList = new dropListVM(Logger);

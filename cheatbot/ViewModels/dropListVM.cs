@@ -150,10 +150,13 @@ namespace cheatbot.ViewModels
                 await loadDropList(logger);
                 await loadGroups();
 
-                foreach (var group in Groups)
-                {
-                    EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(group.id, DropList));
-                }
+
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(0, DropList));
+
+                //foreach (var group in Groups)
+                //{
+                //    EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(group.id, DropList));
+                //}
 
             });
 
