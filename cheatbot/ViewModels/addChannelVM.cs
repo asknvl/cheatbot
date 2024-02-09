@@ -19,6 +19,13 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _geotag, value);
         }
 
+        long _tg_id;
+        public long tg_id
+        {
+            get => _tg_id;
+            set => this.RaiseAndSetIfChanged(ref _tg_id, value);
+        }
+
         string _link;
         public string link
         {
@@ -36,7 +43,7 @@ namespace cheatbot.ViewModels
         {
             okCmd = ReactiveCommand.Create(() => {
 
-                AddChannelRequestEvent?.Invoke(geotag, link);
+                AddChannelRequestEvent?.Invoke(geotag, tg_id, link);
                 //EventAggregator.getInstance().Publish((BaseEventMessage)new AddChannelRequestEventMessage(geotag, link));
 
             });
@@ -46,6 +53,6 @@ namespace cheatbot.ViewModels
             });
         }
 
-        public event Action<string, string> AddChannelRequestEvent;
+        public event Action<string, long, string> AddChannelRequestEvent;
     }
 }

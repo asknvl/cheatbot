@@ -24,7 +24,7 @@ namespace cheatbot.ViewModels.subscribes
 
         #region properties
         public ObservableCollection<channelVM> Channels { get; } = new();        
-        public ObservableCollection<string> IDS { get; } = new();
+        public ObservableCollection<groupTitleVM> IDS { get; } = new();
         #endregion
 
         public subscribeTableVM()
@@ -50,17 +50,34 @@ namespace cheatbot.ViewModels.subscribes
 
                 cts = null;
 
+                refresh();
+
             });
-            unsubscribeCmd = ReactiveCommand.CreateFromTask(async () => {                
-            });
 
+            unsubscribeCmd = ReactiveCommand.CreateFromTask(async () => {
+                if (cts != null)
+                    return;
 
-
-            refreshCmd = ReactiveCommand.CreateFromTask(async () => {
+                cts = new CancellationTokenSource();
 
                 foreach (var channel in Channels)
-                    channel.Update();
+                {
+                    foreach (var group in channel.Selection.SelectedItems)
+                    {
+                        await group.Unsubscribe(channel, cts);
+                    }
+                }
 
+                cts = null;
+
+                refresh();
+
+            });
+
+
+
+            refreshCmd = ReactiveCommand.Create(() => {
+                refresh();
             });                
             #endregion
         }
@@ -72,6 +89,28 @@ namespace cheatbot.ViewModels.subscribes
         #endregion
 
         #region helpers
+        void refresh()
+        {
+            foreach (var channel in Channels)
+                channel.Update();
+
+            using (var db = new DataBaseContext())
+            {
+                var groups = db.Groups.ToList();
+                refreshTitle(groups);
+            }
+        }
+        void refreshTitle(List<GroupModel> groups)
+        {
+            IDS.Clear();
+            foreach (var g in groups)
+            {
+                var title = new groupTitleVM();
+                title.ID = "G" + g.id;
+                title.TotalDropsInGroup = drops.Where(d => d.group_id == g.id).Count();
+                IDS.Add(title);
+            }
+        }
         async Task loadChannels()
         {
 
@@ -83,9 +122,7 @@ namespace cheatbot.ViewModels.subscribes
                     var channels = db.Channels.ToList();
                     var groups = db.Groups.ToList();
 
-                    IDS.Clear();
-                    foreach (var g in groups)
-                        IDS.Add("G" + g.id);
+                    refreshTitle(groups);
 
                     foreach (var channel in channels)
                     {
@@ -108,6 +145,10 @@ namespace cheatbot.ViewModels.subscribes
             {
                 case DropListUpdatedEventMessage dluem:
                     drops = dluem.drop_list.ToList();
+
+                    foreach (var ch in Channels)
+                        ch.Update(drops);
+
                     await loadChannels();
                     break;
             }

@@ -10,27 +10,27 @@
         <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
     </UserControl.Styles>
 
-    <Grid
-        MinWidth="200"
+    <Grid        
         ColumnDefinitions="*, Auto">
         <cust:AutoScrollListBox
             Items="{Binding ChannelList}"
             SelectedItem="{Binding SelectedChannel}"
             Grid.Column="0"
-            MinWidth="200">
+            MinWidth="300">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel
                         Orientation="Vertical">
                         <Grid
-                            ColumnDefinitions="*, 30">
+                            ColumnDefinitions="*, Auto">
                             <TextBlock
                                 Grid.Column="0"
                                 Text="{Binding geotag}"
                                 FontWeight="DemiBold"/>
                             <TextBlock
                                 Grid.Column="1"
-                                Text="{Binding viewedMessagesCounter}"/>
+                                Text="{Binding viewedMessagesCounter}"
+                                HorizontalAlignment="Right"/>
                         </Grid>
 
                         <TextBlock Text="{Binding name}"
@@ -43,11 +43,11 @@
             Grid.Column="1">
             <Button
                 Command="{Binding addCmd}">
-                +
+                Добавить
             </Button>
             <Button
                 Command="{Binding deleteCmd}">
-                -
+                Удалить
             </Button>
             <!--<Button
                Command="{Binding subscribeCmd}">
@@ -58,10 +58,10 @@
                 О
             </Button>-->
             <StackPanel.Styles>
-                <Style Selector="Button">
+                <!--<Style Selector="Button">
                     <Setter Property="MinWidth" Value="70"/>
                     <Setter Property="MinHeight" Value="30"/>
-                </Style>
+                </Style>-->
                 <Style Selector="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Center"/>
                 </Style>

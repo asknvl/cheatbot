@@ -2,13 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:cheatbot.Views.converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="cheatbot.Views.subscribeTableView">
 
     <UserControl.Styles>
         <StyleInclude Source="/Views/Styles/WindowStyle.axaml" />
     </UserControl.Styles>
-    
+
+    <UserControl.Resources>
+        <conv:GroupStatusColorConverter x:Key="groupStatusColorConverter"/>
+    </UserControl.Resources>
+
+
     <Grid
         RowDefinitions="Auto, *, Auto"
         ColumnDefinitions="Auto, Auto">
@@ -23,11 +29,20 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock
-                        Text="{Binding}"
-                        FontWeight="DemiBold"
-                        MinWidth="32"
-                        TextAlignment="Center"/>
+                    <StackPanel>
+                        <TextBlock                            
+                            Text="{Binding ID}"
+                            FontWeight="DemiBold"                            
+                            TextAlignment="Center"
+                            MinWidth="32"
+                            HorizontalAlignment="Stretch"/>
+                        <TextBlock
+                            Text="{Binding TotalDropsInGroup}"
+                            FontSize="8"
+                            TextAlignment="Center"
+                            MinWidth="32"
+                            HorizontalAlignment="Stretch"/>
+                    </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -57,10 +72,13 @@
                                     </ListBox.ItemsPanel>
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid>
+                                            <Grid
+                                                RowDefinitions="Auto, Auto">
                                                 <TextBlock
-                                                    MinWidth="30"                                                    
-                                                    Text="{Binding ActiveDropsInGroup}"/>
+                                                    Grid.Row="0"
+                                                    MinWidth="30"  
+                                                    Foreground="{Binding GroupStatus, Converter={StaticResource groupStatusColorConverter}}"
+                                                    Text="{Binding ActiveDropsInGroup}"/>                                                
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
@@ -85,18 +103,15 @@
         <StackPanel
             Grid.Row="1"
             Grid.Column="1">
-            <Button
-                Grid.Column="0"
+            <Button                
                 Command="{Binding refreshCmd}">
                 Обновить
             </Button>
-            <Button
-                Grid.Column="0"
+            <Button                
                 Command="{Binding subscribeCmd}">
                 Подписать
             </Button>
-            <Button
-                Grid.Column="1"
+            <Button                
                 Command="{Binding unsubscribeCmd}">
                 Отписать
             </Button>

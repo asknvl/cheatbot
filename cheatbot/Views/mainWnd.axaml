@@ -54,7 +54,7 @@
                 <vv:channelListView
                     DataContext="{Binding ChannelList}"
                     Grid.Column="0"/>
-                <Border
+                <Grid
                     Grid.Column="1"
                     MinWidth="400">
                     <ContentControl
@@ -69,20 +69,20 @@
                             </DataTemplate>
                         </ContentControl.DataTemplates>
                     </ContentControl>
-                </Border>
+                </Grid>
             </Grid>
         </TabItem>
-        <TabItem
+        <!--<TabItem
             Header="Подписки"
             IsSelected="{Binding IsSelected, Mode=TwoWay}">
             <vv:subscribesView
                 DataContext="{Binding Subscribes}"/>
-        </TabItem>
-        <TabItem
+        </TabItem>-->
+        <!--<TabItem
            Header="Автоподписки">
             <vv:autoSubscribesView
                 DataContext="{Binding AutoSubscribes}"/>
-        </TabItem>
+        </TabItem>-->
         <TabItem
            Header="Накрутка">
             <vv:subscribeTableView

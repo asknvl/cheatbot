@@ -2,6 +2,7 @@
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -27,14 +28,29 @@ namespace cheatbot.ViewModels.subscribes
         public int TotalDropsInGroup
         {
             get => totalDropsInGroup;
-            set => this.RaiseAndSetIfChanged(ref totalDropsInGroup, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref totalDropsInGroup, value);
+                updateStatus();
+            }
         }
 
         int activeDropsInGroup;
         public int ActiveDropsInGroup
         {
             get => activeDropsInGroup;
-            set => this.RaiseAndSetIfChanged(ref activeDropsInGroup, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref activeDropsInGroup, value);
+                updateStatus();
+            }
+        }
+
+        GroupStatus groupStatus;
+        public GroupStatus GroupStatus
+        {
+            get => groupStatus;
+            set => this.RaiseAndSetIfChanged(ref  groupStatus, value);  
         }
         #endregion
 
@@ -43,6 +59,19 @@ namespace cheatbot.ViewModels.subscribes
             ID = id;
             this.drops = drops;
         }
+
+        #region helpers
+        void updateStatus()
+        {
+            if (ActiveDropsInGroup == 0)
+                GroupStatus = GroupStatus.ignore;
+            else
+            if (ActiveDropsInGroup > 0 && ActiveDropsInGroup < TotalDropsInGroup)
+                GroupStatus = GroupStatus.part;
+            else
+                GroupStatus = GroupStatus.full;
+        }
+        #endregion
 
         #region public
         public async Task Subscribe(channelVM channel, CancellationTokenSource cts)
@@ -67,6 +96,37 @@ namespace cheatbot.ViewModels.subscribes
 
             }
         }
+
+        public async Task Unsubscribe(channelVM channel, CancellationTokenSource cts)
+        {
+            var groupedDrops = drops.Where(d => d.group_id == ID).ToList();
+
+            var model = new ChannelModel()
+            {
+                tg_id = channel.TG_id,
+                link = channel.Link,
+                geotag = channel.Name
+            };
+
+            try
+            {
+                foreach (var drop in groupedDrops)
+                {
+                    await drop.drop.Unsubscribe(new List<ChannelModel>() { model }, cts);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
         #endregion
+    }
+
+    public enum GroupStatus
+    {
+        full,
+        part,
+        ignore
     }
 }

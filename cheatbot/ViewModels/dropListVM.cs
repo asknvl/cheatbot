@@ -207,6 +207,7 @@ namespace cheatbot.ViewModels
                     }
                 }
                 await updateViewedDrops();
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(0, DropList));
             });
 
             closeTGsCmd = ReactiveCommand.Create(() => {
@@ -307,6 +308,8 @@ namespace cheatbot.ViewModels
 
                 await updateViewedDrops();
 
+                EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(0, DropList));
+
             });
 
             set2FACmd = ReactiveCommand.Create(() =>
@@ -371,22 +374,14 @@ namespace cheatbot.ViewModels
                 List<DropModel> dropModels = new();
 
                 using (var db = new DataBaseContext())
-                {
-                    //if (model.id == 1)
-                    //    drops = db.Drops.ToList();
-                    //else
-                    //    drops = db.Drops.Where(d => d.group_id == model.id).ToList();
-
+                {                    
                     dropModels = db.Drops.ToList();
-
                 }
-
                 foreach (var dropModel in dropModels)
                 {
                     await addDrop(dropModel);
                 }
             });
-
         }
 
         async Task updateViewedDrops()
@@ -403,7 +398,7 @@ namespace cheatbot.ViewModels
                         ViewedDropList.Add(drop);
                     }
                 }
-            });
+            });            
         }
 
         async Task loadGroups()
@@ -510,6 +505,7 @@ namespace cheatbot.ViewModels
                         }
                     }
                     SubContent = null;
+                    EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(0, DropList));
                     break;
 
                 case DropStatusChangedEventMessage statusMessage:
@@ -527,7 +523,9 @@ namespace cheatbot.ViewModels
                             });
 
                             cleaner.Enqueue(statusMessage.group_id, statusMessage.id, statusMessage.phone_number);
+                            EventAggregator.getInstance().Publish((BaseEventMessage)new DropListUpdatedEventMessage(0, DropList));
                             break;
+
                     }
 
                     await Dispatcher.UIThread.InvokeAsync(() =>

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using TL;
 
 namespace cheatbot.ViewModels.subscribes
 {
@@ -96,6 +97,7 @@ namespace cheatbot.ViewModels.subscribes
 
                 var channeled = drops.Where(d => d.drop.GetSubscribes().Contains(TG_id)).ToList();
                 TotalActiveDrops = channeled.Count;
+                
 
                 foreach (var gm in group_models)
                 {
@@ -103,20 +105,27 @@ namespace cheatbot.ViewModels.subscribes
                     var found = Groups.FirstOrDefault(g => g.ID == gm.id);
                     var grouped = channeled.Where(d => d.group_id == gm.id);
 
+                    var totalDropsInGroup = drops.Where(d => d.group_id == gm.id).Count();
+
                     if (found == null)
                     {
-                        var gr = new groupVM(gm.id, drops);
-                        
+                        var gr = new groupVM(gm.id, drops);                        
                         gr.ActiveDropsInGroup = grouped.Count();
+                        gr.TotalDropsInGroup = totalDropsInGroup;
                         Groups.Add(gr);
                     }
                     else
                     {
                         found.ActiveDropsInGroup = grouped.Count();
+                        found.TotalDropsInGroup = totalDropsInGroup;
                     }                  
                 }
             }
+        }
 
+        public void Update(List<dropVM> drops)
+        {
+            this.drops = drops;
         }
     }
 }

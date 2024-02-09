@@ -58,7 +58,7 @@ namespace cheatbot.ViewModels
                 addChannelVM addVM = new addChannelVM();
                 SubContent = addVM;
 
-                addVM.AddChannelRequestEvent += (geotag, link) => {
+                addVM.AddChannelRequestEvent += (geotag, tg_id, link) => {
 
                     if (string.IsNullOrEmpty(geotag) || string.IsNullOrEmpty(link))
                         return;
@@ -72,6 +72,7 @@ namespace cheatbot.ViewModels
                             var channelModel = new ChannelModel()
                             {
                                 geotag = geotag,
+                                tg_id = tg_id,
                                 link = link
                             };
                             db.Channels.Add(channelModel);
