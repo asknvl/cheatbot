@@ -12,6 +12,7 @@
 
     <UserControl.Resources>
         <conv:GroupStatusColorConverter x:Key="groupStatusColorConverter"/>
+        <conv:GroupStatusBackColorConverter x:Key="groupStatusBackColorConverter"/>
     </UserControl.Resources>
 
 
@@ -76,8 +77,9 @@
                                                 RowDefinitions="Auto, Auto">
                                                 <TextBlock
                                                     Grid.Row="0"
-                                                    MinWidth="30"  
+                                                    MinWidth="30"                    
                                                     Foreground="{Binding GroupStatus, Converter={StaticResource groupStatusColorConverter}}"
+                                                    Background="{Binding GroupStatus, Converter={StaticResource groupStatusBackColorConverter}}"
                                                     Text="{Binding ActiveDropsInGroup}"/>                                                
                                             </Grid>
                                         </DataTemplate>

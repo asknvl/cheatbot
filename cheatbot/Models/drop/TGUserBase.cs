@@ -398,6 +398,9 @@ namespace asknvl
                             await Task.Delay(random.Next(3, 5) * 1 * 1000, cts.Token);
 #endif
                             var chat = chats[channel.tg_id];
+
+                            
+
                             if (chat.IsActive)
                                 await user.LeaveChat(chat);
 
@@ -479,8 +482,7 @@ namespace asknvl
             if (status != _status)
             {
                 status = _status;
-                StatusChangedEvent?.Invoke(this, status);
-                logger.dbg(phone_number, $"{status}");
+                StatusChangedEvent?.Invoke(this, status);                
             }
         }
 

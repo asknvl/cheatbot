@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TL;
 
 namespace cheatbot.ViewModels.subscribes
 {
@@ -63,14 +64,27 @@ namespace cheatbot.ViewModels.subscribes
         #region helpers
         void updateStatus()
         {
-            if (ActiveDropsInGroup == 0)
+            if (TotalDropsInGroup > 0)
+            {
+                if (ActiveDropsInGroup == 0)
+                    GroupStatus = GroupStatus.ignore;
+                else
+                {
+                    double percent = ActiveDropsInGroup * 100.0d / TotalDropsInGroup;                    
+                    GroupStatus = (percent < 70) ? GroupStatus.part : GroupStatus.full;
+                }
+            } else
                 GroupStatus = GroupStatus.ignore;
-            else
-            //if (ActiveDropsInGroup > 0 && (ActiveDropsInGroup < TotalDropsInGroup))
-            if (ActiveDropsInGroup > 0 && (TotalDropsInGroup - ActiveDropsInGroup > 10))
-                GroupStatus = GroupStatus.part;
-            else
-                GroupStatus = GroupStatus.full;
+
+
+            //if (ActiveDropsInGroup == 0)
+            //    GroupStatus = GroupStatus.ignore;
+            //else
+            ////if (ActiveDropsInGroup > 0 && (ActiveDropsInGroup < TotalDropsInGroup))
+            //if (ActiveDropsInGroup > 0 && TotalDropsInGroup >)
+            //    GroupStatus = GroupStatus.part;
+            //else
+            //    GroupStatus = GroupStatus.full;
         }
         #endregion
 

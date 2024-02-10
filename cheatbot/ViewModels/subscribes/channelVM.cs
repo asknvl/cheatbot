@@ -104,7 +104,7 @@ namespace cheatbot.ViewModels.subscribes
                 {
 
                     var found = Groups.FirstOrDefault(g => g.ID == gm.id);
-                    var grouped = channeled.Where(d => d.group_id == gm.id && d.Status == DropStatus.active);
+                    var grouped = channeled.Where(d => d.group_id == gm.id && (d.Status == DropStatus.active || d.Status == DropStatus.subscription));
 
                     var totalDropsInGroup = drops.Where(d => d.group_id == gm.id).Count();
 

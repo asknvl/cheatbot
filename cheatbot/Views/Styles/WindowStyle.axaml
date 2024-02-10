@@ -174,7 +174,7 @@
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
         <!--<Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderSelectedColor}"/>-->
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Background" Value="Orange"/>
     </Style>
 
     <Style Selector="ItemsControl">
