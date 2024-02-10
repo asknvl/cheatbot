@@ -125,7 +125,7 @@ namespace cheatbot.ViewModels.subscribes
 
         public void Update(List<dropVM> drops)
         {
-            this.drops = drops;
+            this.drops = drops;  
         }
     }
 }

@@ -27,6 +27,12 @@ namespace cheatbot.ViewModels.subscribes
         public ObservableCollection<groupTitleVM> IDS { get; } = new();
         #endregion
 
+        #region commands
+        public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
+        public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
+        public ReactiveCommand<Unit, Unit> refreshCmd { get; }
+        #endregion
+
         public subscribeTableVM()
         {
 
@@ -81,12 +87,6 @@ namespace cheatbot.ViewModels.subscribes
             });                
             #endregion
         }
-
-        #region commands
-        public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
-        public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
-        public ReactiveCommand<Unit, Unit> refreshCmd { get; }
-        #endregion
 
         #region helpers
         void refresh()
