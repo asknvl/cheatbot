@@ -71,7 +71,7 @@ namespace cheatbot.ViewModels.subscribes
                 else
                 {
                     double percent = ActiveDropsInGroup * 100.0d / TotalDropsInGroup;                    
-                    GroupStatus = (percent < 70) ? GroupStatus.part : GroupStatus.full;
+                    GroupStatus = (percent < 90) ? GroupStatus.part : GroupStatus.full;
                 }
             } else
                 GroupStatus = GroupStatus.ignore;
