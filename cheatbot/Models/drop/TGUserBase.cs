@@ -333,7 +333,8 @@ namespace asknvl
             List<long> res = new();
 
             if (status == DropStatus.active || status == DropStatus.subscription)
-                return chats.Keys.ToList();
+                //return chats.Keys.ToList();
+                res = chats.Where(c => c.Value.IsActive).Select(p => p.Key).ToList();
 
             return res;
         }
