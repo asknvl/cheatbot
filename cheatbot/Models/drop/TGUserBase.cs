@@ -355,9 +355,12 @@ namespace asknvl
                 }
 
                 var chat = chats[channel_tg_id];
-                await user.LeaveChat(chat);
-                chats.Remove(channel_tg_id);
+                if (chat.IsActive)
+                {
+                    await user.LeaveChat(chat);                   
+                }
 
+                chats.Remove(channel_tg_id);
                 ChannelLeftEvent?.Invoke(channel_tg_id);
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 
@@ -395,7 +398,8 @@ namespace asknvl
                             await Task.Delay(random.Next(3, 5) * 1 * 1000, cts.Token);
 #endif
                             var chat = chats[channel.tg_id];
-                            await user.LeaveChat(chat);
+                            if (chat.IsActive)
+                                await user.LeaveChat(chat);
 
                             chats.Remove(channel.tg_id);
                             ChannelLeftEvent?.Invoke(channel.tg_id);

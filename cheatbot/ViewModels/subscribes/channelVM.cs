@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.Selection;
+﻿using asknvl;
+using Avalonia.Controls.Selection;
 using cheatbot.Database.models;
 using ReactiveUI;
 using System;
@@ -103,7 +104,7 @@ namespace cheatbot.ViewModels.subscribes
                 {
 
                     var found = Groups.FirstOrDefault(g => g.ID == gm.id);
-                    var grouped = channeled.Where(d => d.group_id == gm.id);
+                    var grouped = channeled.Where(d => d.group_id == gm.id && d.Status == DropStatus.active);
 
                     var totalDropsInGroup = drops.Where(d => d.group_id == gm.id).Count();
 

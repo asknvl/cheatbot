@@ -65,7 +65,7 @@ namespace cheatbot.Models.drop
                             if (!acceptedIds.Contains(channel.Key))
                                 continue;
 
-                            if (channel.Value.IsChannel)
+                            if (channel.Value.IsChannel && channel.Value.IsActive)
                             {
                                 try
                                 {

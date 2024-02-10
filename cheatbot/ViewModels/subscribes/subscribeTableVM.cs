@@ -45,17 +45,21 @@ namespace cheatbot.ViewModels.subscribes
                     return;
 
                 cts = new CancellationTokenSource();
+                List<Task> tasks = new();
 
                 foreach (var channel in Channels)
                 {
                     foreach (var group in channel.Selection.SelectedItems)
                     {
-                        await group.Subscribe(channel, cts);
+                        tasks.Add(Task.Run(async () => {
+                            await group.Subscribe(channel, cts);
+                        }));                        
                     }
                 }
 
-                cts = null;
+                await Task.WhenAll(tasks);
 
+                cts = null;
                 refresh();
 
             });
@@ -65,17 +69,21 @@ namespace cheatbot.ViewModels.subscribes
                     return;
 
                 cts = new CancellationTokenSource();
+                List<Task> tasks = new();
 
                 foreach (var channel in Channels)
                 {
                     foreach (var group in channel.Selection.SelectedItems)
                     {
-                        await group.Unsubscribe(channel, cts);
+                        tasks.Add(Task.Run(async() => {
+                            await group.Unsubscribe(channel, cts);
+                        }));
                     }
                 }
 
-                cts = null;
+                await Task.WhenAll(tasks);
 
+                cts = null;
                 refresh();
 
             });

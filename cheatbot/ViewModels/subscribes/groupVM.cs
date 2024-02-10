@@ -66,7 +66,8 @@ namespace cheatbot.ViewModels.subscribes
             if (ActiveDropsInGroup == 0)
                 GroupStatus = GroupStatus.ignore;
             else
-            if (ActiveDropsInGroup > 0 && ActiveDropsInGroup < TotalDropsInGroup)
+            //if (ActiveDropsInGroup > 0 && (ActiveDropsInGroup < TotalDropsInGroup))
+            if (ActiveDropsInGroup > 0 && (TotalDropsInGroup - ActiveDropsInGroup > 10))
                 GroupStatus = GroupStatus.part;
             else
                 GroupStatus = GroupStatus.full;
