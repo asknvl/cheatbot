@@ -23,7 +23,7 @@ namespace cheatbot.ViewModels.subscribes
         #endregion
 
         #region properties
-        public ObservableCollection<channelVM> Channels { get; } = new();        
+        public ObservableCollection<channelVM> Channels { get; set; } = new();        
         public ObservableCollection<groupTitleVM> IDS { get; } = new();
         #endregion
 
@@ -119,7 +119,7 @@ namespace cheatbot.ViewModels.subscribes
                 IDS.Add(title);
             }
         }
-        async Task loadChannels()
+        async void loadChannels()
         {
 
             await Task.Run(() =>
@@ -143,6 +143,10 @@ namespace cheatbot.ViewModels.subscribes
                         }
                     }
                 }
+
+
+
+                Channels = new ObservableCollection<channelVM>(Channels.OrderBy(c => c.Name));
             });
         }
         #endregion
@@ -157,7 +161,7 @@ namespace cheatbot.ViewModels.subscribes
                     foreach (var ch in Channels)
                         ch.Update(drops);
 
-                    await loadChannels();
+                    loadChannels();
                     break;
             }
         }

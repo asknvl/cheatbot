@@ -380,14 +380,14 @@ namespace asknvl
 
             try
             {
-                //chats = await user.Messages_GetAllChats();
+                var all_chats = await user.Messages_GetAllChats();
 
                 var randomChannels = channels.OrderBy(item => random.Next()).ToList();
 
                 foreach (var channel in randomChannels)
                 {                    
 
-                    var found = chats.ContainsKey(channel.tg_id);
+                    var found = all_chats.chats.ContainsKey(channel.tg_id);
                     if (found)
                     {
                         try
@@ -397,9 +397,7 @@ namespace asknvl
 #else
                             await Task.Delay(random.Next(3, 5) * 1 * 1000, cts.Token);
 #endif
-                            var chat = chats[channel.tg_id];
-
-                            
+                            var chat = all_chats.chats[channel.tg_id];
 
                             if (chat.IsActive)
                                 await user.LeaveChat(chat);
