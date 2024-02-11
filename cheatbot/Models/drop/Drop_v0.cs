@@ -362,8 +362,8 @@ namespace cheatbot.Models.drop
                     int index = random.Next(0, newPollsQueue.Count);
                     var newPoll = newPollsQueue[index];
                     //var newPoll = newPollsQueue.First();                    
-                    await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);
                     newPollsQueue.Remove(newPoll);
+                    await handlePollMessage(newPoll.poll, newPoll.peer, newPoll.id);                 
                 }
             }
             catch (Exception ex)

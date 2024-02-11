@@ -91,6 +91,7 @@ namespace asknvl
         #region private
         private async Task OnUpdate(UpdatesBase updates)
         {
+
             updates.CollectUsersChats(users, chats);
 
             if (updates is UpdateShortMessage usm && !users.ContainsKey(usm.user_id))
