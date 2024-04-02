@@ -85,15 +85,15 @@ namespace cheatbot.Models.drop
                         if (/*accepted.Any(a => a.tg_id == chat.ID)*/true)
                         {
 
-                            itteration? found = itterations.FirstOrDefault(i => i.chat_id == chat.ID);
-                            if (found == null)
+                            itteration? itter = itterations.FirstOrDefault(i => i.chat_id == chat.ID);
+                            if (itter == null)
                             {
-                                found = new itteration()
+                                itter = new itteration()
                                 {
                                     chat_id = chat.ID,
                                     number = 0
                                 };
-                                itterations.Add(found);                                
+                                itterations.Add(itter);                                
                             }
 
                             var full = await user.GetFullChat(chat);
@@ -102,6 +102,8 @@ namespace cheatbot.Models.drop
                             {
                                 logger.inf("TST", $"{chat.Title} {chf.unread_count}");
                                 chats.Add(chat);
+
+                                var delta = chf.unread_count - 
 
                                 var history = await user.Messages_GetHistory(chat, limit: chf.unread_count);
                                 var ids = history.Messages.Select(m => m.ID).ToArray();
