@@ -40,13 +40,6 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref channelList, value);
         }
 
-        subscribesVM subscribes;
-        public subscribesVM Subscribes
-        {
-            get => subscribes;
-            set => this.RaiseAndSetIfChanged(ref subscribes, value);
-        }
-
         autoSubscribesVM autoSubscribes;
         public autoSubscribesVM AutoSubscribes
         {
@@ -87,7 +80,8 @@ namespace cheatbot.ViewModels
                     Logger.dbg("API", $"{y}");
             };
 
-            SubscribeTable = new subscribeTableVM();
+            SubscribeTable = new subscribeTableVM();          
+
             AutoSubscribes = new autoSubscribesVM();
 
             DropList = new dropListVM(Logger);
@@ -100,8 +94,8 @@ namespace cheatbot.ViewModels
                 });            
             };
 
-            Subscribes = new subscribesVM(Logger);
-            
+            //Subscribes = new subscribesVM(Logger);
+
 
         }
 

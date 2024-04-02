@@ -34,6 +34,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="StarkSoftProxy" Version="1.6.0" />
     <PackageReference Include="WTelegramClient" Version="3.7.2" />
     <PackageReference Include="WTelegramClient.Extensions.Updates" Version="1.2.2" />

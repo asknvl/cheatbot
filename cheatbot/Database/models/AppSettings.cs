@@ -16,6 +16,8 @@ namespace cheatbot.Database.models
         public string? RootPath { get; set; }
         public string? TGPath { get; set; }
         public string? ProxyString { get; set; }
+        public string? ChannelsURL { get; set; }
+        public string? ChannelsToken { get; set;}
           
     }
 }

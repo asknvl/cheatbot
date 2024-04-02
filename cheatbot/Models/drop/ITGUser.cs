@@ -31,8 +31,7 @@ namespace asknvl
 
         event Action<ITGUser> VerificationCodeRequestEvent;        
         event Action<ITGUser, DropStatus> StatusChangedEvent;
-        event Action<string, long, string> ChannelAddedEvent;
-        event Action<long> ChannelLeftEvent;
+        
         event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;
     }

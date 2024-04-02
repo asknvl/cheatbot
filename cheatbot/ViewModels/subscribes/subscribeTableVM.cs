@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
+using cheatbot.Models.server;
 using cheatbot.ViewModels.events;
 using ReactiveUI;
 using System;
@@ -17,9 +18,10 @@ namespace cheatbot.ViewModels.subscribes
 {
     public class subscribeTableVM : ViewModelBase, IEventSubscriber<BaseEventMessage>
     {
-        #region properties
+        #region vars
         List<dropVM> drops;
         CancellationTokenSource cts = null;
+        IChannelsProvider chProvider;
         #endregion
 
         #region properties
@@ -30,11 +32,27 @@ namespace cheatbot.ViewModels.subscribes
         #region commands
         public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
         public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
+        public ReactiveCommand<Unit, Unit> stopCmd { get; }
         public ReactiveCommand<Unit, Unit> refreshCmd { get; }
         #endregion
 
         public subscribeTableVM()
         {
+
+            string url = "";
+            string token = "";
+
+            using (var db = new DataBaseContext())
+            {
+                AppSettings? found = db.AppSettings.FirstOrDefault();
+                if (found != null)
+                {
+                    url = found.ChannelsURL;
+                    token = found.ChannelsToken;
+                }
+            }
+
+            chProvider = new ChannelsProvider(url, token);
 
             EventAggregator.getInstance().Subscribe(this);
 
@@ -88,16 +106,20 @@ namespace cheatbot.ViewModels.subscribes
 
             });
 
-
+            stopCmd = ReactiveCommand.Create(() => {                 
+                cts?.Cancel();
+            });
 
             refreshCmd = ReactiveCommand.Create(() => {
                 refresh();
-            });                
+            });
+
+            
             #endregion
         }
 
         #region helpers
-        void refresh()
+        public void refresh()
         {
             foreach (var channel in Channels)
                 channel.Update();
@@ -122,15 +144,32 @@ namespace cheatbot.ViewModels.subscribes
         async Task loadChannels()
         {
 
-            await Task.Run(() =>
-            {              
+            await Task.Run(async () =>
+            {
+
+                //using (var db = new DataBaseContext())
+                //{
+                //    var channels = db.Channels.ToList();
+                //    var groups = db.Groups.ToList();
+
+                //    refreshTitle(groups);
+
+                //    foreach (var channel in channels)
+                //    {
+
+                //        var found = Channels.FirstOrDefault(c => c.TG_id == channel.tg_id);
+                //        if (found == null)
+                //        {
+                //            var ch = new channelVM(channel, groups, drops);
+                //            Channels.Add(ch);
+                //        }
+                //    }
+                //}
 
                 using (var db = new DataBaseContext())
                 {
-                    var channels = db.Channels.ToList();
                     var groups = db.Groups.ToList();
-
-                    refreshTitle(groups);
+                    var channels = await chProvider.GetChannels();                    
 
                     foreach (var channel in channels)
                     {
@@ -143,6 +182,8 @@ namespace cheatbot.ViewModels.subscribes
                         }
                     }
                 }
+
+            
             });
         }
         #endregion
@@ -158,6 +199,7 @@ namespace cheatbot.ViewModels.subscribes
                         ch.Update(drops);
 
                     await loadChannels();
+                    refresh();
                     break;
             }
         }

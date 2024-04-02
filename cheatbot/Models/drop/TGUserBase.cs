@@ -350,8 +350,7 @@ namespace asknvl
                 //var chats = await user.Messages_GetAllChats();
 
                 if (!chats.ContainsKey(channel_tg_id))
-                {
-                    ChannelLeftEvent?.Invoke(channel_tg_id);
+                {                    
                     return;
                 }
 
@@ -361,8 +360,7 @@ namespace asknvl
                     await user.LeaveChat(chat);                   
                 }
 
-                chats.Remove(channel_tg_id);
-                ChannelLeftEvent?.Invoke(channel_tg_id);
+                chats.Remove(channel_tg_id);                
                 logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
 
             }
@@ -405,8 +403,7 @@ namespace asknvl
                             if (chat.IsActive)
                                 await user.LeaveChat(chat);
 
-                            chats.Remove(channel.tg_id);
-                            ChannelLeftEvent?.Invoke(channel.tg_id);
+                            chats.Remove(channel.tg_id);                            
                             logger.inf(phone_number, $"LeaveChannel: {chat.Title} OK");
                         }
                         catch (OperationCanceledException ex)
@@ -508,8 +505,7 @@ namespace asknvl
 
         #region events
         public event Action<ITGUser> VerificationCodeRequestEvent;
-        public event Action<string, long, string> ChannelAddedEvent;
-        public event Action<long> ChannelLeftEvent;
+        public event Action<string, long, string> ChannelAddedEvent;        
 
         public event Action<long, uint> ChannelMessageViewedEvent;
         public event Action<string> _2FAPasswordChanged;
