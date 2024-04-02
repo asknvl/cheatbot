@@ -15,6 +15,7 @@ namespace cheatbot.Models.drop
 
     public enum DropType 
     {
-        v0
+        v0,
+        v1
     }
 }

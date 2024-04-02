@@ -117,6 +117,10 @@
                 Command="{Binding unsubscribeCmd}">
                 Отписать
             </Button>
+            <Button
+                Command="{Binding stopCmd}">
+                Стоп
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

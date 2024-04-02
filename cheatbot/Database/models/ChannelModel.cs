@@ -16,6 +16,7 @@ namespace cheatbot.Database.models
         public string? geotag { get; set; }
         public string? link { get; set; }
         public long tg_id { get; set; }        
+        public bool is_active { get; set; }
         public string? name { get; set; }
 
     }

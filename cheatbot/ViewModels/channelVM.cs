@@ -42,6 +42,13 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref _tg_id, value);    
         }
 
+        bool _is_active;
+        public bool is_active
+        {
+            get => _is_active;
+            set => this.RaiseAndSetIfChanged(ref _is_active, value);
+        }
+
         uint _wievedMessagesCounter = 0;
         public uint viewedMessagesCounter
         {
@@ -57,7 +64,7 @@ namespace cheatbot.ViewModels
             id = model.id;
             geotag = model.geotag;
             link = model.link;    
-            tg_id = model.tg_id;
+            tg_id = model.tg_id;            
             name = model.name;
 
             EventAggregator.getInstance().Subscribe(this);

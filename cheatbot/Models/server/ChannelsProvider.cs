@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using cheatbot.Database;
 using cheatbot.Database.models;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -15,6 +16,41 @@ namespace cheatbot.Models.server
     public class ChannelsProvider : IChannelsProvider
     {
 
+        #region singletone
+        private static ChannelsProvider instance;
+
+        public static ChannelsProvider getInstance(string url, string token)
+        {
+            if (instance == null)
+                instance = new ChannelsProvider(url, token);
+            return instance;    
+        }
+
+        public static ChannelsProvider getInstance()
+        {
+            if (instance == null)
+            {
+
+                string url = "";
+                string token = "";
+
+                using (var db = new DataBaseContext())
+                {
+                    AppSettings? found = db.AppSettings.FirstOrDefault();
+                    if (found != null)
+                    {
+                        url = found.ChannelsURL;
+                        token = found.ChannelsToken;
+                    } 
+                }
+
+                instance = new ChannelsProvider(url, token);
+            }
+            return instance;
+        }
+        #endregion
+
+
         #region vars
         string url;
         string token;
@@ -22,7 +58,7 @@ namespace cheatbot.Models.server
         IHttpClientFactory httpClientFactory;
         #endregion
 
-        public ChannelsProvider(string url, string token) {
+        private ChannelsProvider(string url, string token) {
             this.url = url;
             this.token = token; 
             serviceCollection = new ServiceCollection();

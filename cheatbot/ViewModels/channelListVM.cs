@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
 using DynamicData;
+using cheatbot.Models.server;
 
 namespace cheatbot.ViewModels
 {
@@ -136,15 +137,18 @@ namespace cheatbot.ViewModels
         #region private
         async Task updateList()
         {
-            await Task.Run(() => {
+            await Task.Run(async () => {
                 ChannelList.Clear();
 
-                List<ChannelModel> channels;
+                //List<ChannelModel> channels;
 
-                using (var db = new DataBaseContext())
-                {
-                    channels = db.Channels.ToList();
-                }
+                //using (var db = new DataBaseContext())
+                //{
+                //    channels = db.Channels.ToList();
+                //}
+
+                var channels = await ChannelsProvider.getInstance().GetChannels();
+
     
                 foreach (var channel in channels)
                 {

@@ -90,10 +90,10 @@
         </TabItem>
         <TabItem
             Header="Настройки">
-            <StackPanel
-                DataContext="{Binding DropList}">
+            <StackPanel>
                 <Grid
-                    ColumnDefinitions="100, 200, 50 ">
+                    ColumnDefinitions="100, 200, 50 "
+                     DataContext="{Binding DropList}">
                     <TextBlock
                         Grid.Column="0">
                         Корневая папка:
@@ -114,7 +114,8 @@
                     </Grid.Styles>
                 </Grid>
                 <Grid
-                    ColumnDefinitions="100, 200, 50 ">
+                    ColumnDefinitions="100, 200, 50 "
+                     DataContext="{Binding DropList}">
                     <TextBlock
                         Grid.Column="0">
                         TG папка:
@@ -135,7 +136,8 @@
                     </Grid.Styles>
                 </Grid>
                 <Grid
-                   ColumnDefinitions="100, 200, 50 ">
+                   ColumnDefinitions="100, 200, 50"
+                   DataContext="{Binding DropList}">
                     <TextBlock
                         Grid.Column="0">
                         Proxy:
@@ -149,6 +151,73 @@
                         Command="{Binding setProxyCmd}">
                         Установить
                     </Button>
+                    <Grid.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Styles>
+                </Grid>
+                <Grid
+                  ColumnDefinitions="100, 200, 50 ">
+                    <TextBlock
+                        Grid.Column="0">
+                        Каналы URL:
+                    </TextBlock>
+                    <TextBox
+                        Grid.Column="1"
+                        Text="{Binding ChannelsURL}"
+                        Height="30"/>
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding setChannelsURL}">
+                        Установить
+                    </Button>
+                    <Grid.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Styles>
+                </Grid>
+                <Grid
+                  ColumnDefinitions="100, 200, 50 ">
+                    <TextBlock
+                        Grid.Column="0">
+                        Токен:
+                    </TextBlock>
+                    <TextBox
+                        Grid.Column="1"
+                        Text="{Binding ChannelsToken}"
+                        Height="30"/>
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding setChannelsToken}">
+                        Установить
+                    </Button>
+                    <Grid.Styles>
+                        <Style Selector="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Styles>
+                </Grid>
+                <Grid
+                  ColumnDefinitions="100, 200, 50 ">
+                    <TextBlock
+                        Grid.Column="0">
+                        Vip каналы:
+                    </TextBlock>
+                    <ComboBox
+                        Grid.Column="1"
+                        Height="30"
+                        HorizontalAlignment="Stretch"
+                        Margin="1"
+                        SelectedIndex="{Binding showVipSelectedIndex}">
+                        <ComboBoxItem>
+                            Да
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            Нет
+                        </ComboBoxItem>
+                    </ComboBox>                    
                     <Grid.Styles>
                         <Style Selector="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center"/>

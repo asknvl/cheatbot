@@ -42,6 +42,16 @@
                     Text="{Binding link}"/>
             </Grid>
             <Grid
+                ColumnDefinitions="100, 200">
+                <TextBlock
+                    Grid.Column="0">
+                    Активен:
+                </TextBlock>
+                <CheckBox
+                    Margin="0, 0, 0, 0"
+                    Grid.Column="1"/>
+            </Grid>
+            <Grid
                 ColumnDefinitions="100, 100">
                 <Button
                     Grid.Column="0"

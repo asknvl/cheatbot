@@ -311,7 +311,7 @@ namespace asknvl
             }
             catch (OperationCanceledException ex)
             {
-                throw;
+                logger.err(phone_number, $"Subscribe stopped");
             }
             catch (Exception ex)
             {

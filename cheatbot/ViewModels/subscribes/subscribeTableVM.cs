@@ -39,20 +39,7 @@ namespace cheatbot.ViewModels.subscribes
         public subscribeTableVM()
         {
 
-            string url = "";
-            string token = "";
-
-            using (var db = new DataBaseContext())
-            {
-                AppSettings? found = db.AppSettings.FirstOrDefault();
-                if (found != null)
-                {
-                    url = found.ChannelsURL;
-                    token = found.ChannelsToken;
-                }
-            }
-
-            chProvider = new ChannelsProvider(url, token);
+            chProvider = ChannelsProvider.getInstance();
 
             EventAggregator.getInstance().Subscribe(this);
 
