@@ -390,40 +390,5 @@ namespace cheatbot.Models.drop
             });
 
         }
-    }
-
-    public class messageInfo
-    {
-        public long peer_id { get; set; }
-        public int message_id { get; set; }
-        public long grouped_id { get; set; }
-
-        public messageInfo(UpdateNewMessage unm)
-        {
-            peer_id = unm.message.Peer.ID;
-            message_id = unm.message.ID;
-            grouped_id = ((Message)unm.message).grouped_id;
-        }
-
-        public messageInfo(long peer_id, int message_id)
-        {
-            this.peer_id = peer_id;
-            this.message_id = message_id;
-        }
-    }
-
-    public class pollInfo
-    {
-
-        public MessageMediaPoll? poll { get; set; }
-        public Peer? peer { get; set; }
-        public int id { get; set; }
-
-        public pollInfo(MessageMediaPoll? poll, Peer? peer, int id)
-        {
-            this.poll = poll;
-            this.peer = peer;
-            this.id = id;
-        }
-    }
+    }   
 }

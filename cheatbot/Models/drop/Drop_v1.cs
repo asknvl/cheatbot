@@ -1,5 +1,6 @@
 ﻿using asknvl;
 using asknvl.logger;
+using cheatbot.Models.polls;
 using cheatbot.Models.server;
 using DynamicData;
 using ReactiveUI;
@@ -18,7 +19,7 @@ namespace cheatbot.Models.drop
     {
 
         #region const
-        int last_vieved_number;
+        int max_views_on_start = 4;
         #endregion
 
         #region vars
@@ -26,7 +27,8 @@ namespace cheatbot.Models.drop
         Random random = new Random();
         string proxy;
         bool isProcessing = false;
-        List<itteration> itterations = new();
+        List<channelState> channelsStates = new();
+        PollStateManager pollStateManager = PollStateManager.getInstance();
         #endregion
 
         public Drop_v1(string api_id, string api_hash, string phone_number, string _2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, _2fa_password, logger)
@@ -34,13 +36,14 @@ namespace cheatbot.Models.drop
             activityTimer = new System.Timers.Timer();
             activityTimer.Interval = getPeriod();
             activityTimer.AutoReset = true;
-            activityTimer.Elapsed += ActivityTimer_Elapsed;            
+            activityTimer.Elapsed += ActivityTimer_Elapsed;
+            activityTimer.Start();
         }
 
         #region heplers
         int getPeriod()
         {
-            return random.Next(1, 1) * 60 *  1000;
+            return random.Next(1, 1) * 30 * 1000;
         }
         #endregion
 
@@ -50,18 +53,15 @@ namespace cheatbot.Models.drop
             if (isProcessing)
                 return;
 
-            isProcessing = true;    
+            isProcessing = true;
 
             try
             {
-                await base.Start(proxy);
-                //await Task.Delay(5000);
-
-                await watchUnread();
-
-                await base.Stop();
-
-            } catch (Exception ex)
+                await user.Account_UpdateStatus(false);
+                await handleUnread();
+                await user.Account_UpdateStatus(true);
+            }
+            catch (Exception ex)
             {
                 logger.err(phone_number, $"ActivityTimer {ex.Message}");
             }
@@ -69,76 +69,101 @@ namespace cheatbot.Models.drop
             isProcessing = false;
         }
 
-        async Task watchUnread()
+
+        int itterationNumber = 0;
+        async Task handleUnread()
         {
             var accepted = await ChannelsProvider.getInstance().GetChannels();
             var dlgs = await user.Messages_GetAllDialogs();
 
-            List<ChatBase> chats = new List<ChatBase>();
-
             foreach (var item in dlgs.dialogs)
             {
-                switch (dlgs.UserOrChat(item)) {
+                switch (dlgs.UserOrChat(item))
+                {
 
-                    case ChatBase chat:
+                    case ChatBase chat when chat.IsActive:
 
                         if (/*accepted.Any(a => a.tg_id == chat.ID)*/true)
                         {
 
-                            itteration? itter = itterations.FirstOrDefault(i => i.chat_id == chat.ID);
-                            if (itter == null)
+
+                            channelState? chState = channelsStates.FirstOrDefault(cs => cs.chat_id == chat.ID);
+                            if (chState == null)
                             {
-                                itter = new itteration()
+                                chState = new channelState()
                                 {
-                                    chat_id = chat.ID,
-                                    number = 0
+                                    chat_id = chat.ID
                                 };
-                                itterations.Add(itter);                                
+                                channelsStates.Add(chState);
                             }
+
 
                             var full = await user.GetFullChat(chat);
                             var chf = (ChannelFull)full.full_chat;
-                            if (chf.unread_count > 0)
+
+                            chState.unread_prev = chState.unread;
+                            chState.unread = chf.unread_count;
+
+
+                            foreach (var cs in channelsStates)
                             {
-                                logger.inf("TST", $"{chat.Title} {chf.unread_count}");
-                                chats.Add(chat);
-
-                                var delta = chf.unread_count - 
-
-                                var history = await user.Messages_GetHistory(chat, limit: chf.unread_count);
-                                var ids = history.Messages.Select(m => m.ID).ToArray();
-
-                                await user.Messages_GetMessagesViews(chat, ids, true);
+                                logger.inf("TST", $"{cs.chat_id} unread:{cs.unread} unread_prev:{cs.unread_prev}");
 
                             }
+
+                            //if (delta > 0)
+                            //{
+                                
+
+                            //    var history = await user.Messages_GetHistory(chat, limit: delta);
+
+                            //    var ids = history.Messages.Select(m => m.ID).ToArray();
+                            //    await user.Messages_GetMessagesViews(chat, ids, true);
+
+                            //}
+                            //else
+                            //    logger.inf("TST", $"{chat.Title} unread:{chf.unread_count} delta:{delta}");
+
+                            //chats.Add(chat);
                         }
                         break;
 
-                }                
+                }
             }
 
             //var chts = dlgs.dialogs.Where(d => dlgs.UserOrChat(d) is ChatBase).ToList();
             //var chbs = chts[0] as ChatBase;
-            
+
+        }
+
+        async Task handlePollMessage(MessageMediaPoll poll, Peer peer, int id)
+        {
+            await Task.Run(async () =>
+            {
+
+                var answers = poll.poll.answers;
+                pollStateManager.UpdatePollList(peer.ID, id, answers);
+
+                var inputPeer = chats[peer.ID].ToInputPeer();
+
+                var state = pollStateManager.Get(peer.ID, id);
+                var res = state.getAnswer();
+
+                if (res != null)
+                    await user.Messages_SendVote(inputPeer, id, res.option);
+            });
         }
 
         protected override Task processUpdate(Update update)
         {
             return Task.CompletedTask;
         }
-
-        public override Task Start(string proxy)
-        {
-            this.proxy = proxy;            
-            activityTimer.Start();
-            return Task.CompletedTask;
-        }
     }
 
-    class itteration
+    class channelState
     {
         public long chat_id { get; set; }
-        public int number { get; set; }
+        public int unread { get; set;        }
         public int unread_prev { get; set; }
     }
 
