@@ -3,6 +3,7 @@ using asknvl.logger;
 using cheatbot.Database;
 using cheatbot.Models.polls;
 using cheatbot.Models.reactions;
+using cheatbot.Models.server;
 using System;
 using System.Collections.Generic;
 using System.Linq;

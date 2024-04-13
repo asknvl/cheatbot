@@ -130,7 +130,7 @@ namespace cheatbot.ViewModels
 
             dropFactory = new DropFactory(logger);
 
-            drop = dropFactory.Get(DropType.v1, phone_number, _2fa_password);
+            drop = dropFactory.Get(DropType.v0, phone_number, _2fa_password);
 
             drop.ChannelMessageViewedEvent += Drop_ChannelMessageViewedEvent;            
             drop._2FAPasswordChanged += Drop__2FAPasswordChanged;

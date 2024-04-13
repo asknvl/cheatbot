@@ -36,7 +36,8 @@ namespace cheatbot.Models.drop
                 case DropType.v0:
                     return new Drop_v0(api_id, api_hash, phone_number, old_2fa_password, logger);
                 case DropType.v1:
-                    return new Drop_v1(api_id, api_hash, phone_number, old_2fa_password, logger);
+                    //return new Drop_v1(api_id, api_hash, phone_number, old_2fa_password, logger);
+                    throw new NotImplementedException();
                 default:
                     throw new NotImplementedException();
             }

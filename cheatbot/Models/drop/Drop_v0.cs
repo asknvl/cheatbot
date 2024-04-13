@@ -3,6 +3,7 @@ using asknvl.logger;
 using cheatbot.Database;
 using cheatbot.Models.polls;
 using cheatbot.Models.reactions;
+using cheatbot.Models.server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +35,10 @@ namespace cheatbot.Models.drop
         List<pollInfo> newPollsQueue = new();
 
         Random random = new Random();
-
-
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
-        {
+        {         
         }
 #if DEBUG_FAST
         bool needFirstWatch = true;

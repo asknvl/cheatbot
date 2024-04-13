@@ -2,6 +2,7 @@
 using asknvl.logger;
 using cheatbot.Database;
 using cheatbot.Database.models;
+using cheatbot.Models.server;
 using Starksoft.Net.Proxy;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace asknvl
 
         protected List<long> acceptedIds = new();
         Random random = new Random();
+
+        protected IChannelsProvider channelsProvider;
         #endregion
 
         #region properties        
@@ -56,6 +59,8 @@ namespace asknvl
             this.logger = logger;
             this._2fa_password = _2fa_password;
             this.status = DropStatus.stopped;
+
+            this.channelsProvider = channelsProvider;   
         }
 
         #region protected
@@ -166,10 +171,14 @@ namespace asknvl
                     dialogs = await user.Messages_GetAllDialogs();
                     dialogs.CollectUsersChats(users, chats);
 
-                    using (var db = new DataBaseContext())
-                    {
-                        acceptedIds = db.Channels.Select(c => c.tg_id).ToList();
-                    }
+                    //using (var db = new DataBaseContext())
+                    //{
+                    //    acceptedIds = db.Channels.Select(c => c.tg_id).ToList();
+                    //}
+
+                    var channels = await ChannelsProvider.getInstance().GetChannels();
+                    acceptedIds = channels.Select(c => c.tg_id).ToList();
+
 
                     user.OnUpdate -= OnUpdate;
                     user.OnUpdate += OnUpdate;
@@ -256,7 +265,14 @@ namespace asknvl
                         break;
                     case ChatInviteAlready already:
                         ChannelAddedEvent?.Invoke(input, already.chat.ID, already.chat.Title);
-                        logger.inf(phone_number, $"JoinedChannel: {already.chat.Title} OK");
+
+                        if (already.chat.IsActive)
+                            logger.inf(phone_number, $"JoinedChannel: {already.chat.Title} OK");
+                        else
+                        {
+                            await user.Messages_ImportChatInvite(hash);
+                            logger.inf(phone_number, $"JoinedChannel: {already.chat.Title} OK");
+                        }
                         break;
                 }
 
@@ -278,6 +294,7 @@ namespace asknvl
 
         public async Task Subscribe(List<ChannelModel> channels, CancellationTokenSource cts)
         {
+
             if (status != DropStatus.active)
                 return;
 
@@ -299,7 +316,14 @@ namespace asknvl
             try
             {
                 foreach (var channel in randomDelta)
-                {                    
+                {
+
+                    var subs = GetSubscribes();
+
+                    if (subs.Contains(channel.tg_id))
+                        break;
+
+
 #if DEBUG_FAST
                     await Task.Delay(random.Next(3, 5) * 1 * 1000, cts.Token);
 #else
@@ -317,14 +341,7 @@ namespace asknvl
             {
                 logger.err(phone_number, $"Subscribe: {ex.Message}");
             } finally
-            {
-                //chats = await user.Messages_GetAllChats();
-
-                using (var db = new DataBaseContext())
-                {
-                    acceptedIds = db.Channels.Select(c => c.tg_id).ToList();
-                }
-
+            {                
                 setStatus(DropStatus.active);
             }
         }
