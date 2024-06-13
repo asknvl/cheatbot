@@ -96,8 +96,11 @@ namespace cheatbot.ViewModels.subscribes
             stopCmd = ReactiveCommand.Create(() => {                 
                 cts?.Cancel();
             });
+                        
+            refreshCmd = ReactiveCommand.CreateFromTask(async () => {
 
-            refreshCmd = ReactiveCommand.Create(() => {
+                await loadChannels();
+
                 refresh();
             });
 
@@ -152,6 +155,12 @@ namespace cheatbot.ViewModels.subscribes
                 //        }
                 //    }
                 //}
+
+                await Dispatcher.UIThread.InvokeAsync(() => {
+
+                    Channels.Clear();
+                
+                });
 
                 using (var db = new DataBaseContext())
                 {

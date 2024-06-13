@@ -17,13 +17,17 @@ namespace cheatbot.Models.drop
     public class Drop_v0 : TGUserBase
     {
         #region const
+#if RELEASE
         int watch_percent = 20;
+#endif
+
 #if DEBUG_FAST
+        int watch_percent = 100;
         int poll_percent = 30;
 #else
         int poll_percent = 30;
 #endif
-        #endregion
+#endregion
 
         #region vars
         System.Timers.Timer readHistoryTimer;
@@ -325,7 +329,7 @@ namespace cheatbot.Models.drop
 
                     double minOffset = random.Next(2, 7) + (1.0d * random.Next(1, 10) / 10);
 #if DEBUG_FAST
-                    int offset = (int)(minOffset * 10 * 1000);
+                    int offset = (int)(minOffset * 3 * 1000);
 #else
                     int offset = (int)(minOffset * 60 * 1000);
 #endif

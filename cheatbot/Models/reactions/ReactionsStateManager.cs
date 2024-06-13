@@ -11,7 +11,8 @@ namespace cheatbot.Models.reactions
     public class ReactionsStateManager
     {
         #region const
-        int max_messages_states = 2048;
+        //int max_messages_states = 2048;
+        int max_messages_states = 3;
         #endregion
 
         #region vars

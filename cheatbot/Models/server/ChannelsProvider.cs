@@ -98,7 +98,9 @@ namespace cheatbot.Models.server
                         {
                             geotag = item.code,
                             tg_id = long.Parse(item.entity_details.entity_source_id),
-                            link = item.entity_details.url_no_moderation
+                            link = item.entity_details.url_no_moderation,
+                            is_active = item.entity_details.status.status_code.Equals("active")
+
                         });
                     }
                 }

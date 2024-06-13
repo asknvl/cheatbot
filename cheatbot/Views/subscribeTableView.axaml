@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:conv="using:cheatbot.Views.converters"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"             
              x:Class="cheatbot.Views.subscribeTableView">
 
     <UserControl.Styles>
@@ -52,16 +52,18 @@
             <ScrollViewer>
                 <ItemsControl   
                     Grid.Row="1"
-                    Items="{Binding Channels}">
+                    Items="{Binding Channels}"
+                    MinWidth="600">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid
-                                ColumnDefinitions="100, Auto, 100">
+                                ColumnDefinitions="100, Auto, 100"
+                                HorizontalAlignment="Center">
                                 <TextBlock
                                     Grid.Column="0"
                                     FontWeight="DemiBold"
                                     Text="{Binding Name}"/>
-                                <ListBox
+                                <ListBox                                    
                                     Grid.Column="1"
                                     Items="{Binding Groups}"
                                     Selection="{Binding Selection}"

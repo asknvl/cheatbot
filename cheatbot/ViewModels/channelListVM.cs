@@ -12,6 +12,7 @@ using cheatbot.Database.models;
 using cheatbot.ViewModels.events;
 using DynamicData;
 using cheatbot.Models.server;
+using Avalonia.Threading;
 
 namespace cheatbot.ViewModels
 {
@@ -138,7 +139,14 @@ namespace cheatbot.ViewModels
         async Task updateList()
         {
             await Task.Run(async () => {
-                ChannelList.Clear();
+
+                await Dispatcher.UIThread.InvokeAsync(() => {
+
+                    ChannelList.Clear();
+
+                });
+
+                
 
                 //List<ChannelModel> channels;
 
