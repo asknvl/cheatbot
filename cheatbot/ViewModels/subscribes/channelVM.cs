@@ -128,5 +128,10 @@ namespace cheatbot.ViewModels.subscribes
         {
             this.drops = drops;  
         }
+     
+        public static void ClearUniqs()
+        {
+            uniqSelection.Clear();
+        }
     }
 }

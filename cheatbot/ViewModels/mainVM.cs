@@ -40,13 +40,6 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref channelList, value);
         }
 
-        autoSubscribesVM autoSubscribes;
-        public autoSubscribesVM AutoSubscribes
-        {
-            get => autoSubscribes;
-            set => this.RaiseAndSetIfChanged(ref autoSubscribes, value);    
-        }
-
         subscribeTableVM subscribeTable;
         public subscribeTableVM SubscribeTable
         {
@@ -82,17 +75,12 @@ namespace cheatbot.ViewModels
 
             SubscribeTable = new subscribeTableVM();          
 
-            AutoSubscribes = new autoSubscribesVM();
+            //AutoSubscribes = new autoSubscribesVM();
 
             DropList = new dropListVM(Logger);
 
 
-            ChannelList = new channelListVM();
-            ChannelList.SubscribeAllRequestEvent += async (link) => {
-                await Task.Run(async () => {
-                    await DropList.subscribeAll(link);
-                });            
-            };
+            ChannelList = new channelListVM();           
 
             //Subscribes = new subscribesVM(Logger);
 

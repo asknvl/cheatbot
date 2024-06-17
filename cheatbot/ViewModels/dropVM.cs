@@ -257,31 +257,6 @@ namespace cheatbot.ViewModels
         #endregion
 
         #region public
-        public async Task<bool> subscribe(string link)
-        {
-            if (Status == DropStatus.active)
-            {
-                using (var db = new DataBaseContext())
-                {
-                    var channel = db.Channels.FirstOrDefault(c => c.link.Contains(link));
-                    if (channel != null)
-                    {
-                        var found = db.DropSubscribes.FirstOrDefault(ds => ds.drop_id == id && ds.channel_id == channel.id);
-                        if (found == null)
-                        {
-                            await drop.Subscribe(link);
-                            return true;
-                        }
-                        else
-                        {
-                            logger.inf(phone_number, "уже подписан");                         
-                        }
-                    }
-                }               
-            }
-            return false;
-        }
-
         public async void OnEvent(BaseEventMessage message)
         {
             switch (message)

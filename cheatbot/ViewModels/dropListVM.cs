@@ -297,8 +297,8 @@ namespace cheatbot.ViewModels
                     var found_db = db.Drops.FirstOrDefault(d => d.phone_number.Equals(SelectedDrop.phone_number));
                     db.Remove(found_db);
 
-                    var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == SelectedDrop.id);
-                    db.RemoveRange(found_subs);
+                    //var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == SelectedDrop.id);
+                    //db.RemoveRange(found_subs);
 
                     db.SaveChanges();
                 }
@@ -444,26 +444,7 @@ namespace cheatbot.ViewModels
 
         #endregion
 
-        #region public
-        public async Task subscribeAll(string link)
-        {
-            await Task.Run(async () =>
-            {
-
-                foreach (var drop in DropList)
-                {
-                    try
-                    {
-                        await drop.subscribe(link);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.err("ERR", ex.Message);
-                    }
-                }
-
-            });
-        }
+        #region public      
 
         Random subsRand = new Random();
 
@@ -532,37 +513,7 @@ namespace cheatbot.ViewModels
                     {
                         OnlineCount = (statusMessage.status == DropStatus.active) ? ++OnlineCount : --OnlineCount;
                     });
-                    break;
-
-                case ChannelSubscribeRequestEventMessage subscribeMessage:
-                    try
-                    {
-                        //if (group_id == subscribeMessage.group_id)
-                        //    await subscribe(subscribeMessage.link);
-
-                        var groupedDrops = DropList.Where(d => d.group_id == subscribeMessage.group_id).ToList();
-                        foreach (var drop in groupedDrops) {
-
-                            try
-                            {
-                                await Task.Run(async () => { 
-                                    var res = await drop.subscribe(subscribeMessage.link);
-                                    if (res)
-                                        //Thread.Sleep(subsRand.Next(3, 5) * 1000);
-                                        await Task.Delay(subsRand.Next(3, 5) * 1000);
-                                });
-
-                            } catch (Exception ex)
-                            {
-                                logger.err($"GroupSubscribe {drop.phone_number}", $"OnEvent subscribeMessage: {ex.Message}");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.err($"GroupSubscribe {subscribeMessage.group_id}", $"OnEvent subscribeMessage: {ex.Message}");
-                    }
-                    break;
+                    break;                
 
                 default:
                     break;

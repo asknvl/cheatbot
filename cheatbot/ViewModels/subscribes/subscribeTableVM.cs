@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using cheatbot.Database;
 using cheatbot.Database.models;
 using cheatbot.Models.server;
@@ -131,55 +132,53 @@ namespace cheatbot.ViewModels.subscribes
                 IDS.Add(title);
             }
         }
+
+
+        List<ChannelModel> channels_prev = new();
         async Task loadChannels()
         {
 
             await Task.Run(async () =>
             {
 
-                //using (var db = new DataBaseContext())
+                //await Dispatcher.UIThread.InvokeAsync(() =>
                 //{
-                //    var channels = db.Channels.ToList();
-                //    var groups = db.Groups.ToList();
-
-                //    refreshTitle(groups);
-
-                //    foreach (var channel in channels)
-                //    {
-
-                //        var found = Channels.FirstOrDefault(c => c.TG_id == channel.tg_id);
-                //        if (found == null)
-                //        {
-                //            var ch = new channelVM(channel, groups, drops);
-                //            Channels.Add(ch);
-                //        }
-                //    }
-                //}
-
-                await Dispatcher.UIThread.InvokeAsync(() => {
-
-                    Channels.Clear();
-                
-                });
+                //    channelVM.ClearUniqs();
+                //    Channels.Clear();
+                //});
 
                 using (var db = new DataBaseContext())
                 {
                     var groups = db.Groups.ToList();
-                    var channels = await chProvider.GetChannels();                    
+                    var channels = await chProvider.GetChannels();
 
-                    foreach (var channel in channels)
+                    var difference = channels.Except(channels_prev).ToList();
+                    channels_prev = channels.ToList();
+
+                    foreach (var channel in difference)
                     {
-
-                        var found = Channels.FirstOrDefault(c => c.TG_id == channel.tg_id);
-                        if (found == null)
-                        {
-                            var ch = new channelVM(channel, groups, drops);
-                            Channels.Add(ch);
-                        }
+                        Channels.Add(new channelVM(channel, groups, drops));                                            
                     }
-                }
 
-            
+                    // Удаление старых каналов, которых нет в текущем списке
+                    var channelsToRemove = Channels.Where(c => !channels.Any(ch => ch.tg_id == c.TG_id)).ToList();
+                    foreach (var channel in channelsToRemove)
+                    {
+                        Channels.Remove(channel);
+                    }
+
+
+                    //foreach (var channel in difference)
+                    //{
+
+                    //    var found = Channels.FirstOrDefault(c => c.TG_id == channel.tg_id);
+                    //    if (found == null)
+                    //    {
+                    //        var ch = new channelVM(channel, groups, drops);
+                    //        Channels.Add(ch);
+                    //    }
+                    //}
+                }            
             });
         }
         #endregion

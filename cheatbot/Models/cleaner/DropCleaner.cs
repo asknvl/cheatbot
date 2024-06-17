@@ -89,8 +89,8 @@ namespace cheatbot.Models.cleaner
                     if (found_db != null)
                         db.Remove(found_db);
 
-                    var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == id);
-                    db.RemoveRange(found_subs);
+                    //var found_subs = db.DropSubscribes.Where(ds => ds.drop_id == id);
+                    //db.RemoveRange(found_subs);
 
                     db.SaveChanges();
                 }

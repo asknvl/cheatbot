@@ -55,66 +55,66 @@ namespace cheatbot.ViewModels
 
             updateList();
 
-            addCmd = ReactiveCommand.Create(() => {
+            //addCmd = ReactiveCommand.Create(() => {
 
-                addChannelVM addVM = new addChannelVM();
-                SubContent = addVM;
+            //    addChannelVM addVM = new addChannelVM();
+            //    SubContent = addVM;
 
-                addVM.AddChannelRequestEvent += (geotag, tg_id, link) => {
+            //    addVM.AddChannelRequestEvent += (geotag, tg_id, link) => {
 
-                    if (string.IsNullOrEmpty(geotag) || string.IsNullOrEmpty(link))
-                        return;
+            //        if (string.IsNullOrEmpty(geotag) || string.IsNullOrEmpty(link))
+            //            return;
 
-                    using (var db = new DataBaseContext())
-                    {
-                        var found = db.Channels.FirstOrDefault(c => c.link.Equals(link) || c.geotag.Equals(geotag));
+            //        using (var db = new DataBaseContext())
+            //        {
+            //            var found = db.Channels.FirstOrDefault(c => c.link.Equals(link) || c.geotag.Equals(geotag));
 
-                        if (found == null)
-                        {
-                            var channelModel = new ChannelModel()
-                            {
-                                geotag = geotag,
-                                tg_id = tg_id,
-                                link = link
-                            };
-                            db.Channels.Add(channelModel);
-                            ChannelList.Add(new channelVM(channelModel));
-                        }
-                        else
-                        {
-                            found.link = link;
-                            found.geotag = geotag;                            
-                        }
-                        db.SaveChanges();
-                    }
+            //            if (found == null)
+            //            {
+            //                var channelModel = new ChannelModel()
+            //                {
+            //                    geotag = geotag,
+            //                    tg_id = tg_id,
+            //                    link = link
+            //                };
+            //                db.Channels.Add(channelModel);
+            //                ChannelList.Add(new channelVM(channelModel));
+            //            }
+            //            else
+            //            {
+            //                found.link = link;
+            //                found.geotag = geotag;                            
+            //            }
+            //            db.SaveChanges();
+            //        }
 
-                    EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
+            //        EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
 
-                    //updateList();
+            //        //updateList();
 
-                    SubContent = null;
-                };
-            });
+            //        SubContent = null;
+            //    };
+            //});
 
-            deleteCmd = ReactiveCommand.Create(() => {
+            //deleteCmd = ReactiveCommand.Create(() => {
 
-                if (SelectedChannel == null)
-                    return;               
+            //    if (SelectedChannel == null)
+            //        return;               
 
-                using (var db = new DataBaseContext())
-                {
-                    var found_db = db.Channels.FirstOrDefault(c => c.link.Equals(SelectedChannel.link));
-                    if (found_db != null)
-                    {
-                        db.Channels.Remove(found_db);
-                        db.SaveChanges();
-                    }
-                }
+            //    using (var db = new DataBaseContext())
+            //    {
+            //        var found_db = db.Channels.FirstOrDefault(c => c.link.Equals(SelectedChannel.link));
+            //        if (found_db != null)
+            //        {
+            //            db.Channels.Remove(found_db);
+            //            db.SaveChanges();
+            //        }
+            //    }
 
-                updateList();
+            //    updateList();
 
-                EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
-            });
+            //    EventAggregator.getInstance().Publish((BaseEventMessage)new SubscribesChannelsUpdateRequestMessage());
+            //});
 
             //subscribeCmd = ReactiveCommand.CreateFromTask(async () => {
             //    if (SelectedChannel != null)
@@ -169,24 +169,24 @@ namespace cheatbot.ViewModels
         #region public        
         public void updateChannelInfo(string link, long tg_id, string name)
         {
-            using (var db = new DataBaseContext())
-            {
-                var found = db.Channels.FirstOrDefault(c => c.link.Contains(link));
-                if (found != null)
-                {
-                    found.tg_id = tg_id;
-                    found.name = name;
-                }
-                db.SaveChanges();
+            //using (var db = new DataBaseContext())
+            //{
+            //    var found = db.Channels.FirstOrDefault(c => c.link.Contains(link));
+            //    if (found != null)
+            //    {
+            //        found.tg_id = tg_id;
+            //        found.name = name;
+            //    }
+            //    db.SaveChanges();
 
-                var viewed = ChannelList.FirstOrDefault(c => c.link.Contains(link));
-                if (viewed != null)
-                {
-                    viewed.name = name;
-                }
+            //    var viewed = ChannelList.FirstOrDefault(c => c.link.Contains(link));
+            //    if (viewed != null)
+            //    {
+            //        viewed.name = name;
+            //    }
                     
 
-            }
+            //}
 
 
 
@@ -204,9 +204,5 @@ namespace cheatbot.ViewModels
         }
         #endregion
 
-        #region events
-        public event Action<string> SubscribeAllRequestEvent;
-        public event Action<long> UnsubscribeAllRequestEvent;
-        #endregion
     }
 }
