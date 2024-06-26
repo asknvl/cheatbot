@@ -152,15 +152,29 @@ namespace cheatbot.ViewModels.subscribes
                     var groups = db.Groups.ToList();
                     var channels = await chProvider.GetChannels();
 
+
+                    foreach (var channel in channels)
+                    {
+                        var found = Channels.FirstOrDefault(c => c.TG_id == channel.tg_id);
+                        if (found == null)
+                            Channels.Add(new channelVM(channel, groups, drops));
+                        else
+                        {
+                            found.Name = channel.geotag;
+                            found.Link = channel.link;                            
+                        }
+
+                    }
+
                     var difference = channels.Except(channels_prev).ToList();
                     channels_prev = channels.ToList();
 
-                    foreach (var channel in difference)
-                    {
-                        Channels.Add(new channelVM(channel, groups, drops));                                            
-                    }
+                    //foreach (var channel in difference)
+                    //{
+                    //    Channels.Add(new channelVM(channel, groups, drops));                                            
+                    //}
 
-                    // Удаление старых каналов, которых нет в текущем списке
+                    //Удаление старых каналов, которых нет в текущем списке
                     var channelsToRemove = Channels.Where(c => !channels.Any(ch => ch.tg_id == c.TG_id)).ToList();
                     foreach (var channel in channelsToRemove)
                     {
@@ -178,7 +192,7 @@ namespace cheatbot.ViewModels.subscribes
                     //        Channels.Add(ch);
                     //    }
                     //}
-                }            
+                }
             });
         }
         #endregion

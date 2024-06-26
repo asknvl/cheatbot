@@ -11,8 +11,7 @@ namespace cheatbot.Models.reactions
     public class ReactionsStateManager
     {
         #region const
-        //int max_messages_states = 2048;
-        int max_messages_states = 3;
+        int max_messages_states = 2048;        
         #endregion
 
         #region vars
@@ -21,13 +20,18 @@ namespace cheatbot.Models.reactions
 
         #region singletone
         private static ReactionsStateManager instance;
+        private static readonly object lockObject = new object();
         private ReactionsStateManager() { 
         }
 
         public static ReactionsStateManager getInstance()
         {
-            if (instance == null)
-                instance = new ReactionsStateManager();
+            lock (lockObject)
+            {
+                if (instance == null)
+                    instance = new ReactionsStateManager();
+            }
+
             return instance;
         }
         #endregion
@@ -35,33 +39,39 @@ namespace cheatbot.Models.reactions
         #region public        
         public void UpdateMessageList(long channelID, int messageID, Reaction[] available)
         {
-            try
+            lock (lockObject)
             {
-                var found = messageStates.Any(ms => ms.channelID == channelID && ms.messageID == messageID);
-                if (!found)
+                try
                 {
-                    try
+                    var found = messageStates.Any(ms => ms.channelID == channelID && ms.messageID == messageID);
+                    if (!found)
                     {
-                        var messageState = new messageState(channelID, messageID, available);
-                        messageStates.Add(messageState);
-                        if (messageStates.Count > max_messages_states)
-                            messageStates.RemoveAt(0);
-                    }
-                    catch (Exception ex)
-                    {
-                        //throw new Exception($"UpdateMessageList {ex.Message}");
+                        try
+                        {
+                            var messageState = new messageState(channelID, messageID, available);
+                            messageStates.Add(messageState);
+                            if (messageStates.Count > max_messages_states)
+                                messageStates.RemoveAt(0);
+                        }
+                        catch (Exception ex)
+                        {
+                            //throw new Exception($"UpdateMessageList {ex.Message}");
+                        }
                     }
                 }
-            } catch (Exception ex)
-            {
-
+                catch (Exception ex)
+                {
+                }
             }
         }
 
 
         public messageState? Get(long channelID, int messageID) {
-            var found = messageStates.FirstOrDefault(ms => ms.channelID == channelID && ms.messageID == messageID);
-            return found;
+            lock (lockObject)
+            {
+                var found = messageStates.FirstOrDefault(ms => ms.channelID == channelID && ms.messageID == messageID);
+                return found;
+            }
         }
 
         #endregion
