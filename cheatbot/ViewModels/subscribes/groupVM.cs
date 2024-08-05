@@ -112,6 +112,23 @@ namespace cheatbot.ViewModels.subscribes
             }
         }
 
+        public async Task Subscribe(string bot_username, CancellationTokenSource cts)
+        {
+            var groupedDrops = drops.Where(d => d.group_id == ID).ToList();           
+
+            try
+            {
+                foreach (var drop in groupedDrops)
+                {
+                    await drop.drop.Subscribe(bot_username, cts);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         public async Task Unsubscribe(channelVM channel, CancellationTokenSource cts)
         {
             var groupedDrops = drops.Where(d => d.group_id == ID).ToList();

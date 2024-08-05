@@ -115,6 +115,12 @@
                 Command="{Binding subscribeCmd}">
                 Подписать
             </Button>
+            <TextBox
+                Text="{Binding bot_user_name}"/>
+            <Button                
+                Command="{Binding subscribeBotCmd}">
+                ПодписатьБ
+            </Button>
             <Button                
                 Command="{Binding unsubscribeCmd}">
                 Отписать

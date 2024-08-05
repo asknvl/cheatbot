@@ -22,6 +22,7 @@ namespace asknvl
         Task Start(string proxy);
         Task Subscribe(string input);
         Task Subscribe(List<ChannelModel> channels, CancellationTokenSource cts);
+        Task Subscribe(string bot_username, CancellationTokenSource cts);
         List<long> GetSubscribes();
         Task Unsubscribe(long id);
         Task Unsubscribe(List<ChannelModel> channels, CancellationTokenSource cts);

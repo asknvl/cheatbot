@@ -28,10 +28,18 @@ namespace cheatbot.ViewModels.subscribes
         #region properties
         public ObservableCollection<channelVM> Channels { get; } = new();        
         public ObservableCollection<groupTitleVM> IDS { get; } = new();
+
+        string _bot_user_name;
+        public string bot_user_name
+        {
+            get => _bot_user_name;
+            set => this.RaiseAndSetIfChanged(ref _bot_user_name, value);
+        }
         #endregion
 
         #region commands
         public ReactiveCommand<Unit, Unit> subscribeCmd { get; }
+        public ReactiveCommand<Unit, Unit> subscribeBotCmd { get; }
         public ReactiveCommand<Unit, Unit> unsubscribeCmd { get; }
         public ReactiveCommand<Unit, Unit> stopCmd { get; }
         public ReactiveCommand<Unit, Unit> refreshCmd { get; }
@@ -60,6 +68,34 @@ namespace cheatbot.ViewModels.subscribes
                         tasks.Add(Task.Run(async () => {
                             await group.Subscribe(channel, cts);
                         }));                        
+                    }
+                }
+
+                await Task.WhenAll(tasks);
+
+                cts = null;
+                refresh();
+
+            });
+
+            subscribeBotCmd = ReactiveCommand.CreateFromTask(async () => {
+
+                if (string.IsNullOrEmpty(bot_user_name))
+                    return;
+
+                if (cts != null)
+                    return;
+
+                cts = new CancellationTokenSource();
+                List<Task> tasks = new();
+
+                foreach (var channel in Channels)
+                {
+                    foreach (var group in channel.Selection.SelectedItems)
+                    {
+                        tasks.Add(Task.Run(async () => {
+                            await group.Subscribe("@AviSignalsTime_Bot", cts);
+                        }));
                     }
                 }
 

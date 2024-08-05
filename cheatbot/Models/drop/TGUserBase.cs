@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using TL;
 using WTelegram;
@@ -281,7 +283,7 @@ namespace asknvl
             {
                 hash = input.Replace("@", "");
                 var resolved = await user.Contacts_ResolveUsername(hash); // without the @
-                if (resolved.Chat is Channel channel)
+                if (resolved.Chat is TL.Channel channel)
                 {
                     await user.Channels_JoinChannel(channel);
                     ChannelAddedEvent?.Invoke(input, channel.ID, channel.Title);
@@ -342,6 +344,43 @@ namespace asknvl
                 logger.err(phone_number, $"Subscribe: {ex.Message}");
             } finally
             {                
+                setStatus(DropStatus.active);
+            }
+        }
+
+        public async Task Subscribe(string bot_username, CancellationTokenSource cts)
+        {
+            try
+            {
+                if (status != DropStatus.active)
+                    return;
+
+                setStatus(DropStatus.subscription);
+
+                var result = await user.Contacts_ResolveUsername(bot_username.Replace("@", ""));
+                var bot = result.User;
+
+                if (bot != null)
+                {
+                    await user.Messages_SendMessage(new InputPeerUser(bot.id, bot.access_hash), "/start", Helpers.RandomLong());
+                }
+
+                await Task.Delay(random.Next(3, 5) * 1 * 1000, cts.Token);
+
+                logger.inf(phone_number, $"Subscribed bot: {bot_username} OK");
+
+            }
+            catch (OperationCanceledException ex)
+            {
+                logger.err(phone_number, $"Subscribe stopped");
+            }
+            catch (Exception ex)
+
+            {
+                logger.err(phone_number, $"BotSubscribe: {ex.Message}");
+            }
+            finally
+            {
                 setStatus(DropStatus.active);
             }
         }
