@@ -19,14 +19,14 @@ namespace cheatbot.Models.drop
         #region const
 #if RELEASE
         int watch_percent = 20;
+        int poll_percent = 30;
 #endif
 
 #if DEBUG_FAST
         int watch_percent = 100;
         int poll_percent = 30;
 #else
-        int poll_percent = 30;
-        int watch_percent = 20;        
+
 #endif
         #endregion
 
