@@ -540,7 +540,7 @@ namespace asknvl
             }
         }
 
-        protected void processRpcException(RpcException ex)
+        protected void processRpcException(RpcException ex, string? channel_id = null, string? message_id = null)
         {
             switch (ex.Message)
             {
@@ -553,6 +553,10 @@ namespace asknvl
                 case "AUTH_KEY_UNREGISTERED":
                     user.Dispose();
                     setStatus(DropStatus.revoked);
+                    break;
+
+                default:
+                    logger.err(phone_number, $"RcpExeption ch={channel_id ?? "null"} msg={message_id ?? "null"}: {ex.Message}");
                     break;
 
             }

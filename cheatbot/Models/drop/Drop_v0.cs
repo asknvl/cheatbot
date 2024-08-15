@@ -26,8 +26,9 @@ namespace cheatbot.Models.drop
         int poll_percent = 30;
 #else
         int poll_percent = 30;
+        int watch_percent = 20;        
 #endif
-#endregion
+        #endregion
 
         #region vars
         System.Timers.Timer readHistoryTimer;
@@ -39,6 +40,8 @@ namespace cheatbot.Models.drop
         List<pollInfo> newPollsQueue = new();
 
         Random random = new Random();
+
+        object lockMessageQueue = new object();
         #endregion
 
         public Drop_v0(string api_id, string api_hash, string phone_number, string old_2fa_password, ILogger logger) : base(api_id, api_hash, phone_number, old_2fa_password, logger)
@@ -72,13 +75,18 @@ namespace cheatbot.Models.drop
                             {
                                 try
                                 {
-                                    var history = await user.Messages_GetHistory(channel.Value, limit: 4);
+                                    var history = await user.Messages_GetHistory(channel.Value, limit: 3);
                                     var ids = history.Messages.Select(m => m.ID).ToArray();
 
-                                    foreach (var id in ids)
+
+                                    lock (lockMessageQueue)
                                     {
-                                        messageInfo mi = new messageInfo(channel.Value.ID, id);
-                                        newMessagesQueue.Add(mi);
+
+                                        foreach (var id in ids)
+                                        {
+                                            messageInfo mi = new messageInfo(channel.Value.ID, id);
+                                            newMessagesQueue.Add(mi);
+                                        }
                                     }
                                     await Task.Delay(7000);
                                 }
@@ -106,6 +114,9 @@ namespace cheatbot.Models.drop
                 return;
             }
 
+            string channel_id = null;
+            string message_id = null;
+
             try
             {
 
@@ -121,15 +132,26 @@ namespace cheatbot.Models.drop
                         InputPeer channel = chats[m.peer_id];
 
                         List<messageInfo> tmpList = new();
-                        foreach (var item in newMessagesQueue)
+
+                        lock (lockMessageQueue)
                         {
+                            foreach (var item in newMessagesQueue)
+                            {
 
-                            if (item != null && item.peer_id == m.peer_id)
-                                tmpList.Add(item);
+                                if (item != null && item.peer_id == m.peer_id)
+                                {
+                                    tmpList.Add(new messageInfo(item.peer_id, item.message_id));                                    
+                                    //logger.inf(phone_number, $"queue: removed {item.peer_id} {item.message_id}, total count={newMessagesQueue.Count}");
+                                }
+                            }
+
+                            foreach (var item in tmpList)
+                            {
+                                var found = newMessagesQueue.FirstOrDefault(i => i.peer_id == item.peer_id && i.message_id == item.message_id);
+                                if (found != null)
+                                    newMessagesQueue.Remove(found);
+                            }
                         }
-
-                        foreach (var item in tmpList)
-                            newMessagesQueue.Remove(item);
 
                         var messagesIDs = tmpList.Select(m => m.message_id).ToArray();
 
@@ -182,9 +204,22 @@ namespace cheatbot.Models.drop
                                                 if (available.Length > 3)
                                                 selected = random.Next(2, available.Length);
 
-                                            await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
-                                            await Task.Delay(10000);
+                                            channel_id = "" + channel.ID;
+                                            message_id = "" + messageID;
 
+                                            try
+                                            {
+                                                await user.Messages_SendReaction(channel, messageID, reaction: new[] { randomizedReactions[selected] });
+                                                await Task.Delay(10000);
+
+                                            } catch (Exception ex)
+                                            {
+                                                if (ex.Message.Contains("MESSAGE_ID_INVALID"))
+                                                {
+                                                    logger.err(phone_number, $"{ex.Message} ch={channel_id} msg={message_id}");
+                                                }
+                                                else throw;
+                                            }   
                                         }
                                     }
                                 }
@@ -196,7 +231,7 @@ namespace cheatbot.Models.drop
             }
             catch (RpcException ex)
             {
-                processRpcException(ex);
+                processRpcException(ex, channel_id: channel_id, message_id: message_id);
             }
             catch (Exception ex)
             {
@@ -230,7 +265,10 @@ namespace cheatbot.Models.drop
         void encueueMessageToWatch(UpdateNewMessage newMessage)
         {
             var msgInfo = new messageInfo(newMessage);
-            newMessagesQueue.Add(msgInfo);
+            lock (lockMessageQueue)
+            {
+                newMessagesQueue.Add(msgInfo);
+            }
         }
 
         /// <summary>
