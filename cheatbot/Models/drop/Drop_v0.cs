@@ -126,10 +126,10 @@ namespace cheatbot.Models.drop
                     int index = random.Next(0, newMessagesQueue.Count - 1);
                     var m = newMessagesQueue[index];
 
-                    if (chats.ContainsKey(m.peer_id))
+                    if (chats.ContainsKey(m.peer_id) && chats[m.peer_id].IsChannel)
                     {
 
-                        InputPeer channel = chats[m.peer_id];
+                        InputPeer channel = chats[m.peer_id];                        
 
                         List<messageInfo> tmpList = new();
 
@@ -245,8 +245,12 @@ namespace cheatbot.Models.drop
         protected override async Task processUpdate(Update update)
         {
             switch (update)
-            {
+            {   
+                
                 case UpdateNewMessage unm:
+
+                    if (unm.message is MessageService)
+                        return;
 
                     var id = unm.message.Peer.ID;
                     if (acceptedIds.Contains(id))
