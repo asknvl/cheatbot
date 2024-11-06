@@ -21,7 +21,7 @@
                     5
                 </ListBoxItem>
             </ListBox>-->
-            <TextBox>
+            <TextBox Classes="TextBox Log">
                 123
             </TextBox>
         </Border>
@@ -54,10 +54,10 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="2"/>
         <Setter Property="MinHeight" Value="0"/>
-        <Setter Property="BorderThickness" Value="1"/>        
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Margin" Value="2"/>
     </Style>
-    
+
     <Style Selector="TextBox DataValidationErrors">
         <Setter Property="Template" Value="{DynamicResource TooltipDataValidationContentTemplate}"/>
         <Setter Property="ErrorTemplate" Value="{DynamicResource TooltipDataValidationErrorTemplate}" />
@@ -67,7 +67,21 @@
         <Setter Property="AcceptsReturn" Value="True"/>
         <Setter Property="MaxLength" Value="1024"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>
+    </Style>
 
+    <Style Selector="TextBox.Log">        
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="TextBox.Log:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="TextBox.Log:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
 
     <Style Selector="TextBlock">
@@ -131,7 +145,7 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TextBlock.Foreground" Value="#FF0BB3E8"/>
     </Style>
-    
+
     <Style Selector="ToggleButton">
         <Setter Property="Margin" Value="2"/>
     </Style>
@@ -153,12 +167,12 @@
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderBrush" Value="LightGray"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-        
+        <Setter Property="Margin" Value="2"/>
     </Style>
     <Style Selector="ListBoxItem">
         <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="BorderThickness" Value="1"/>        
-        <Setter Property="Margin" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="2"/>
         <Setter Property="Padding" Value="0"/>
     </Style>
     <Style Selector="ListBoxItem TextBlock">
@@ -166,24 +180,23 @@
     </Style>
     <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderPointerOverColor}"/>
-        <Setter Property="Background" Value="Transparent"/>        
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style Selector="ListBoxItem:not(:pointerover) /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="Transparent"/>
     </Style>
     <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
-        <!--<Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderSelectedColor}"/>-->
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Background" Value="Orange"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ListBoxItemBorderSelectedColor}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
 
     <Style Selector="ItemsControl">
-        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Margin" Value="2"/>
         <!--<Setter Property="Background" Value="{DynamicResource ItemsControlBackgroundColor}"/>-->
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <!--<Setter Property="BorderBrush" Value="{DynamicResource ItemsControlBorderColor}"/>-->
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
     </Style>
 
     <Style Selector="ItemsControl.Bordered">
@@ -192,7 +205,7 @@
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ItemsControlBorderColor}"/>
-        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
     </Style>
 
 

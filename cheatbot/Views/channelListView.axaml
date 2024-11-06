@@ -14,7 +14,7 @@
         ColumnDefinitions="*, Auto">
         <cust:AutoScrollListBox
             Items="{Binding ChannelList}"
-            SelectedItem="{Binding SelectedChannel}"
+            SelectedItem="{Binding SelectedChannel}"            
             Grid.Column="0"
             MinWidth="300">
             <ListBox.ItemTemplate>
@@ -37,7 +37,7 @@
                                    Foreground="LightGray"/>
                     </StackPanel>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
+            </ListBox.ItemTemplate>          
         </cust:AutoScrollListBox>
         <StackPanel
             Grid.Column="1">
@@ -48,25 +48,13 @@
             <Button
                 Command="{Binding deleteCmd}">
                 Удалить
-            </Button>
-            <!--<Button
-               Command="{Binding subscribeCmd}">
-                П
-            </Button>
-            <Button
-              Command="{Binding unsubscribeCmd}">
-                О
-            </Button>-->
-            <StackPanel.Styles>
-                <!--<Style Selector="Button">
-                    <Setter Property="MinWidth" Value="70"/>
-                    <Setter Property="MinHeight" Value="30"/>
-                </Style>-->
+            </Button>           
+            <StackPanel.Styles>                
                 <Style Selector="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
+                </Style>                
             </StackPanel.Styles>
-        </StackPanel>
+        </StackPanel>       
     </Grid>
     
 </UserControl>

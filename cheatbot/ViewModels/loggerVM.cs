@@ -1,12 +1,12 @@
 ﻿using asknvl.logger;
 using Avalonia.Threading;
-using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 
 namespace cheatbot.ViewModels
 {
@@ -19,11 +19,12 @@ namespace cheatbot.ViewModels
         #region vars
         Queue<LogMessage> logMessages = new Queue<LogMessage>();
         System.Timers.Timer timer = new System.Timers.Timer();
+        System.Timers.Timer clearTimer = new System.Timers.Timer();
         string filePath;
         #endregion
 
         #region properties
-        bool disableFileOutput = true;
+        bool disableFileOutput;
         public bool DisableFileOutput
         {
             get => disableFileOutput;
@@ -52,7 +53,7 @@ namespace cheatbot.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref filter, value);
-                var splt = filter.Replace(" ", "").Split(";");
+                var splt = filter.Replace(" ", "").ToLower().Split(";");
                 FilterList = new List<string>(splt);
             }
         }
@@ -64,25 +65,83 @@ namespace cheatbot.ViewModels
             set => this.RaiseAndSetIfChanged(ref filterList, value);
         }
 
+        bool _err = true;
+        public bool ERR
+        {
+            get => _err;
+            set => this.RaiseAndSetIfChanged(ref _err, value);
+        }
+
+        bool _dbg;
+        public bool DBG
+        {
+            get => _dbg;
+            set => this.RaiseAndSetIfChanged(ref _dbg, value);
+        }
+
+        bool _inf = true;
+        public bool INF
+        {
+            get => _inf;
+            set => this.RaiseAndSetIfChanged(ref _inf, value);
+        }
+
         public ObservableCollection<LogMessage> Messages { get; set; } = new();
+
+        bool needScroll = true;
+        public bool NeedScroll
+        {
+            get => needScroll;
+            set => this.RaiseAndSetIfChanged(ref needScroll, value);
+        }
+
+        #endregion
+
+        #region commands
+        public ReactiveCommand<Unit, Unit> clearCmd { get; }
         #endregion
 
         public loggerVM()
         {
+            #region commands
+            clearCmd = ReactiveCommand.Create(() => {
+                Messages.Clear();
+            });
+            #endregion
+
             var fileDirectory = Path.Combine(Directory.GetCurrentDirectory(), logFolder);
             if (!Directory.Exists(fileDirectory))
                 Directory.CreateDirectory(fileDirectory);
 
-            filePath = Path.Combine(fileDirectory, $"cheat.log");
+            filePath = Path.Combine(fileDirectory, $"bot.log");
 
             if (File.Exists(filePath))
                 File.Delete(filePath);
 
-            timer.Interval = 1000;
+            timer.Interval = 10000;
             timer.AutoReset = true;
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
 
+            clearTimer = new System.Timers.Timer(12 * 60 * 60 * 1000);
+            clearTimer.AutoReset = true;
+            clearTimer.Elapsed += ClearTimer_Elapsed;
+            clearTimer.Start();
+
+        }
+
+        private void ClearTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         #region private
@@ -95,6 +154,7 @@ namespace cheatbot.ViewModels
         {
             try
             {
+
                 using (StreamWriter sw = File.AppendText(filePath))
                 {
                     while (logMessages.Count > 0)
@@ -141,25 +201,34 @@ namespace cheatbot.ViewModels
         #region public
         public void dbg(string tag, string text)
         {
-            var message = new LogMessage(LogMessageType.dbg, tag, text);
-            post(message);
+            if (DBG)
+            {
+                var message = new LogMessage(LogMessageType.dbg, tag, text);
+                post(message);
+            }
         }
 
         public void err(string tag, string text)
         {
-            var message = new LogMessage(LogMessageType.err, tag, text);
-            post(message);
+            if (ERR)
+            {
+                var message = new LogMessage(LogMessageType.err, tag, text);
+                post(message);
+            }
         }
 
         public void inf(string tag, string text)
         {
-            var message = new LogMessage(LogMessageType.inf, tag, text);
-            post(message);
+            if (INF)
+            {
+                var message = new LogMessage(LogMessageType.inf, tag, text);
+                post(message);
+            }
         }
 
         public void inf_urgent(string tag, string text)
         {
-            var message = new LogMessage(LogMessageType.inf, tag, text);
+            var message = new LogMessage(LogMessageType.inf_urgent, tag, text);
             post(message);
         }
         #endregion

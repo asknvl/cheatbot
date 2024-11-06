@@ -9,6 +9,7 @@ namespace asknvl.logger
         dbg,
         err,
         inf,
+        inf_urgent
     }
     public class LogMessage : ViewModelBase
     {
@@ -20,24 +21,28 @@ namespace asknvl.logger
         }
 
         string tag;
-        public string TAG { 
+        public string TAG
+        {
             get => tag;
             set => this.RaiseAndSetIfChanged(ref tag, value);
         }
 
         string text;
-        public string Text {
+        public string Text
+        {
             get => text;
             set => this.RaiseAndSetIfChanged(ref text, value);
         }
 
         string date;
-        public string Date {
+        public string Date
+        {
             get => date;
             set => this.RaiseAndSetIfChanged(ref date, value);
         }
 
-        public LogMessage(LogMessageType type, string tag, string text) { 
+        public LogMessage(LogMessageType type, string tag, string text)
+        {
             TAG = tag;
             Type = type;
             Text = text;

@@ -11,16 +11,60 @@
       "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\drop\\tguserbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\models\\drop\\drop_v1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\drop\\drop_v1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\subscribetableview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\subscribetableview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\mainwnd.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\mainwnd.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\channellistview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\channellistview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\dropview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\dropview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\droplistview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\droplistview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\viewmodels\\subscribes\\subscribetablevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\viewmodels\\subscribes\\subscribetablevm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\subscribetableview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
-      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\subscribetableview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\styles\\windowstyle.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\styles\\windowstyle.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\loggerview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\loggerview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\models\\logger\\logmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\logger\\logmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\viewmodels\\loggervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\viewmodels\\loggervm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\styles\\datavalidationerros.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\styles\\datavalidationerros.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\views\\converters\\logmessagetypetobackgroundconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\views\\converters\\logmessagetypetobackgroundconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\models\\drop\\dropfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\drop\\dropfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\models\\drop\\drop_v1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\drop\\drop_v1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\viewmodels\\subscribes\\groupvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -91,10 +135,6 @@
       "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\server\\channelsprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\models\\drop\\dropfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\models\\drop\\dropfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|c:\\work\\raceup\\sources\\cheatbot\\cheatbot\\viewmodels\\channelvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4B9BCEB0-601E-4809-9B23-ED37A1BE99BD}|cheatbot\\cheatbot.csproj|solutionrelative:cheatbot\\viewmodels\\channelvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -129,12 +169,75 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 278,
+          "DockedWidth": 262,
           "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "LogMessage.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\logger\\LogMessage.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Models\\logger\\LogMessage.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\logger\\LogMessage.cs",
+              "RelativeToolTip": "cheatbot\\Models\\logger\\LogMessage.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T17:33:16.639Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "loggerView.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\loggerView.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\loggerView.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\loggerView.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\loggerView.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T17:30:11.523Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Drop_v1.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v1.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\Drop_v1.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v1.cs",
+              "RelativeToolTip": "cheatbot\\Models\\drop\\Drop_v1.cs",
+              "ViewState": "AQIAAEAAAAAAAAAAAADwv0sAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-05T07:12:09.051Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Drop_v0.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v0.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\Drop_v0.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v0.cs",
+              "RelativeToolTip": "cheatbot\\Models\\drop\\Drop_v0.cs",
+              "ViewState": "AQIAAEMAAAAAAAAAAAD4v1cAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-13T10:13:47.442Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "subscribeTableView.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\subscribeTableView.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\subscribeTableView.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\subscribeTableView.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\subscribeTableView.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-05T16:28:12.524Z"
             },
             {
               "$type": "Document",
@@ -144,26 +247,115 @@
               "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\TGUserBase.cs",
               "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\TGUserBase.cs",
               "RelativeToolTip": "cheatbot\\Models\\drop\\TGUserBase.cs",
-              "ViewState": "AQIAAAQAAAAAAAAAAAAAAHEAAAAQAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAABQAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-05T08:05:34.703Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-05T08:05:34.703Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "WindowStyle.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\Styles\\WindowStyle.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\Styles\\WindowStyle.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\Styles\\WindowStyle.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\Styles\\WindowStyle.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T17:48:35.127Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "mainWnd.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\mainWnd.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\mainWnd.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\mainWnd.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\mainWnd.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T17:51:28.119Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "loggerVM.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\loggerVM.cs",
+              "RelativeDocumentMoniker": "cheatbot\\ViewModels\\loggerVM.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\loggerVM.cs",
+              "RelativeToolTip": "cheatbot\\ViewModels\\loggerVM.cs",
+              "ViewState": "AQIAAEsAAAAAAAAAAAA4wFgAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T17:53:14.5Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DataValidationErros.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\Styles\\DataValidationErros.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\Styles\\DataValidationErros.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\Styles\\DataValidationErros.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\Styles\\DataValidationErros.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T18:07:00.941Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "ITGUser.cs",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\ITGUser.cs",
-              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\ITGUser.cs",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\ITGUser.cs",
-              "RelativeToolTip": "cheatbot\\Models\\drop\\ITGUser.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAIA5wBgAAABJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-01T09:04:20.985Z"
+              "Title": "dropListView.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\dropListView.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\dropListView.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\dropListView.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\dropListView.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T18:59:10.446Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
+              "Title": "dropView.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\dropView.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\dropView.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\dropView.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\dropView.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T19:00:14.671Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "channelListView.axaml",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\channelListView.axaml",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\channelListView.axaml",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\channelListView.axaml",
+              "RelativeToolTip": "cheatbot\\Views\\channelListView.axaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-08-23T19:05:38.933Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "LogMessageTypeToBackgroundConverter.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\converters\\LogMessageTypeToBackgroundConverter.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Views\\converters\\LogMessageTypeToBackgroundConverter.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\converters\\LogMessageTypeToBackgroundConverter.cs",
+              "RelativeToolTip": "cheatbot\\Views\\converters\\LogMessageTypeToBackgroundConverter.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T17:32:14.563Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DropFactory.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\DropFactory.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\DropFactory.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\DropFactory.cs",
+              "RelativeToolTip": "cheatbot\\Models\\drop\\DropFactory.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAWwAwAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-02T13:22:11.583Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "dropVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\dropVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\dropVM.cs",
@@ -175,44 +367,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Drop_v1.cs",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v1.cs",
-              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\Drop_v1.cs",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v1.cs",
-              "RelativeToolTip": "cheatbot\\Models\\drop\\Drop_v1.cs",
-              "ViewState": "AQIAAEAAAAAAAAAAAADwv0sAAABAAAAA",
+              "DocumentIndex": 17,
+              "Title": "ITGUser.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\ITGUser.cs",
+              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\ITGUser.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\ITGUser.cs",
+              "RelativeToolTip": "cheatbot\\Models\\drop\\ITGUser.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAIA5wBgAAABJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-05T07:12:09.051Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T09:04:20.985Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Drop_v0.cs",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v0.cs",
-              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\Drop_v0.cs",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v0.cs",
-              "RelativeToolTip": "cheatbot\\Models\\drop\\Drop_v0.cs",
-              "ViewState": "AQIAAK4AAAAAAAAAAAAAwMYAAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-13T10:13:47.442Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "subscribeTableView.axaml",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\subscribeTableView.axaml",
-              "RelativeDocumentMoniker": "cheatbot\\Views\\subscribeTableView.axaml",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\subscribeTableView.axaml",
-              "RelativeToolTip": "cheatbot\\Views\\subscribeTableView.axaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-08-05T16:28:12.524Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 19,
               "Title": "ReactionsStateManager.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\reactions\\ReactionsStateManager.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\reactions\\ReactionsStateManager.cs",
@@ -224,7 +391,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 22,
               "Title": "GroupModel.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Database\\models\\GroupModel.cs",
               "RelativeDocumentMoniker": "cheatbot\\Database\\models\\GroupModel.cs",
@@ -236,7 +403,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 27,
               "Title": "mainVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\mainVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\mainVM.cs",
@@ -248,7 +415,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 21,
               "Title": "DropSubscribeModel.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Database\\models\\DropSubscribeModel.cs",
               "RelativeDocumentMoniker": "cheatbot\\Database\\models\\DropSubscribeModel.cs",
@@ -260,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 30,
               "Title": "Drop_v0_idle.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\Drop_v0_idle.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\Drop_v0_idle.cs",
@@ -272,7 +439,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 28,
               "Title": "DropCleaner.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\cleaner\\DropCleaner.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\cleaner\\DropCleaner.cs",
@@ -284,7 +451,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 23,
               "Title": "channelVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\channelVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\subscribes\\channelVM.cs",
@@ -296,7 +463,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 32,
               "Title": "ChannelsProvider.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\server\\ChannelsProvider.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\server\\ChannelsProvider.cs",
@@ -308,19 +475,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "DropFactory.cs",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\DropFactory.cs",
-              "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\DropFactory.cs",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\DropFactory.cs",
-              "RelativeToolTip": "cheatbot\\Models\\drop\\DropFactory.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAqwBQAAAAaAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-02T13:22:11.583Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 35,
               "Title": "dropSubVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\dropSubVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\dropSubVM.cs",
@@ -332,7 +487,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 37,
               "Title": "IDropFactory.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\drop\\IDropFactory.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\drop\\IDropFactory.cs",
@@ -344,7 +499,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 38,
               "Title": "mainWnd.axaml",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\mainWnd.axaml",
               "RelativeDocumentMoniker": "cheatbot\\Views\\mainWnd.axaml",
@@ -356,8 +511,8 @@
           ]
         },
         {
-          "DockedWidth": 122,
-          "SelectedChildIndex": 7,
+          "DockedWidth": 138,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -385,7 +540,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
+              "Title": "subscribeTableVM.cs",
+              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
+              "RelativeDocumentMoniker": "cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
+              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
+              "RelativeToolTip": "cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-01T12:53:09.852Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "groupVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\groupVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\subscribes\\groupVM.cs",
@@ -397,20 +565,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "subscribeTableVM.cs",
-              "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
-              "RelativeDocumentMoniker": "cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
-              "ToolTip": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
-              "RelativeToolTip": "cheatbot\\ViewModels\\subscribes\\subscribeTableVM.cs",
-              "ViewState": "AQIAAF8AAAAAAAAAAAAYwCAAAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-01T12:53:09.852Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 25,
               "Title": "dropListVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\dropListVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\dropListVM.cs",
@@ -422,7 +577,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 39,
               "Title": "AppSettings.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Database\\models\\AppSettings.cs",
               "RelativeDocumentMoniker": "cheatbot\\Database\\models\\AppSettings.cs",
@@ -434,7 +589,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 26,
               "Title": "channelListVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\channelListVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\channelListVM.cs",
@@ -446,7 +601,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 29,
               "Title": "DataBaseContext.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Database\\DataBaseContext.cs",
               "RelativeDocumentMoniker": "cheatbot\\Database\\DataBaseContext.cs",
@@ -458,7 +613,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 20,
               "Title": "StatusColorConverter.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\converters\\StatusColorConverter.cs",
               "RelativeDocumentMoniker": "cheatbot\\Views\\converters\\StatusColorConverter.cs",
@@ -470,7 +625,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 24,
               "Title": "ChannelModel.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Database\\models\\ChannelModel.cs",
               "RelativeDocumentMoniker": "cheatbot\\Database\\models\\ChannelModel.cs",
@@ -482,7 +637,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 34,
               "Title": "IChannelsProvider.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Models\\server\\IChannelsProvider.cs",
               "RelativeDocumentMoniker": "cheatbot\\Models\\server\\IChannelsProvider.cs",
@@ -494,7 +649,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 31,
               "Title": "subscribeTableView.axaml",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\subscribeTableView.axaml",
               "RelativeDocumentMoniker": "cheatbot\\Views\\subscribeTableView.axaml",
@@ -505,7 +660,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 36,
               "Title": "addChannelView.axaml",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\Views\\addChannelView.axaml",
               "RelativeDocumentMoniker": "cheatbot\\Views\\addChannelView.axaml",
@@ -516,7 +671,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 33,
               "Title": "channelVM.cs",
               "DocumentMoniker": "C:\\WORK\\RaceUP\\sources\\cheatbot\\cheatbot\\ViewModels\\channelVM.cs",
               "RelativeDocumentMoniker": "cheatbot\\ViewModels\\channelVM.cs",

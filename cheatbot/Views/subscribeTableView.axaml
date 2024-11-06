@@ -130,5 +130,13 @@
                 Стоп
             </Button>
         </StackPanel>
+        <Grid.Styles>
+            <Style Selector="Border">
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="CornerRadius" Value="3"/>
+                <Setter Property="Margin" Value="2"/>
+            </Style>            
+        </Grid.Styles>
     </Grid>
 </UserControl>
